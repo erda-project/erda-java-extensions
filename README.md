@@ -36,4 +36,4 @@ Eeda JavaAgent depends on the plugin kernel of [Apache Skywalking](https://githu
 If you find a bug or an issue, please [report an issue](https://github.com/erda-project/erda-java-agent/issues/new) on the java agent repository
 
 ## License
-Erda Infra is under the Apache 2.0 license. See the [LICENSE](/LICENSE) file for details.
+Erda JavaAgent is under the Apache 2.0 license. See the [LICENSE](/LICENSE) file for details.
