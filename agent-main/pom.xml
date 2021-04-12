@@ -1,0 +1,106 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>java-agent</artifactId>
+        <groupId>cloud.erda</groupId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>agent-main</artifactId>
+    <packaging>jar</packaging>
+
+    <name>agent-main</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <premain.class>cloud.erda.agent.JavaAgent</premain.class>
+        <shade.net.bytebuddy.source>net.bytebuddy</shade.net.bytebuddy.source>
+        <shade.package>io.terminus.spot.agent.dependencies</shade.package>
+        <shade.net.bytebuddy.target>${shade.package}.${shade.net.bytebuddy.source}</shade.net.bytebuddy.target>
+        <agent.package.dest.dir>${project.basedir}/../dist/erda-java-agent</agent.package.dest.dir>
+    </properties>
+
+    <dependencies>
+        <!-- plugin -->
+        <dependency>
+            <groupId>cloud.erda</groupId>
+            <artifactId>agent-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <finalName>erda-java-agent</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <createSourcesJar>true</createSourcesJar>
+                            <shadeSourcesContent>true</shadeSourcesContent>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Premain-Class>${premain.class}</Premain-Class>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>com.lmax:*</exclude>
+                                    <exclude>org.apache.httpcomponents:*</exclude>
+                                    <exclude>commons-logging:*</exclude>
+                                    <exclude>commons-codec:*</exclude>
+                                    <exclude>*:gson</exclude>
+                                    <exclude>io.grpc:*</exclude>
+                                    <exclude>io.netty:*</exclude>
+                                    <exclude>com.google.*:*</exclude>
+                                    <exclude>com.google.guava:guava</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>${shade.net.bytebuddy.source}</pattern>
+                                    <shadedPattern>${shade.net.bytebuddy.target}</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <delete dir="${agent.package.dest.dir}/plugins" />
+                                <mkdir dir="${agent.package.dest.dir}" />
+                                <delete dir="${agent.package.dest.dir}/logs" />
+                                <delete dir="${agent.package.dest.dir}/licenses" />
+                                <mkdir dir="${agent.package.dest.dir}/licenses" />
+                                <copy file="${project.basedir}/../LICENSE-apache-skywalking.txt" tofile="${agent.package.dest.dir}/licenses/LICENSE-apache-skywalking.txt" overwrite="true" />
+                                <copy file="${project.basedir}/../NOTICE-apache-skywalking.txt" tofile="${agent.package.dest.dir}/licenses/NOTICE-apache-skywalking.txt" overwrite="true" />
+                                <copy file="${project.build.directory}/erda-java-agent.jar" tofile="${agent.package.dest.dir}/erda-java-agent.jar" overwrite="true" />
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

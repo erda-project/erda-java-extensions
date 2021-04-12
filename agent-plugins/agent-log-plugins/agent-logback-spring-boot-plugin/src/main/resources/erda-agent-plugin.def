@@ -1,0 +1,1 @@
+error.logback.spring.boot=io.terminus.spot.plugin.logback.spring.boot.LogbackLoggingSystemInstrumentation

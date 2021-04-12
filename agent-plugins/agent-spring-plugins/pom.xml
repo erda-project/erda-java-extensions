@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>agent-plugins</artifactId>
+        <groupId>cloud.erda</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>agent-spring-plugins</artifactId>
+    <packaging>pom</packaging>
+
+    <name>agent-spring-plugins</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sdk.plugin.related.dir>/..</sdk.plugin.related.dir>
+        <spring-web.version>4.3.10.RELEASE</spring-web.version>
+    </properties>
+
+    <modules>
+        <module>agent-spring-commons</module>
+        <module>agent-resttemplate-4.x-plugin</module>
+        <module>agent-concurrent-util-4.x-plugin</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>cloud.erda</groupId>
+            <artifactId>agent-app-insight-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

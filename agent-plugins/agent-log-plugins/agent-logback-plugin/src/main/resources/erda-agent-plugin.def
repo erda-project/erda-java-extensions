@@ -1,0 +1,4 @@
+logback=io.terminus.spot.plugin.logback.pattern.PatternLayoutInstrumentation
+logback=io.terminus.spot.plugin.logback.pattern.PatternInstrumentation
+logback=io.terminus.spot.plugin.logback.pattern.CompilerInstrumentation
+logback=io.terminus.spot.plugin.logback.appender.ContextInitializerInstrumentation

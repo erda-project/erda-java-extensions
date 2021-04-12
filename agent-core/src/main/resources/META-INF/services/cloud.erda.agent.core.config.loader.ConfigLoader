@@ -1,0 +1,5 @@
+cloud.erda.agent.core.config.ServiceConfigLoader
+cloud.erda.agent.core.config.loader.MonitorAgentConfigLoader
+cloud.erda.agent.core.config.loader.DefaultValueConfigLoader
+cloud.erda.agent.core.config.loader.EnvironmentVariableConfigLoader
+cloud.erda.agent.core.config.loader.SystemPropertiesConfigLoader

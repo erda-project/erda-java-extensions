@@ -1,0 +1,25 @@
+# 编译生成的目录
+auto/
+bin/
+dist/
+
+# makefile
+makefile
+
+# IDEA
+/build/
+target/
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.DS_Store
+*~
+packages/
+**/dependency-reduced-pom.xml
+/dist/
+fc/
+depends.tar.gz
+
+settings.json

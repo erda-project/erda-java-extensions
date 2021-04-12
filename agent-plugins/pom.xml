@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>java-agent</artifactId>
+        <groupId>cloud.erda</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>agent-plugins</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>agent-dubbo-plugin</module>
+        <module>agent-dubbo-2.7.x-plugin</module>
+        <!--<module>agent-spring-plugins</module>-->
+        <module>agent-jdbc-plugins</module>
+        <module>agent-httpClient-4.x-plugin</module>
+        <module>agent-jedis-2.x-plugin</module>
+        <module>agent-log-plugins</module>
+        <module>agent-jvm-plugin</module>
+        <module>agent-okhttp-3.x-plugin</module>
+        <module>agent-httpasyncclient-4.x-plugin</module>
+        <module>agent-servlet-plugins</module>
+        <module>agent-rocketmq-4.x-plugin</module>
+        <module>agent-app-insight-common</module>
+        <module>agent-feign-plugin</module>
+        <module>agent-spring-plugins</module>
+        <module>agent-microservice-plugin</module>
+        <module>agent-monitor-sdk-plugin</module>
+        <module>agent-sharding-sphere-4.x-plugin</module>
+        <module>agent-lettuce-plugins</module>
+        <module>agent-okhttp-4.x-plugin</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sdk.plugin.related.dir/>
+        <shade.net.bytebuddy.source>net.bytebuddy</shade.net.bytebuddy.source>
+        <shade.net.bytebuddy.target>${shade.package}.${shade.net.bytebuddy.source}</shade.net.bytebuddy.target>
+
+        <agent.package.dest.dir>
+            ${project.build.directory}${sdk.plugin.related.dir}/../../../dist/erda-java-agent/
+        </agent.package.dest.dir>
+        <plugin.dest.dir>${agent.package.dest.dir}/plugins</plugin.dest.dir>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>cloud.erda</groupId>
+            <artifactId>agent-core</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <createSourcesJar>true</createSourcesJar>
+                            <shadeSourcesContent>true</shadeSourcesContent>
+                            <relocations>
+                                <relocation>
+                                    <pattern>${shade.net.bytebuddy.source}</pattern>
+                                    <shadedPattern>${shade.net.bytebuddy.target}</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.4.3</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- 源码插件 -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <!-- 发布时自动将源码同时发布的配置 -->
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <taskdef resource="net/sf/antcontrib/antcontrib.properties"
+                                         classpathref="maven.runtime.classpath"/>
+                                <if>
+                                    <equals arg1="${project.packaging}" arg2="jar"/>
+                                    <then>
+                                        <mkdir dir="${plugin.dest.dir}"/>
+                                        <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
+                                              tofile="${plugin.dest.dir}/${project.artifactId}.jar" overwrite="true"/>
+                                    </then>
+                                </if>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>ant-contrib</groupId>
+                        <artifactId>ant-contrib</artifactId>
+                        <version>1.0b3</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>ant</groupId>
+                                <artifactId>ant</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-nodeps</artifactId>
+                        <version>1.8.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

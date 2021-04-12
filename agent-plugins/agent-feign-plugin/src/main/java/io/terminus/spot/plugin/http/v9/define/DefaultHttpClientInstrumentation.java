@@ -1,0 +1,64 @@
+package io.terminus.spot.plugin.http.v9.define;
+
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
+import net.bytebuddy.description.method.MethodDescription;
+import net.bytebuddy.matcher.ElementMatcher;
+
+import static net.bytebuddy.matcher.ElementMatchers.named;
+
+/**
+ * @author randomnil
+ */
+public class DefaultHttpClientInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+
+    /**
+     * Enhance class.
+     */
+    private static final String ENHANCE_CLASS = "feign.Client$Default";
+
+    /**
+     * Intercept method.
+     */
+    private static final String METHOD = "execute";
+
+    /**
+     * Intercept class.
+     */
+    private static final String INTERCEPT_CLASS = "io.terminus.spot.plugin.http.v9.DefaultHttpClientInterceptor";
+
+    @Override
+    protected ClassMatch enhanceClass() {
+        return NameMatch.byName(ENHANCE_CLASS);
+    }
+
+    @Override
+    protected ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
+        return null;
+    }
+
+    @Override
+    protected InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
+        return new InstanceMethodsInterceptPoint[] {
+            new InstanceMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named(METHOD);
+                }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return INTERCEPT_CLASS;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            }
+        };
+    }
+}
