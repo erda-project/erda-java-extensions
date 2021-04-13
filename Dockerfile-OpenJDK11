@@ -1,0 +1,9 @@
+FROM registry.cn-hangzhou.aliyuncs.com/terminus/terminus-openjdk11:0805
+
+WORKDIR /
+
+COPY ./dist/erda-java-agent.tar.gz /opt/erda-java-agent.tgz
+
+RUN cd /opt && tar zxvf erda-java-agent.tgz && rm -rf erda-java-agent.tgz
+
+CMD bash

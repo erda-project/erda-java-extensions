@@ -1,0 +1,2 @@
+configManager=io.terminus.spot.plugin.monitor.sdk.config.ConfigManagerInstrumentation
+MetricRegistry=io.terminus.spot.plugin.monitor.sdk.metrics.interceptors.MetricRegistryInstrumentation
