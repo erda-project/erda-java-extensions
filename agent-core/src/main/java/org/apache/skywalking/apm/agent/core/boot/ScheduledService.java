@@ -70,19 +70,19 @@ public abstract class ScheduledService implements BootService {
 
     protected abstract void executing();
 
-    protected String serviceName(){
+    protected String serviceName() {
         return this.getClass().getName();
     }
 
-    protected TimeUnit timeUnit(){
+    protected TimeUnit timeUnit() {
         return TimeUnit.SECONDS;
     }
 
-    protected long initialDelay(){
+    protected long initialDelay() {
         return 0;
     }
 
-    protected long period(){
+    protected long period() {
         return 30;
     }
 }

@@ -48,16 +48,16 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
  */
 public class BootstrapInstrumentBoost {
     private static final ILog logger = LogManager.getLogger(BootstrapInstrumentBoost.class);
-    private static final String HIGH_PRIORITY_PLUGIN_PACKAGE = "io.terminus.spot.agent.core.plugin.";
+    private static final String HIGH_PRIORITY_PLUGIN_PACKAGE = "cloud.erda.agent.core.plugin.";
     private static final String[] HIGH_PRIORITY_CLASSES = {
-        HIGH_PRIORITY_PLUGIN_PACKAGE + "interceptor.enhance.BootstrapInterRuntimeAssist",
-        HIGH_PRIORITY_PLUGIN_PACKAGE + "interceptor.enhance.InstanceMethodsAroundInterceptor",
-        HIGH_PRIORITY_PLUGIN_PACKAGE + "interceptor.enhance.InstanceConstructorInterceptor",
-        HIGH_PRIORITY_PLUGIN_PACKAGE + "interceptor.enhance.StaticMethodsAroundInterceptor",
-        HIGH_PRIORITY_PLUGIN_PACKAGE + "bootstrap.IBootstrapLog",
-        HIGH_PRIORITY_PLUGIN_PACKAGE + "interceptor.enhance.EnhancedInstance",
-        HIGH_PRIORITY_PLUGIN_PACKAGE + "interceptor.enhance.OverrideCallable",
-        HIGH_PRIORITY_PLUGIN_PACKAGE + "interceptor.enhance.MethodInterceptResult"
+            HIGH_PRIORITY_PLUGIN_PACKAGE + "interceptor.enhance.BootstrapInterRuntimeAssist",
+            HIGH_PRIORITY_PLUGIN_PACKAGE + "interceptor.enhance.InstanceMethodsAroundInterceptor",
+            HIGH_PRIORITY_PLUGIN_PACKAGE + "interceptor.enhance.InstanceConstructorInterceptor",
+            HIGH_PRIORITY_PLUGIN_PACKAGE + "interceptor.enhance.StaticMethodsAroundInterceptor",
+            HIGH_PRIORITY_PLUGIN_PACKAGE + "bootstrap.IBootstrapLog",
+            HIGH_PRIORITY_PLUGIN_PACKAGE + "interceptor.enhance.EnhancedInstance",
+            HIGH_PRIORITY_PLUGIN_PACKAGE + "interceptor.enhance.OverrideCallable",
+            HIGH_PRIORITY_PLUGIN_PACKAGE + "interceptor.enhance.MethodInterceptResult"
     };
 
     private static String INSTANCE_METHOD_DELEGATE_TEMPLATE = HIGH_PRIORITY_PLUGIN_PACKAGE + "bootstrap.template.InstanceMethodInterTemplate";
@@ -132,7 +132,7 @@ public class BootstrapInstrumentBoost {
      * @throws PluginException when generate failure.
      */
     private static boolean prepareJREInstrumentation(PluginFinder pluginFinder,
-        Map<String, byte[]> classesTypeMap) throws PluginException {
+                                                     Map<String, byte[]> classesTypeMap) throws PluginException {
 //        TypePool typePool = TypePool.Default.of(BootstrapInstrumentBoost.class.getClassLoader());
 //        List<AbstractClassEnhancePluginDefine> bootstrapClassMatchDefines = pluginFinder.getBootstrapClassMatchDefine();
 //        for (AbstractClassEnhancePluginDefine define : bootstrapClassMatchDefines) {
@@ -173,17 +173,17 @@ public class BootstrapInstrumentBoost {
      *                          pre-defined in SkyWalking agent core.
      */
     private static void generateDelegator(Map<String, byte[]> classesTypeMap, TypePool typePool,
-        String templateClassName, String methodsInterceptor) {
+                                          String templateClassName, String methodsInterceptor) {
         String internalInterceptorName = internalDelegate(methodsInterceptor);
         try {
             TypeDescription templateTypeDescription = typePool.describe(templateClassName).resolve();
 
             DynamicType.Unloaded interceptorType = new ByteBuddy().redefine(templateTypeDescription, ClassFileLocator.ForClassLoader
-                .of(BootstrapInstrumentBoost.class.getClassLoader()))
-                                                                  .name(internalInterceptorName)
-                                                                  .field(named("TARGET_INTERCEPTOR"))
-                                                                  .value(methodsInterceptor)
-                                                                  .make();
+                    .of(BootstrapInstrumentBoost.class.getClassLoader()))
+                    .name(internalInterceptorName)
+                    .field(named("TARGET_INTERCEPTOR"))
+                    .value(methodsInterceptor)
+                    .make();
 
             classesTypeMap.put(internalInterceptorName, interceptorType.getBytes());
 
@@ -201,7 +201,7 @@ public class BootstrapInstrumentBoost {
      * @param className     to load
      */
     private static void loadHighPriorityClass(Map<String, byte[]> loadedTypeMap,
-        String className) throws PluginException {
+                                              String className) throws PluginException {
         byte[] enhancedInstanceClassFile;
         try {
             String classResourceName = className.replaceAll("\\.", "/") + ".class";

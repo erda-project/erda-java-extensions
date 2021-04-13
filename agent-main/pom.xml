@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <premain.class>cloud.erda.agent.JavaAgent</premain.class>
         <shade.net.bytebuddy.source>net.bytebuddy</shade.net.bytebuddy.source>
-        <shade.package>io.terminus.spot.agent.dependencies</shade.package>
+        <shade.package>cloud.erda.agent.dependencies</shade.package>
         <shade.net.bytebuddy.target>${shade.package}.${shade.net.bytebuddy.source}</shade.net.bytebuddy.target>
         <agent.package.dest.dir>${project.basedir}/../dist/erda-java-agent</agent.package.dest.dir>
     </properties>

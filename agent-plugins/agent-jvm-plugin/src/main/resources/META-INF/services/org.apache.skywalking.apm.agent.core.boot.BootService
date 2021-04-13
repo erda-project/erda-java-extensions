@@ -1,1 +1,1 @@
-io.terminus.spot.plugin.jvm.JVMStatsService
+cloud.erda.agent.plugin.jvm.JVMStatsService

@@ -14,4 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-tomcat=io.terminus.spot.plugin.servlet.tomcat.ServletInvokeInstrumentation
+tomcat=cloud.erda.agent.plugin.servlet.tomcat.ServletInvokeInstrumentation

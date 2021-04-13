@@ -1,2 +1,2 @@
-configManager=io.terminus.spot.plugin.monitor.sdk.config.ConfigManagerInstrumentation
-MetricRegistry=io.terminus.spot.plugin.monitor.sdk.metrics.interceptors.MetricRegistryInstrumentation
+configManager=cloud.erda.agent.plugin.monitor.sdk.config.ConfigManagerInstrumentation
+MetricRegistry=cloud.erda.agent.plugin.monitor.sdk.metrics.interceptors.MetricRegistryInstrumentation

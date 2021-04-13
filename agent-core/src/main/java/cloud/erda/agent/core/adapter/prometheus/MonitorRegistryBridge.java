@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2021 Terminus, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cloud.erda.agent.core.adapter.prometheus;
 
 import cloud.erda.agent.core.adapter.prometheus.converters.GaugeConverter;
@@ -18,6 +34,7 @@ import cloud.erda.agent.core.adapter.prometheus.converters.SummaryConverter;
 import org.apache.skywalking.apm.agent.core.boot.ScheduledService;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import cloud.erda.agent.core.reporter.TelegrafReporter;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -94,11 +111,13 @@ public class MonitorRegistryBridge extends ScheduledService {
         metric.addTag("workspace", SERVICE_CONFIG.getWorkspace());
     }
 
-    @Override protected void executing() {
+    @Override
+    protected void executing() {
         this.push();
     }
 
-    @Override protected long initialDelay() {
+    @Override
+    protected long initialDelay() {
         return 20;
     }
 }

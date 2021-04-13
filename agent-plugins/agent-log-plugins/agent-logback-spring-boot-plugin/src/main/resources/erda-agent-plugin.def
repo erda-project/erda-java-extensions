@@ -1,1 +1,1 @@
-error.logback.spring.boot=io.terminus.spot.plugin.logback.spring.boot.LogbackLoggingSystemInstrumentation
+error.logback.spring.boot=cloud.erda.agent.plugin.logback.spring.boot.LogbackLoggingSystemInstrumentation

@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-mysql-5.x=io.terminus.spot.plugin.jdbc.mysql.v5.define.DriverInstrumentation
-mysql-5.x=io.terminus.spot.plugin.jdbc.mysql.v5.define.Mysql5xConnectionInstrumentation
-mysql-5.x=io.terminus.spot.plugin.jdbc.mysql.v5.define.Mysql50ConnectionInstrumentation
-mysql-5.x=io.terminus.spot.plugin.jdbc.mysql.v5.define.PreparedStatementInstrumentation
-mysql-5.x=io.terminus.spot.plugin.jdbc.mysql.v5.define.StatementInstrumentation
-#mysql-5.x=io.terminus.spot.plugin.jdbc.mysql.v5.define.CallableInstrumentation
+mysql-5.x=cloud.erda.agent.plugin.jdbc.mysql.v5.define.DriverInstrumentation
+mysql-5.x=cloud.erda.agent.plugin.jdbc.mysql.v5.define.Mysql5xConnectionInstrumentation
+mysql-5.x=cloud.erda.agent.plugin.jdbc.mysql.v5.define.Mysql50ConnectionInstrumentation
+mysql-5.x=cloud.erda.agent.plugin.jdbc.mysql.v5.define.PreparedStatementInstrumentation
+mysql-5.x=cloud.erda.agent.plugin.jdbc.mysql.v5.define.StatementInstrumentation
+#mysql-5.x=cloud.erda.agent.plugin.jdbc.mysql.v5.define.CallableInstrumentation

@@ -20,6 +20,7 @@
 package org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+
 /**
  * A interceptor, which intercept method's invocation. The target methods will be defined in {@link
  * ClassEnhancePluginDefine}'s subclass, most likely in {@link ClassInstanceMethodsEnhancePluginDefine}
@@ -46,7 +47,7 @@ public interface InstanceMethodsAroundInterceptor {
     /**
      * called when occur exception.
      *
-     * @param t      the exception occur.
+     * @param t the exception occur.
      */
     void handleMethodException(IMethodInterceptContext context, Throwable t);
 }

@@ -14,6 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-spring-concurrent-util-4.x=io.terminus.spot.plugin.spring.concurrent.define.FailureCallbackInstrumentation
-spring-concurrent-util-4.x=io.terminus.spot.plugin.spring.concurrent.define.SuccessCallbackInstrumentation
-spring-concurrent-util-4.x=io.terminus.spot.plugin.spring.concurrent.define.ListenableFutureCallbackInstrumentation
+spring-concurrent-util-4.x=cloud.erda.agent.plugin.spring.concurrent.define.FailureCallbackInstrumentation
+spring-concurrent-util-4.x=cloud.erda.agent.plugin.spring.concurrent.define.SuccessCallbackInstrumentation
+spring-concurrent-util-4.x=cloud.erda.agent.plugin.spring.concurrent.define.ListenableFutureCallbackInstrumentation

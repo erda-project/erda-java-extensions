@@ -17,7 +17,7 @@
         <jetty.version>9.4.2.v20170220</jetty.version>
         <grpc.version>1.10.0</grpc.version>
         <bytebuddy.version>1.10.7</bytebuddy.version>
-        <shade.package>io.terminus.spot.agent.dependencies</shade.package>
+        <shade.package>cloud.erda.agent.dependencies</shade.package>
         <shade.com.lmax.disruptor.source>com.lmax.disruptor</shade.com.lmax.disruptor.source>
         <shade.com.lmax.disruptor.target>${shade.package}.${shade.com.lmax.disruptor.source}
         </shade.com.lmax.disruptor.target>

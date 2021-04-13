@@ -1,6 +1,6 @@
-letture-5.x=io.terminus.spot.plugin.lettuce.v5.define.AbstractRedisClientInstrumentation
-letture-5.x=io.terminus.spot.plugin.lettuce.v5.define.AsyncCommandInstrumentation
-letture-5.x=io.terminus.spot.plugin.lettuce.v5.define.RedisClientInstrumentation
-letture-5.x=io.terminus.spot.plugin.lettuce.v5.define.RedisChannelWriterInstrumentation
-letture-5.x=io.terminus.spot.plugin.lettuce.v5.define.ClientOptionsInstrumentation
-letture-5.x=io.terminus.spot.plugin.lettuce.v5.define.RedisClusterClientInstrumentation
+letture-5.x=cloud.erda.agent.plugin.lettuce.v5.define.AbstractRedisClientInstrumentation
+letture-5.x=cloud.erda.agent.plugin.lettuce.v5.define.AsyncCommandInstrumentation
+letture-5.x=cloud.erda.agent.plugin.lettuce.v5.define.RedisClientInstrumentation
+letture-5.x=cloud.erda.agent.plugin.lettuce.v5.define.RedisChannelWriterInstrumentation
+letture-5.x=cloud.erda.agent.plugin.lettuce.v5.define.ClientOptionsInstrumentation
+letture-5.x=cloud.erda.agent.plugin.lettuce.v5.define.RedisClusterClientInstrumentation

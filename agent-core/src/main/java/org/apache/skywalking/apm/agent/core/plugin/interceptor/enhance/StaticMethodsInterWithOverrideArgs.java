@@ -59,19 +59,19 @@ public class StaticMethodsInterWithOverrideArgs {
     /**
      * Intercept the target static method.
      *
-     * @param clazz target class
+     * @param clazz        target class
      * @param allArguments all method arguments
-     * @param method method description.
-     * @param zuper the origin call ref.
+     * @param method       method description.
+     * @param zuper        the origin call ref.
      * @return the return value of target static method.
      * @throws Exception only throw exception because of zuper.call() or unexpected exception in sky-walking ( This is a
-     * bug, if anything triggers this condition ).
+     *                   bug, if anything triggers this condition ).
      */
     @RuntimeType
     public Object intercept(@Origin Class<?> clazz, @AllArguments Object[] allArguments, @Origin Method method,
-        @Morph OverrideCallable zuper) throws Throwable {
+                            @Morph OverrideCallable zuper) throws Throwable {
         StaticMethodsAroundInterceptor interceptor = InterceptorInstanceLoader
-            .load(staticMethodsAroundInterceptorClassName, clazz.getClassLoader());
+                .load(staticMethodsAroundInterceptorClassName, clazz.getClassLoader());
 
         IMethodInterceptContext context = new MethodInterceptContext(null, clazz, method, allArguments, method.getParameterTypes());
         MethodInterceptResult result = new MethodInterceptResult();

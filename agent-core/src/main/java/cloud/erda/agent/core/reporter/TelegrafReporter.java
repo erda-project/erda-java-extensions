@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2021 Terminus, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cloud.erda.agent.core.reporter;
 
 import cloud.erda.agent.core.metric.Metric;
@@ -76,7 +92,7 @@ public class TelegrafReporter implements BootService {
         try {
             socket.send(new DatagramPacket(data, 0, data.length, socketAddress));
             if (log.isDebugEnable()) {
-                log.debug("Send {}({}KB) data to collector proxy success. \n {}", buckets.length, data.length / (float)1024, new String(data));
+                log.debug("Send {}({}KB) data to collector proxy success. \n {}", buckets.length, data.length / (float) 1024, new String(data));
             }
         } catch (IOException e) {
             if (log.isErrorEnable()) {

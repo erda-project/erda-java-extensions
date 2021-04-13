@@ -55,7 +55,7 @@ public class PluginFinder {
             }
 
             if (match instanceof NameMatch) {
-                NameMatch nameMatch = (NameMatch)match;
+                NameMatch nameMatch = (NameMatch) match;
                 LinkedList<AbstractClassEnhancePluginDefine> pluginDefines = nameMatchDefine.get(nameMatch.getClassName());
                 if (pluginDefines == null) {
                     pluginDefines = new LinkedList<AbstractClassEnhancePluginDefine>();
@@ -69,7 +69,7 @@ public class PluginFinder {
     }
 
     public List<AbstractClassEnhancePluginDefine> find(TypeDescription typeDescription,
-        ClassLoader classLoader) {
+                                                       ClassLoader classLoader) {
         List<AbstractClassEnhancePluginDefine> matchedPlugins = new LinkedList<AbstractClassEnhancePluginDefine>();
         String typeName = typeDescription.getTypeName();
         if (nameMatchDefine.containsKey(typeName)) {
@@ -77,7 +77,7 @@ public class PluginFinder {
         }
 
         for (AbstractClassEnhancePluginDefine pluginDefine : signatureMatchDefine) {
-            IndirectMatch match = (IndirectMatch)pluginDefine.enhanceClass();
+            IndirectMatch match = (IndirectMatch) pluginDefine.enhanceClass();
             if (match.isMatch(typeDescription)) {
                 matchedPlugins.add(pluginDefine);
             }
@@ -97,7 +97,7 @@ public class PluginFinder {
         for (AbstractClassEnhancePluginDefine define : signatureMatchDefine) {
             ClassMatch match = define.enhanceClass();
             if (match instanceof IndirectMatch) {
-                judge = judge.or(((IndirectMatch)match).buildJunction());
+                judge = judge.or(((IndirectMatch) match).buildJunction());
             }
         }
         return new ProtectiveShieldMatcher(judge);
