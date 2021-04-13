@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <properties>
-        <log4j2.version>2.11.1</log4j2.version>
+        <log4j2.version>2.14.1</log4j2.version>
     </properties>
 
     <artifactId>agent-log4j2-plugin</artifactId>
