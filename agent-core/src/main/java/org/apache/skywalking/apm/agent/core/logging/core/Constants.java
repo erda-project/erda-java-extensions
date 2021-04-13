@@ -2,7 +2,7 @@ package org.apache.skywalking.apm.agent.core.logging.core;
 
 /**
  * @author liuhaoyang
- * @date 2021/1/29 18:08
+ * @since 2021/1/29 18:08
  */
 public class Constants {
 

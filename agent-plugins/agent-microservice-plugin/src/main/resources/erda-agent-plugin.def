@@ -14,6 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-configcenter=io.terminus.spot.plugin.microservice.define.ConfigCenterInstrumentation
-registercenter=io.terminus.spot.plugin.microservice.define.ProviderInstrumentation
-registercenter=io.terminus.spot.plugin.microservice.define.ConsumerInstrumentation
+configcenter=cloud.erda.agent.plugin.microservice.define.ConfigCenterInstrumentation
+registercenter=cloud.erda.agent.plugin.microservice.define.ProviderInstrumentation
+registercenter=cloud.erda.agent.plugin.microservice.define.ConsumerInstrumentation

@@ -35,7 +35,7 @@ public interface StaticMethodsAroundInterceptor {
      * called after target method invocation. Even method's invocation triggers an exception.
      *
      * @param method
-     * @param ret the method's original return value.
+     * @param ret    the method's original return value.
      * @return the method's actual return value.
      */
     Object afterMethod(IMethodInterceptContext context, Object ret);
@@ -44,7 +44,7 @@ public interface StaticMethodsAroundInterceptor {
      * called when occur exception.
      *
      * @param method
-     * @param t the exception occur.
+     * @param t      the exception occur.
      */
     void handleMethodException(IMethodInterceptContext context, Throwable t) throws Throwable;
 }

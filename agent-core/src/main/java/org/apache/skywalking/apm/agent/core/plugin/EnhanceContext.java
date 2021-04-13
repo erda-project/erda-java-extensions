@@ -23,7 +23,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassEnha
 
 /**
  * The <code>EnhanceContext</code> represents the context or status for processing a class.
- *
+ * <p>
  * Based on this context, the plugin core {@link ClassEnhancePluginDefine}
  * knows how to process the specific steps for every particular plugin.
  *

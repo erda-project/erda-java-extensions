@@ -1,8 +1,8 @@
 package org.apache.skywalking.apm.agent.core.util;
 
 /**
- * @author: liuhaoyang
- * @create: 2019-06-20 11:35
+ * @author liuhaoyang
+ * @since 2019-06-20 11:35
  **/
 public class ReflectionUtils {
     public static Object castValue(String value, Class<?> type) {

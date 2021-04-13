@@ -1,4 +1,4 @@
-logback=io.terminus.spot.plugin.logback.pattern.PatternLayoutInstrumentation
-logback=io.terminus.spot.plugin.logback.pattern.PatternInstrumentation
-logback=io.terminus.spot.plugin.logback.pattern.CompilerInstrumentation
-logback=io.terminus.spot.plugin.logback.appender.ContextInitializerInstrumentation
+logback=cloud.erda.agent.plugin.logback.pattern.PatternLayoutInstrumentation
+logback=cloud.erda.agent.plugin.logback.pattern.PatternInstrumentation
+logback=cloud.erda.agent.plugin.logback.pattern.CompilerInstrumentation
+logback=cloud.erda.agent.plugin.logback.appender.ContextInitializerInstrumentation

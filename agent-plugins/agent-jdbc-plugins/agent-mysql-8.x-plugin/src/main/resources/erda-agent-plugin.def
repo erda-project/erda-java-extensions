@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-mysql-8.x=io.terminus.spot.plugin.jdbc.mysql.v8.define.ConnectionInstrumentation
-mysql-8.x=io.terminus.spot.plugin.jdbc.mysql.v8.define.PreparedStatementInstrumentation
-mysql-8.x=io.terminus.spot.plugin.jdbc.mysql.v8.define.StatementInstrumentation
-mysql-8.x=io.terminus.spot.plugin.jdbc.mysql.v8.define.ConnectionImplCreateInstrumentation
+mysql-8.x=cloud.erda.agent.plugin.jdbc.mysql.v8.define.ConnectionInstrumentation
+mysql-8.x=cloud.erda.agent.plugin.jdbc.mysql.v8.define.PreparedStatementInstrumentation
+mysql-8.x=cloud.erda.agent.plugin.jdbc.mysql.v8.define.StatementInstrumentation
+mysql-8.x=cloud.erda.agent.plugin.jdbc.mysql.v8.define.ConnectionImplCreateInstrumentation

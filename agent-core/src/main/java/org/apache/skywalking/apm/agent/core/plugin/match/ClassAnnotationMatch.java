@@ -19,18 +19,16 @@
 
 package org.apache.skywalking.apm.agent.core.plugin.match;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import net.bytebuddy.description.annotation.AnnotationDescription;
 import net.bytebuddy.description.annotation.AnnotationList;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-import static net.bytebuddy.matcher.ElementMatchers.isAnnotatedWith;
-import static net.bytebuddy.matcher.ElementMatchers.isInterface;
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.not;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static net.bytebuddy.matcher.ElementMatchers.*;
 
 /**
  * Match the class by the given annotations in class.

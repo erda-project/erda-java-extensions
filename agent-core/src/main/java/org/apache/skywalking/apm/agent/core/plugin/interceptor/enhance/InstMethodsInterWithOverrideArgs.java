@@ -59,22 +59,22 @@ public class InstMethodsInterWithOverrideArgs {
     /**
      * Intercept the target instance method.
      *
-     * @param obj target class instance.
+     * @param obj          target class instance.
      * @param allArguments all method arguments
-     * @param method method description.
-     * @param zuper the origin call ref.
+     * @param method       method description.
+     * @param zuper        the origin call ref.
      * @return the return value of target instance method.
      * @throws Exception only throw exception because of zuper.call() or unexpected exception in sky-walking ( This is a
-     * bug, if anything triggers this condition ).
+     *                   bug, if anything triggers this condition ).
      */
     @RuntimeType
     public Object intercept(@This Object obj,
-        @Origin Class<?> clazz,
-        @AllArguments Object[] allArguments,
-        @Origin Method method,
-        @Morph OverrideCallable zuper
+                            @Origin Class<?> clazz,
+                            @AllArguments Object[] allArguments,
+                            @Origin Method method,
+                            @Morph OverrideCallable zuper
     ) throws Throwable {
-        EnhancedInstance targetObject = (EnhancedInstance)obj;
+        EnhancedInstance targetObject = (EnhancedInstance) obj;
         IMethodInterceptContext context = new MethodInterceptContext(targetObject, clazz, method, allArguments, method.getParameterTypes());
         MethodInterceptResult result = new MethodInterceptResult();
         Object ret = null;

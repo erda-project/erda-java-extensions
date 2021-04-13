@@ -35,7 +35,7 @@ public class MethodInterceptContext implements IMethodInterceptContext {
     private Throwable exception;
 
     public MethodInterceptContext(EnhancedInstance objInst, Class<?> originClass, Method method, Object[] allArguments,
-        Class<?>[] argumentsTypes) {
+                                  Class<?>[] argumentsTypes) {
         this.instance = objInst;
         this.originClass = originClass;
         this.method = method;
@@ -48,7 +48,8 @@ public class MethodInterceptContext implements IMethodInterceptContext {
         return instance;
     }
 
-    @Override public Class<?> getOriginClass() {
+    @Override
+    public Class<?> getOriginClass() {
         return originClass;
     }
 
@@ -70,7 +71,7 @@ public class MethodInterceptContext implements IMethodInterceptContext {
     @Override
     public <T> T getAttachment(String key) {
         ensureAttachments();
-        return (T)attachments.get(key);
+        return (T) attachments.get(key);
     }
 
     @Override
@@ -86,11 +87,13 @@ public class MethodInterceptContext implements IMethodInterceptContext {
         }
     }
 
-    @Override public void forceThrowException(Throwable exception) {
+    @Override
+    public void forceThrowException(Throwable exception) {
         this.exception = exception;
     }
 
-    @Override public Throwable getException() {
+    @Override
+    public Throwable getException() {
         return this.exception;
     }
 

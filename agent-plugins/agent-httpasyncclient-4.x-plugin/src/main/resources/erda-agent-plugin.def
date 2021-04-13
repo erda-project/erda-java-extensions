@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-httpasyncclient-4.x=io.terminus.spot.plugin.httpasyncclient.v4.define.HttpAsyncClientInstrumentation
-httpasyncclient-4.x=io.terminus.spot.plugin.httpasyncclient.v4.define.HttpAsyncRequestExecutorInstrumentation
-httpasyncclient-4.x=io.terminus.spot.plugin.httpasyncclient.v4.define.SessionRequestInstrumentation
+httpasyncclient-4.x=cloud.erda.agent.plugin.httpasyncclient.v4.define.HttpAsyncClientInstrumentation
+httpasyncclient-4.x=cloud.erda.agent.plugin.httpasyncclient.v4.define.HttpAsyncRequestExecutorInstrumentation
+httpasyncclient-4.x=cloud.erda.agent.plugin.httpasyncclient.v4.define.SessionRequestInstrumentation
 
 

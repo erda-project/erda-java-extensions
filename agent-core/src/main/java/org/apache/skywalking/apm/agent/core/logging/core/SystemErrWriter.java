@@ -22,10 +22,10 @@ package org.apache.skywalking.apm.agent.core.logging.core;
 import java.io.PrintStream;
 
 /**
- * @author: liuhaoyang
- * @create: 2019-11-28 18:28
+ * @author liuhaoyang
+ * @since 2019-11-28 18:28
  **/
-public enum  SystemErrWriter implements IWriter {
+public enum SystemErrWriter implements IWriter {
     INSTANCE;
 
     /**

@@ -57,14 +57,14 @@ public class ConstructorInter {
     /**
      * Intercept the target constructor.
      *
-     * @param obj target class instance.
+     * @param obj          target class instance.
      * @param allArguments all constructor arguments
      */
     @RuntimeType
     public void intercept(@This Object obj,
-        @AllArguments Object[] allArguments) {
+                          @AllArguments Object[] allArguments) {
         try {
-            EnhancedInstance targetObject = (EnhancedInstance)obj;
+            EnhancedInstance targetObject = (EnhancedInstance) obj;
 
             interceptor.onConstruct(targetObject, allArguments);
         } catch (Throwable t) {

@@ -19,10 +19,11 @@
 
 package org.apache.skywalking.apm.agent.core.plugin.match;
 
-import java.util.Arrays;
-import java.util.List;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 

@@ -39,13 +39,13 @@ public abstract class AbstractClassEnhancePluginDefine {
      * Main entrance of enhancing the class.
      *
      * @param transformClassName target class.
-     * @param builder byte-buddy's builder to manipulate target class's bytecode.
-     * @param classLoader load the given transformClass
+     * @param builder            byte-buddy's builder to manipulate target class's bytecode.
+     * @param classLoader        load the given transformClass
      * @return the new builder, or <code>null</code> if not be enhanced.
      * @throws PluginException when set builder failure.
      */
     public DynamicType.Builder<?> define(String transformClassName,
-        DynamicType.Builder<?> builder, ClassLoader classLoader, EnhanceContext context) throws PluginException {
+                                         DynamicType.Builder<?> builder, ClassLoader classLoader, EnhanceContext context) throws PluginException {
         String interceptorDefineClassName = this.getClass().getName();
 
         if (Strings.isEmpty(transformClassName)) {
@@ -63,7 +63,7 @@ public abstract class AbstractClassEnhancePluginDefine {
             for (String witnessClass : witnessClasses) {
                 if (!WitnessClassFinder.INSTANCE.exist(witnessClass, classLoader)) {
                     logger.warn("enhance class {} by plugin {} is not working. Because witness class {} is not existed.", transformClassName, interceptorDefineClassName,
-                        witnessClass);
+                            witnessClass);
                     return null;
                 }
             }
@@ -81,7 +81,7 @@ public abstract class AbstractClassEnhancePluginDefine {
     }
 
     protected abstract DynamicType.Builder<?> enhance(String enhanceOriginClassName,
-        DynamicType.Builder<?> newClassBuilder, ClassLoader classLoader, EnhanceContext context) throws PluginException;
+                                                      DynamicType.Builder<?> newClassBuilder, ClassLoader classLoader, EnhanceContext context) throws PluginException;
 
     /**
      * Define the {@link ClassMatch} for filtering class.
@@ -101,6 +101,6 @@ public abstract class AbstractClassEnhancePluginDefine {
      * @return
      */
     protected String[] witnessClasses() {
-        return new String[] {};
+        return new String[]{};
     }
 }

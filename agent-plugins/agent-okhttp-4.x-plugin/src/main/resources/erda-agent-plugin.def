@@ -14,6 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-okhttp-4.x=io.terminus.spot.plugin.okhttp.v4.define.RealCallInstrumentation
-okhttp-4.x=io.terminus.spot.plugin.okhttp.v4.define.AsyncCallInstrumentation
-okhttp-4.x=io.terminus.spot.plugin.okhttp.v4.define.CallbackInstrumentation
+okhttp-4.x=cloud.erda.agent.plugin.okhttp.v4.define.RealCallInstrumentation
+okhttp-4.x=cloud.erda.agent.plugin.okhttp.v4.define.AsyncCallInstrumentation
+okhttp-4.x=cloud.erda.agent.plugin.okhttp.v4.define.CallbackInstrumentation

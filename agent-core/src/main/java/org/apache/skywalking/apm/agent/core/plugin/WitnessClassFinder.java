@@ -19,9 +19,10 @@
 
 package org.apache.skywalking.apm.agent.core.plugin;
 
+import net.bytebuddy.pool.TypePool;
+
 import java.util.HashMap;
 import java.util.Map;
-import net.bytebuddy.pool.TypePool;
 
 /**
  * The <code>WitnessClassFinder</code> represents a pool of {@link TypePool}s,
@@ -37,7 +38,7 @@ public enum WitnessClassFinder {
 
     /**
      * @param witnessClass
-     * @param classLoader for finding the witnessClass
+     * @param classLoader  for finding the witnessClass
      * @return true, if the given witnessClass exists, through the given classLoader.
      */
     public boolean exist(String witnessClass, ClassLoader classLoader) {

@@ -14,4 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-jetty=io.terminus.spot.plugin.servlet.jetty.ServletDoHandlerInstrumentation
+jetty=cloud.erda.agent.plugin.servlet.jetty.ServletDoHandlerInstrumentation

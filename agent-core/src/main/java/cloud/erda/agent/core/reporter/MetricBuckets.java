@@ -1,6 +1,23 @@
+/*
+ * Copyright (c) 2021 Terminus, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cloud.erda.agent.core.reporter;
 
 import cloud.erda.agent.core.metric.Metric;
+
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -25,7 +42,8 @@ public class MetricBuckets implements Iterable<Metric[]> {
         this(metrics.toArray(new Metric[0]), bucket);
     }
 
-    @Override public Iterator<Metric[]> iterator() {
+    @Override
+    public Iterator<Metric[]> iterator() {
         return new MetricsIterator(this.metrics, this.bucket);
     }
 
@@ -41,11 +59,13 @@ public class MetricBuckets implements Iterable<Metric[]> {
             this.maxBucket = maxBucket;
         }
 
-        @Override public boolean hasNext() {
+        @Override
+        public boolean hasNext() {
             return index < metrics.length;
         }
 
-        @Override public Metric[] next() {
+        @Override
+        public Metric[] next() {
             if (index >= metrics.length) {
                 return new Metric[0];
             }
