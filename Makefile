@@ -33,7 +33,9 @@ build: print-info clean
 
 .PHONY: clean
 clean:
-	rm -rf ${AGENT_OUTPUT_PATH}
+	@if [[ -d "${AGENT_OUTPUT_PATH}" ]]; then \
+		rm -rf ${AGENT_OUTPUT_PATH}; \
+	fi
 
 .PHONY: version
 version:
