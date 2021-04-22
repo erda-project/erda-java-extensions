@@ -1,2 +1,0 @@
-configManager=cloud.erda.agent.plugin.monitor.sdk.config.ConfigManagerInstrumentation
-MetricRegistry=cloud.erda.agent.plugin.monitor.sdk.metrics.interceptors.MetricRegistryInstrumentation
