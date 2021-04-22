@@ -43,15 +43,15 @@ version:
 
 .PHONY: set-maven
 set-maven:
-	sed -i 's^{{BP_NEXUS_URL}}^'"${BP_NEXUS_URL}"'^g' /root/.m2/settings.xml
-	sed -i 's^{{BP_NEXUS_USERNAME}}^'"${BP_NEXUS_USERNAME}"'^g' /root/.m2/settings.xml
-	sed -i 's^{{BP_NEXUS_PASSWORD}}^'"${BP_NEXUS_PASSWORD}"'^g' /root/.m2/settings.xml
+	@sed -i 's^{{BP_NEXUS_URL}}^'"${BP_NEXUS_URL}"'^g' /root/.m2/settings.xml
+	@sed -i 's^{{BP_NEXUS_USERNAME}}^'"${BP_NEXUS_USERNAME}"'^g' /root/.m2/settings.xml
+	@sed -i 's^{{BP_NEXUS_PASSWORD}}^'"${BP_NEXUS_PASSWORD}"'^g' /root/.m2/settings.xml
 
 .PHONY: push-oss
 push-oss:
-	ossutil config -e ${OSS_DOMAIN} -i ${OSS_ACCESS_KEY} -k ${OSS_SECRET_KEY}
-	ossutil cp -f ${AGENT_OUTPUT_PATH}/${BINARY_PACKAGE_NAME} oss://${OSS_PATH}/java-agent/${GIT_BRANCH}/${BINARY_PACKAGE_NAME}
-	@echo "https://${OSS_PATH}.${OSS_DOMAIN}/java-agent/${GIT_BRANCH}/${BINARY_PACKAGE_NAME}"
+	@ossutil config -e ${OSS_DOMAIN} -i ${OSS_ACCESS_KEY} -k ${OSS_SECRET_KEY}
+	@ossutil cp -f ${AGENT_OUTPUT_PATH}/${BINARY_PACKAGE_NAME} oss://${OSS_PATH}/java-agent/${GIT_BRANCH}/${BINARY_PACKAGE_NAME}
+	@echo "agent push to https://${OSS_PATH}.${OSS_DOMAIN}/java-agent/${GIT_BRANCH}/${BINARY_PACKAGE_NAME}"
 
 .PHONY: print-info
 print-info:
