@@ -28,7 +28,7 @@ GIT_BRANCH := $(shell git symbolic-ref --short -q HEAD)
 all: build version push-oss
 
 .PHONY: build
-build: print-info clean
+build: print-info clean set-maven
 	./mvnw --batch-mode clean package -Dmaven.test.skip=$(SKIP_TEST)
 
 .PHONY: clean
