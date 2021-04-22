@@ -15,7 +15,6 @@
     <modules>
         <module>agent-dubbo-plugin</module>
         <module>agent-dubbo-2.7.x-plugin</module>
-        <!--<module>agent-spring-plugins</module>-->
         <module>agent-jdbc-plugins</module>
         <module>agent-httpClient-4.x-plugin</module>
         <module>agent-jedis-2.x-plugin</module>
@@ -29,7 +28,6 @@
         <module>agent-feign-plugin</module>
         <module>agent-spring-plugins</module>
         <module>agent-microservice-plugin</module>
-        <module>agent-monitor-sdk-plugin</module>
         <module>agent-sharding-sphere-4.x-plugin</module>
         <module>agent-lettuce-plugins</module>
         <module>agent-okhttp-4.x-plugin</module>

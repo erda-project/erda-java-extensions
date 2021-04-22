@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright (c) 2021 Terminus, Inc.
 #
 # This program is free software: you can use, redistribute, and/or modify
@@ -14,20 +16,40 @@
 SHELL := /bin/bash -o pipefail
 PROJ_PATH := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 AGENT_OUTPUT_PATH := ${PROJ_PATH}/dist
-VERSION := $(shell head -n 1 ${PROJ_PATH}/agent-core/src/main/resources/java-agent.properties)
+VERSION_FILE := agent-core/src/main/resources/java-agent.properties
+VERSION := $(shell head -n 1 ${PROJ_PATH}/${VERSION_FILE})
+BINARY_PACKAGE_NAME := erda-java-agent.tar.gz
 SKIP_TEST ?= false
-
-# build info
 BUILD_TIME := $(shell date "+%Y-%m-%d %H:%M:%S")
 COMMIT_ID := $(shell git rev-parse HEAD 2>/dev/null)
+GIT_BRANCH := $(shell git symbolic-ref --short -q HEAD)
 
 .PHONY: all
-all: print-info clean
-	@cd $(PROJ_PATH) && mvn --batch-mode clean package -Dmaven.test.skip=$(SKIP_TEST)
+all: build version push-oss
+
+.PHONY: build
+build: print-info clean
+	./mvnw --batch-mode clean package -Dmaven.test.skip=$(SKIP_TEST)
 
 .PHONY: clean
 clean:
-	@cd $(PROJ_PATH) && rm -rf ${AGENT_OUTPUT_PATH}
+	rm -rf ${AGENT_OUTPUT_PATH}
+
+.PHONY: version
+version:
+	cp -rv ${PROJ_PATH}/${VERSION_FILE} ${AGENT_OUTPUT_PATH}/agent_version
+
+.PHONY: set-maven
+set-maven:
+	sed -i 's^{{BP_NEXUS_URL}}^'"${BP_NEXUS_URL}"'^g' /root/.m2/settings.xml
+	sed -i 's^{{BP_NEXUS_USERNAME}}^'"${BP_NEXUS_USERNAME}"'^g' /root/.m2/settings.xml
+	sed -i 's^{{BP_NEXUS_PASSWORD}}^'"${BP_NEXUS_PASSWORD}"'^g' /root/.m2/settings.xml
+
+.PHONY: push-oss
+push-oss:
+	ossutil config -e ${OSS_DOMAIN} -i ${OSS_ACCESS_KEY} -k ${OSS_SECRET_KEY}
+	ossutil cp -f ${AGENT_OUTPUT_PATH}/${BINARY_PACKAGE_NAME} oss://${OSS_PATH}/java-agent/${GIT_BRANCH}/${BINARY_PACKAGE_NAME}
+	@echo "https://${OSS_PATH}.${OSS_DOMAIN}/java-agent/${GIT_BRANCH}/${BINARY_PACKAGE_NAME}"
 
 .PHONY: print-info
 print-info:
