@@ -30,6 +30,8 @@ public interface Span {
 
     String getOperationName();
 
+    void setOperationName(String operationName);
+
     long getStartTime();
 
     long getEndTime();

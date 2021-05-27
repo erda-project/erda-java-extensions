@@ -38,7 +38,7 @@ public interface StaticMethodsAroundInterceptor {
      * @param ret    the method's original return value.
      * @return the method's actual return value.
      */
-    Object afterMethod(IMethodInterceptContext context, Object ret);
+    Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable;
 
     /**
      * called when occur exception.

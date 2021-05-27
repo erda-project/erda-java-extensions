@@ -139,6 +139,10 @@ public class Constants {
         public static final String TRACE_SAMPLED = "trace_sampled";
 
         public static final String HEALTH_CHECK = "health_check";
+
+        public static final String CLASS = "class";
+
+        public static final String METHOD = "method";
     }
 
     public static class Metrics {
