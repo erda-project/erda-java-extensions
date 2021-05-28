@@ -14,61 +14,39 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.core.tracing.span;
+package cloud.erda.agent.plugin.sdk;
 
-import cloud.erda.agent.core.tracing.SpanContext;
-
-import java.util.HashMap;
-import java.util.Map;
+import cloud.erda.msp.monitor.tracing.Span;
 
 /**
  * @author liuhaoyang
- * @since 2019-01-07 21:30
- **/
-public class SpanNoop implements Span {
+ * @date 2021/5/26 16:56
+ */
+public class SpanWrapper extends Span {
 
-    private static Map<String, String> noopTags = new HashMap<String, String>(0);
+    private final cloud.erda.agent.core.tracing.span.Span activeSpan;
 
-    private SpanContext spanContext;
-
-    public SpanNoop(SpanContext spanContext) {
-        this.spanContext = spanContext;
-    }
-
-    @Override
-    public SpanContext getContext() {
-        return spanContext;
+    public SpanWrapper(cloud.erda.agent.core.tracing.span.Span activeSpan) {
+        this.activeSpan = activeSpan;
     }
 
     @Override
     public String getOperationName() {
-        return null;
+        return activeSpan.getOperationName();
     }
 
     @Override
     public void setOperationName(String operationName) {
+        activeSpan.setOperationName(operationName);
     }
 
     @Override
-    public long getStartTime() {
-        return 0;
-    }
-
-    @Override
-    public long getEndTime() {
-        return 0;
-    }
-
-    @Override
-    public Map<String, String> getTags() {
-        return noopTags;
+    public String spanId() {
+        return activeSpan.getContext().getSpanId();
     }
 
     @Override
     public void tag(String key, String value) {
-    }
-
-    @Override
-    public void finish() {
+        activeSpan.tag(key, value);
     }
 }

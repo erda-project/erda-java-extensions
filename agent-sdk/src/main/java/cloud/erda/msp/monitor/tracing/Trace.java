@@ -14,31 +14,20 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.core.tracing.span;
+package cloud.erda.msp.monitor.tracing;
 
-import cloud.erda.agent.core.tracing.SpanContext;
-
-import java.util.Map;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author liuhaoyang
- * @since 2019-01-04 16:53
- **/
-public interface Span {
+ * @date 2021/5/18 21:37
+ */
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Trace {
 
-    SpanContext getContext();
-
-    String getOperationName();
-
-    void setOperationName(String operationName);
-
-    long getStartTime();
-
-    long getEndTime();
-
-    Map<String, String> getTags();
-
-    void tag(String key, String value);
-
-    void finish();
+    String value() default "";
 }

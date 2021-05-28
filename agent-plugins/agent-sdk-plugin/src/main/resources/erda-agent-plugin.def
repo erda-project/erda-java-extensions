@@ -1,0 +1,2 @@
+msp-sdk=cloud.erda.agent.plugin.sdk.defines.TracerInstrumentation
+msp-sdk=cloud.erda.agent.plugin.sdk.defines.TraceAnnotationInstrumentation

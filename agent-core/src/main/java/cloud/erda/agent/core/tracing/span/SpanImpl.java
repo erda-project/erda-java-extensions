@@ -54,6 +54,14 @@ public class SpanImpl implements Span {
     }
 
     @Override
+    public void setOperationName(String operationName) {
+        if (operationName == null) {
+            return;
+        }
+        this.operationName = operationName;
+    }
+
+    @Override
     public long getStartTime() {
         return startTime;
     }
