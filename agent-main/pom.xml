@@ -95,7 +95,7 @@
                                 <mkdir dir="${agent.package.dest.dir}/licenses" />
                                 <copy file="${project.basedir}/../LICENSE-apache-skywalking.txt" tofile="${agent.package.dest.dir}/licenses/LICENSE-apache-skywalking.txt" overwrite="true" />
                                 <copy file="${project.basedir}/../NOTICE-apache-skywalking.txt" tofile="${agent.package.dest.dir}/licenses/NOTICE-apache-skywalking.txt" overwrite="true" />
-                                <copy file="${project.build.directory}/erda-java-agent.jar" tofile="${agent.package.dest.dir}/erda-java-agent.jar" overwrite="true" />
+                                <copy file="${project.build.directory}/erda-java-agent.jar" tofile="${agent.package.dest.dir}/java-agent.jar" overwrite="true" />
                             </tasks>
                         </configuration>
                     </execution>
