@@ -28,7 +28,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 
 public class DubboInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "com.alibaba.dubbo.monitor.support.MonitorFilter";
+    private static final String ENHANCE_CLASS = "org.apache.dubbo.monitor.support.MonitorFilter";
     private static final String INTERCEPT_CLASS = "cloud.erda.agent.plugin.asf.dubbo.DubboInterceptor";
 
     @Override
