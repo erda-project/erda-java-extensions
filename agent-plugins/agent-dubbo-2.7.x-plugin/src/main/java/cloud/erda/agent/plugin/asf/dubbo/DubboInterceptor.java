@@ -16,7 +16,7 @@
  *
  */
 
-package cloud.erda.agent.plugin.dubbo;
+package cloud.erda.agent.plugin.asf.dubbo;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.rpc.Invocation;

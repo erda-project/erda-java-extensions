@@ -16,7 +16,7 @@
  *
  */
 
-package cloud.erda.agent.plugin.dubbo;
+package cloud.erda.agent.plugin.asf.dubbo;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
@@ -30,8 +30,8 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 
 public class DubboInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "com.alibaba.dubbo.monitor.support.MonitorFilter";
-    private static final String INTERCEPT_CLASS = "cloud.erda.agent.plugin.dubbo.DubboInterceptor";
+    private static final String ENHANCE_CLASS = "org.apache.dubbo.monitor.support.MonitorFilter";
+    private static final String INTERCEPT_CLASS = "cloud.erda.agent.plugin.asf.dubbo.DubboInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {

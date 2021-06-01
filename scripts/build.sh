@@ -29,4 +29,4 @@ cat > "dist/erda-java-agent/build" <<EOF
 ${BUILD_VERSION}
 EOF
 
-mvn clean package -DskipTest
+mvn clean package -Dmaven.test.skip=true

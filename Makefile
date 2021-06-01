@@ -56,3 +56,10 @@ print-info:
 	@echo Skip Tests: ${SKIP_TEST}
 	@echo Dist Path: ${DIST_PATH}
 	@echo ------------ End   Build INFO ------------
+
+.PHONY: pack-compatible
+pack-compatible: build
+	@cp -r ${DIST_PATH}/erda-java-agent ${DIST_PATH}/spot-agent
+	@cp -f ${DIST_PATH}/spot-agent/erda-agent.jar ${DIST_PATH}/spot-agent/spot-agent.jar
+	@rm -f ${DIST_PATH}/spot-agent/erda-agent.jar
+	@cd ${DIST_PATH} && tar -zcvf spot-agent.tar.gz spot-agent
