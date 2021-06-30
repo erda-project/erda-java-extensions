@@ -24,9 +24,9 @@ import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.loader.AgentClassLoader;
 import org.apache.skywalking.apm.agent.core.util.AgentPackageNotFoundException;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ServiceLoader;
 
 /**
  * Plugins finder.
@@ -45,42 +45,16 @@ public class PluginBootstrap {
      */
     public List<AbstractClassEnhancePluginDefine> loadPlugins() throws AgentPackageNotFoundException {
         AgentClassLoader.initDefaultLoader();
-
-        PluginResourcesResolver resolver = new PluginResourcesResolver();
-        List<URL> resources = resolver.getResources();
-
-        if (resources == null || resources.size() == 0) {
-            logger.info("no plugin files (skywalking-plugin.def) found, continue to start application.");
-            return new ArrayList<AbstractClassEnhancePluginDefine>();
-        }
-
-        for (URL pluginUrl : resources) {
-            try {
-                PluginCfg.INSTANCE.load(pluginUrl.openStream());
-            } catch (Throwable t) {
-                logger.error(t, "plugin file [{}] init failure.", pluginUrl);
-            }
-        }
-
-        List<PluginDefine> pluginClassList = PluginCfg.INSTANCE.getPluginClassList();
-
         List<AbstractClassEnhancePluginDefine> plugins = new ArrayList<AbstractClassEnhancePluginDefine>();
-        for (PluginDefine pluginDefine : pluginClassList) {
+        ServiceLoader<PluginLoader> serviceLoader = ServiceLoader.load(PluginLoader.class, AgentClassLoader.getDefault());
+        for (PluginLoader pluginLoader : serviceLoader) {
             try {
-                logger.debug("loading plugin class {}.", pluginDefine.getDefineClass());
-                AbstractClassEnhancePluginDefine plugin =
-                        (AbstractClassEnhancePluginDefine) Class.forName(pluginDefine.getDefineClass(),
-                                true,
-                                AgentClassLoader.getDefault())
-                                .newInstance();
-                plugins.add(plugin);
-            } catch (Throwable t) {
-                logger.error(t, "load plugin [{}] failure.", pluginDefine.getDefineClass());
+                plugins.addAll(pluginLoader.load());
+            } catch (Exception exception) {
+                logger.error(exception, "{} load error", pluginLoader.getClass());
             }
         }
-
         return plugins;
-
     }
-
 }
+

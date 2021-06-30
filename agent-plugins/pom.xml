@@ -32,6 +32,7 @@
         <module>agent-lettuce-plugins</module>
         <module>agent-okhttp-4.x-plugin</module>
         <module>agent-sdk-plugin</module>
+        <module>agent-method-plugin</module>
     </modules>
 
     <properties>
