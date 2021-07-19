@@ -61,10 +61,11 @@ public abstract class ConfigLoader {
         if (validateValue(name, value, instance, field)) {
             try {
                 field.setAccessible(true);
-                field.set(instance, ReflectionUtils.castValue(value, field.getType()));
-                log.info("Load {} config {}={} from {}", instance.getClass().getSimpleName(), name, value, getClass().getSimpleName());
+                Object fieldValue = ReflectionUtils.castValue(value, field.getType());
+                field.set(instance, fieldValue);
+                log.info("Load {} config {}={} from {}", instance.getClass().getSimpleName(), name, fieldValue, getClass().getSimpleName());
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                log.info("!Error. Load {} config {}={} from {}", instance.getClass().getSimpleName(), name, value, getClass().getSimpleName());
             }
         }
     }
