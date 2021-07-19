@@ -46,7 +46,7 @@ public class TelegrafReporter implements BootService {
     @Override
     public void boot() throws Throwable {
         this.config = ConfigAccessor.Default.getConfig(TelegrafProxyConfig.class);
-        this.socketAddress = new InetSocketAddress(config.getProxyHost(), config.getProxyPort());
+        this.socketAddress = new InetSocketAddress(config.getHost(), config.getHostPort());
         log.info("Telegraf proxy addr " + socketAddress.toString());
         try {
             this.socket = new DatagramSocket();

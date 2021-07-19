@@ -26,22 +26,40 @@ import org.apache.skywalking.apm.agent.core.util.Strings;
  **/
 public class TelegrafProxyConfig implements Config {
     @Configuration(name = "HOST")
-    private String proxyHost;
+    private String host;
 
+    /**
+     * Host address of Erda automatic injection
+     */
     @Configuration(name = "HOST_IP")
-    private String k8sProxyHost;
+    private String hostIp;
 
+    /**
+     * Host port of Erda automatic injection
+     */
     @Configuration(name = "HOST_PORT", defaultValue = "7082")
-    private int proxyPort;
+    private Integer hostPort;
 
-    public int getProxyPort() {
-        return proxyPort;
+    @Configuration(name = "MSP_PROXY_HOST")
+    private String mspProxyHost;
+
+    @Configuration(name = "MSP_PROXY_PORT")
+    private Integer mspProxyPort;
+
+    public int getHostPort() {
+        if (mspProxyPort != null) {
+            return mspProxyPort;
+        }
+        return hostPort;
     }
 
-    public String getProxyHost() {
-        if (!Strings.isEmpty(k8sProxyHost)) {
-            return k8sProxyHost;
+    public String getHost() {
+        if (!Strings.isEmpty(mspProxyHost)) {
+            return mspProxyHost;
         }
-        return proxyHost;
+        if (!Strings.isEmpty(hostIp)) {
+            return hostIp;
+        }
+        return host;
     }
 }

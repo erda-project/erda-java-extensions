@@ -6,19 +6,39 @@ package org.apache.skywalking.apm.agent.core.util;
  **/
 public class ReflectionUtils {
     public static Object castValue(String value, Class<?> type) {
-        if (value == null) {
-            return null;
-        }
-        if (type.equals(int.class)) {
+        if (int.class.equals(type)) {
+            if (Strings.isEmpty(value)) {
+                return 0;
+            }
             return Integer.valueOf(value);
-        } else if (type.equals(long.class)) {
+        } else if (Integer.class.equals(type)) {
+            if (Strings.isEmpty(value)) {
+                return null;
+            }
+            return Integer.valueOf(value);
+        } else if (long.class.equals(type)) {
+            if (Strings.isEmpty(value)) {
+                return 0L;
+            }
+            return Integer.valueOf(value);
+        } else if (Long.class.equals(type)) {
+            if (Strings.isEmpty(value)) {
+                return null;
+            }
             return Long.valueOf(value);
-        } else if (type.equals(boolean.class)) {
+        } else if (boolean.class.equals(type)) {
+            if (Strings.isEmpty(value)) {
+                return false;
+            }
+            return Boolean.valueOf(value);
+        } else if (Boolean.class.equals(type)) {
+            if (Strings.isEmpty(value)) {
+                return null;
+            }
             return Boolean.valueOf(value);
         } else if (type.isEnum()) {
             return Enum.valueOf((Class<Enum>) type, value.toUpperCase());
-        } else {
-            return value;
         }
+        return value;
     }
 }
