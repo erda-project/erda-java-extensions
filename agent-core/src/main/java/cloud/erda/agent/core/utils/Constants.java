@@ -143,6 +143,8 @@ public class Constants {
         public static final String CLASS = "class";
 
         public static final String METHOD = "method";
+
+        public static final String INVOKE = "invoke";
     }
 
     public static class Metrics {
@@ -220,6 +222,8 @@ public class Constants {
         public static final String APPLICATION_CACHE = "application_cache";
 
         public static final String APPLICATION_MQ = "application_mq";
+
+        public static final String APPLICATION_INVOKE = "application_invoke";
 
         public static final String APPLICATION_MICRO_SERVICE = "application_micro_service";
 

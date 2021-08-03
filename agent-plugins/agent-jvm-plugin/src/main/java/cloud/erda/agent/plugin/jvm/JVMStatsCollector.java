@@ -59,7 +59,6 @@ public class JVMStatsCollector {
                     addTag("service_instance_id", serviceConfig.getServiceInstanceId()).
                     addTag("service_id", serviceConfig.getServiceId()).
                     addTag("service_ip", serviceConfig.getServiceIp()).
-                    addTag("jvm_profiler_id", serviceConfig.getJvmProfilerId()).
                     addTag("service_name", serviceConfig.getServiceName()).
                     addTag("project_id", serviceConfig.getProjectId()).
                     addTag("runtime_id", serviceConfig.getRuntimeId()).
@@ -68,7 +67,8 @@ public class JVMStatsCollector {
                     addTag("application_name", serviceConfig.getApplicationName()).
                     addTag("project_name", serviceConfig.getProjectName()).
                     addTag("workspace", serviceConfig.getWorkspace()).
-                    addTag("service_mesh", serviceMeshConfig.getServiceMesh());
+                    addTag("org_name", serviceConfig.getOrgName()).
+                    addTag("org_id", serviceConfig.getOrgId());
         }
         ServiceManager.INSTANCE.findService(TelegrafReporter.class).send(metrics.toArray(new Metric[0]));
     }

@@ -25,9 +25,9 @@ import cloud.erda.agent.core.tracing.span.SpanBuilder;
 import cloud.erda.agent.core.utils.Caller;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -82,7 +82,7 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
     @Override
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
         TracerUtils.handleException(t);
-        AppMetricUtils.handleException(context);
+        TransactionMetricUtils.handleException(context);
     }
 
     private void preRequest(IMethodInterceptContext context, HttpServletRequest request) {
@@ -116,9 +116,9 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
         if (Strings.isEmpty(request.getRequestURI())) {
             return;
         }
-        AppMetricBuilder appMetricBuilder = new AppMetricBuilder(Constants.Metrics.APPLICATION_HTTP, true);
-        context.setAttachment(Constants.Keys.METRIC_BUILDER, appMetricBuilder);
-        appMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_HTTP)
+        TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_HTTP, true);
+        context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
+        transactionMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_HTTP)
                 .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_SERVER)
                 .tag(Constants.Tags.HOST, host)
                 .tag(Constants.Tags.HTTP_URL, request.getRequestURL().toString())
@@ -128,7 +128,7 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
 
         String healthCheckPath = config.getHttpHealthCheckPath();
         if (!Strings.isEmpty(healthCheckPath) && healthCheckPath.equals(request.getServletPath())) {
-            appMetricBuilder.tag(Constants.Tags.HEALTH_CHECK, Boolean.TRUE.toString());
+            transactionMetricBuilder.tag(Constants.Tags.HEALTH_CHECK, Boolean.TRUE.toString());
         }
 
         request.setAttribute(REQUEST_ATTRIBUTE_METRICS, context.hashCode());
@@ -142,12 +142,12 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
             return;
         }
 
-        AppMetricBuilder appMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
-        if (appMetricBuilder != null) {
-            appMetricBuilder.field(Constants.Tags.HTTP_STATUS, response.getStatus());
+        TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
+        if (transactionMetricBuilder != null) {
+            transactionMetricBuilder.field(Constants.Tags.HTTP_STATUS, response.getStatus());
 
-            AppMetricUtils.handleStatusCode(appMetricBuilder, response.getStatus());
-            AppMetricRecorder.record(appMetricBuilder);
+            TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.getStatus());
+            MetricReporter.report(transactionMetricBuilder);
         }
 
         Scope scope = context.getAttachment(Constants.Keys.TRACE_SCOPE);

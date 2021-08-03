@@ -27,9 +27,9 @@ import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.tracing.TracerSnapshot;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import org.apache.shardingsphere.core.execute.ShardingExecuteDataMap;
 
 import java.util.Map;
@@ -57,18 +57,18 @@ public class ExecuteInterceptor implements InstanceMethodsAroundInterceptor {
         Span span = TracerManager.tracer().attach(snapshot).span();
         String statement = span.getTags().get(Constants.Tags.DB_STATEMENT);
 
-        AppMetricBuilder appMetricBuilder = new AppMetricBuilder(Constants.Metrics.APPLICATION_DB, false);
-        context.setAttachment(Constants.Keys.METRIC_BUILDER, appMetricBuilder);
-        appMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_SHARDING_SPHERE)
+        TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_DB, false);
+        context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
+        transactionMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_SHARDING_SPHERE)
                 .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT)
                 .tag(Constants.Tags.DB_STATEMENT, statement);
     }
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        AppMetricBuilder appMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
-        if (appMetricBuilder != null) {
-            AppMetricRecorder.record(appMetricBuilder);
+        TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
+        if (transactionMetricBuilder != null) {
+            MetricReporter.report(transactionMetricBuilder);
         }
 
         Scope scope = TracerManager.tracer().active();
@@ -80,7 +80,7 @@ public class ExecuteInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
-        AppMetricUtils.handleException(context);
+        TransactionMetricUtils.handleException(context);
         TracerUtils.handleException(t);
     }
 }

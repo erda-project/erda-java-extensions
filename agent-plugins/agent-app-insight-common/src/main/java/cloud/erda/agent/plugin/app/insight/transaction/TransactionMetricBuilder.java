@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.app.insight;
+package cloud.erda.agent.plugin.app.insight.transaction;
 
-import cloud.erda.agent.core.config.AddonConfig;
-import cloud.erda.agent.core.config.AgentConfig;
-import cloud.erda.agent.core.config.loader.ConfigAccessor;
-import cloud.erda.agent.core.config.ServiceConfig;
 import cloud.erda.agent.core.metric.Metric;
 import cloud.erda.agent.core.tracing.TracerContext;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.DateTimeUtils;
+import cloud.erda.agent.plugin.app.insight.Configs;
+import cloud.erda.agent.plugin.app.insight.MetricBuilder;
+import cloud.erda.agent.plugin.app.insight.StopWatch;
 import org.apache.skywalking.apm.agent.core.util.Strings;
 
 import java.util.HashMap;
@@ -36,24 +35,20 @@ import static cloud.erda.agent.core.utils.Constants.Tags.TRACE_SAMPLED;
 /**
  * @author liuhaoyang 2020/3/17 12:08
  */
-public class AppMetricBuilder {
-
-    private static final ServiceConfig serviceConfig = ConfigAccessor.Default.getConfig(ServiceConfig.class);
-    private static final AddonConfig addonConfig = ConfigAccessor.Default.getConfig(AddonConfig.class);
-    private static final AgentConfig agentConfig = ConfigAccessor.Default.getConfig(AgentConfig.class);
-
+public class TransactionMetricBuilder implements MetricBuilder {
+    
     private Map<String, String> tags;
     private Map<String, Object> fields;
     private String name;
     private long timestamp;
-    private AppMetricWatch watch;
+    private StopWatch watch;
 
-    public AppMetricBuilder(String name, boolean isTarget) {
+    public TransactionMetricBuilder(String name, boolean isTarget) {
         this.name = name;
         this.tags = new HashMap<String, String>();
         this.fields = new HashMap<String, Object>();
         this.timestamp = DateTimeUtils.currentTimeNano();
-        this.watch = new AppMetricWatch(this.timestamp);
+        this.watch = new StopWatch(this.timestamp);
 
         if (isTarget) {
             recordContextSourceTag();
@@ -63,12 +58,12 @@ public class AppMetricBuilder {
         }
     }
 
-    public AppMetricBuilder field(String key, Object value) {
+    public MetricBuilder field(String key, Object value) {
         fields.put(key, value);
         return this;
     }
 
-    public AppMetricBuilder tag(String key, String value) {
+    public MetricBuilder tag(String key, String value) {
         tags.put(key, value);
         return this;
     }
@@ -133,37 +128,37 @@ public class AppMetricBuilder {
     }
 
     private void recordConfigSourceTag() {
-        tags.put(Constants.Metrics.SOURCE_ADDON_TYPE_METRIC, addonConfig.getAddonType());
-        tags.put(Constants.Metrics.SOURCE_ADDON_ID_METRIC, addonConfig.getAddonId());
-        tags.put(Constants.Metrics.SOURCE_ORG_ID, serviceConfig.getOrgId());
-        tags.put(Constants.Metrics.SOURCE_PROJECT_ID, serviceConfig.getProjectId());
-        tags.put(Constants.Metrics.SOURCE_PROJECT_NAME, serviceConfig.getProjectName());
-        tags.put(Constants.Metrics.SOURCE_APPLICATION_ID, serviceConfig.getApplicationId());
-        tags.put(Constants.Metrics.SOURCE_APPLICATION_NAME, serviceConfig.getApplicationName());
-        tags.put(Constants.Metrics.SOURCE_WORKSPACE, serviceConfig.getWorkspace());
-        tags.put(Constants.Metrics.SOURCE_RUNTIME_ID, serviceConfig.getRuntimeId());
-        tags.put(Constants.Metrics.SOURCE_RUNTIME_NAME, serviceConfig.getRuntimeName());
-        tags.put(Constants.Metrics.SOURCE_SERVICE_NAME, serviceConfig.getServiceName());
-        tags.put(Constants.Metrics.SOURCE_SERVICE_ID, serviceConfig.getServiceId());
-        tags.put(Constants.Metrics.SOURCE_INSTANCE_ID, serviceConfig.getServiceInstanceId());
-        tags.put(Constants.Metrics.SOURCE_TERMINUS_KEY, agentConfig.terminusKey());
+        tags.put(Constants.Metrics.SOURCE_ADDON_TYPE_METRIC, Configs.AddonConfig.getAddonType());
+        tags.put(Constants.Metrics.SOURCE_ADDON_ID_METRIC, Configs.AddonConfig.getAddonId());
+        tags.put(Constants.Metrics.SOURCE_ORG_ID, Configs.ServiceConfig.getOrgId());
+        tags.put(Constants.Metrics.SOURCE_PROJECT_ID, Configs.ServiceConfig.getProjectId());
+        tags.put(Constants.Metrics.SOURCE_PROJECT_NAME, Configs.ServiceConfig.getProjectName());
+        tags.put(Constants.Metrics.SOURCE_APPLICATION_ID, Configs.ServiceConfig.getApplicationId());
+        tags.put(Constants.Metrics.SOURCE_APPLICATION_NAME, Configs.ServiceConfig.getApplicationName());
+        tags.put(Constants.Metrics.SOURCE_WORKSPACE, Configs.ServiceConfig.getWorkspace());
+        tags.put(Constants.Metrics.SOURCE_RUNTIME_ID, Configs.ServiceConfig.getRuntimeId());
+        tags.put(Constants.Metrics.SOURCE_RUNTIME_NAME, Configs.ServiceConfig.getRuntimeName());
+        tags.put(Constants.Metrics.SOURCE_SERVICE_NAME, Configs.ServiceConfig.getServiceName());
+        tags.put(Constants.Metrics.SOURCE_SERVICE_ID, Configs.ServiceConfig.getServiceId());
+        tags.put(Constants.Metrics.SOURCE_INSTANCE_ID, Configs.ServiceConfig.getServiceInstanceId());
+        tags.put(Constants.Metrics.SOURCE_TERMINUS_KEY, Configs.AgentConfig.terminusKey());
     }
 
     private void recordConfigTargetTag() {
-        tags.put(Constants.Metrics.TARGET_ADDON_TYPE, addonConfig.getAddonType());
-        tags.put(Constants.Metrics.TARGET_ADDON_ID, addonConfig.getAddonId());
-        tags.put(Constants.Metrics.TARGET_ORG_ID, serviceConfig.getOrgId());
-        tags.put(Constants.Metrics.TARGET_PROJECT_ID, serviceConfig.getProjectId());
-        tags.put(Constants.Metrics.TARGET_PROJECT_NAME, serviceConfig.getProjectName());
-        tags.put(Constants.Metrics.TARGET_APPLICATION_ID, serviceConfig.getApplicationId());
-        tags.put(Constants.Metrics.TARGET_APPLICATION_NAME, serviceConfig.getApplicationName());
-        tags.put(Constants.Metrics.TARGET_WORKSPACE, serviceConfig.getWorkspace());
-        tags.put(Constants.Metrics.TARGET_RUNTIME_ID, serviceConfig.getRuntimeId());
-        tags.put(Constants.Metrics.TARGET_RUNTIME_NAME, serviceConfig.getRuntimeName());
-        tags.put(Constants.Metrics.TARGET_SERVICE_NAME, serviceConfig.getServiceName());
-        tags.put(Constants.Metrics.TARGET_SERVICE_ID, serviceConfig.getServiceId());
-        tags.put(Constants.Metrics.TARGET_INSTANCE_ID, serviceConfig.getServiceInstanceId());
-        tags.put(Constants.Metrics.TARGET_TERMINUS_KEY, agentConfig.terminusKey());
+        tags.put(Constants.Metrics.TARGET_ADDON_TYPE, Configs.AddonConfig.getAddonType());
+        tags.put(Constants.Metrics.TARGET_ADDON_ID, Configs.AddonConfig.getAddonId());
+        tags.put(Constants.Metrics.TARGET_ORG_ID, Configs.ServiceConfig.getOrgId());
+        tags.put(Constants.Metrics.TARGET_PROJECT_ID, Configs.ServiceConfig.getProjectId());
+        tags.put(Constants.Metrics.TARGET_PROJECT_NAME, Configs.ServiceConfig.getProjectName());
+        tags.put(Constants.Metrics.TARGET_APPLICATION_ID, Configs.ServiceConfig.getApplicationId());
+        tags.put(Constants.Metrics.TARGET_APPLICATION_NAME, Configs.ServiceConfig.getApplicationName());
+        tags.put(Constants.Metrics.TARGET_WORKSPACE, Configs.ServiceConfig.getWorkspace());
+        tags.put(Constants.Metrics.TARGET_RUNTIME_ID, Configs.ServiceConfig.getRuntimeId());
+        tags.put(Constants.Metrics.TARGET_RUNTIME_NAME, Configs.ServiceConfig.getRuntimeName());
+        tags.put(Constants.Metrics.TARGET_SERVICE_NAME, Configs.ServiceConfig.getServiceName());
+        tags.put(Constants.Metrics.TARGET_SERVICE_ID, Configs.ServiceConfig.getServiceId());
+        tags.put(Constants.Metrics.TARGET_INSTANCE_ID, Configs.ServiceConfig.getServiceInstanceId());
+        tags.put(Constants.Metrics.TARGET_TERMINUS_KEY, Configs.AgentConfig.terminusKey());
     }
 
     private void recordRequestId() {

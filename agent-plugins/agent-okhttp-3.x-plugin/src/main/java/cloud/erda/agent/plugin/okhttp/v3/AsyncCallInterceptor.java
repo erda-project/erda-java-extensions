@@ -30,8 +30,8 @@ import cloud.erda.agent.core.tracing.TracerSnapshot;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import okhttp3.Request;
 
 /**
@@ -69,17 +69,17 @@ public class AsyncCallInterceptor implements InstanceConstructorInterceptor, Ins
         CallInterceptorUtils.wrapRequestSpan(span, request);
         CallInterceptorUtils.injectRequestHeader(request, span);
 
-        AppMetricBuilder appMetricBuilder = CallInterceptorUtils.createRequestAppMetric(request);
-        if (appMetricBuilder != null) {
-            tracer.context().setAttachment(Constants.Keys.METRIC_BUILDER, appMetricBuilder);
+        TransactionMetricBuilder transactionMetricBuilder = CallInterceptorUtils.createRequestAppMetric(request);
+        if (transactionMetricBuilder != null) {
+            tracer.context().setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
         }
     }
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        AppMetricBuilder builder = TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
+        TransactionMetricBuilder builder = TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
         if (builder != null) {
-            AppMetricRecorder.record(builder);
+            MetricReporter.report(builder);
         }
 
         Scope scope = TracerManager.tracer().active();

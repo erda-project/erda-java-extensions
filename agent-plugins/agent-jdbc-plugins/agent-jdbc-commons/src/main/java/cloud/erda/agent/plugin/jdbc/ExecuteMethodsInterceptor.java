@@ -29,9 +29,9 @@ import cloud.erda.agent.core.tracing.span.SpanBuilder;
 import cloud.erda.agent.core.utils.Constants;
 import org.apache.skywalking.apm.agent.core.util.Strings;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import cloud.erda.agent.plugin.jdbc.define.StatementEnhanceInfos;
 import cloud.erda.agent.plugin.jdbc.trace.ConnectionInfo;
 
@@ -69,9 +69,9 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
             if (Strings.isEmpty(statement)) {
                 return;
             }
-            AppMetricBuilder appMetricBuilder = new AppMetricBuilder(Constants.Metrics.APPLICATION_DB, false);
-            context.setAttachment(Constants.Keys.METRIC_BUILDER, appMetricBuilder);
-            appMetricBuilder.tag(Constants.Tags.COMPONENT, connectInfo.getComponent())
+            TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_DB, false);
+            context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
+            transactionMetricBuilder.tag(Constants.Tags.COMPONENT, connectInfo.getComponent())
                     .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT)
                     .tag(Constants.Tags.PEER_HOSTNAME, connectInfo.getDatabasePeer())
                     .tag(Constants.Tags.HOST, connectInfo.getDatabasePeer())
@@ -85,9 +85,9 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
         if (context.getInstance() == null) return ret;
 
-        AppMetricBuilder appMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
-        if (appMetricBuilder != null) {
-            AppMetricRecorder.record(appMetricBuilder);
+        TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
+        if (transactionMetricBuilder != null) {
+            MetricReporter.report(transactionMetricBuilder);
         }
 
         StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) context.getInstance().getDynamicField();
@@ -103,7 +103,7 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
 
         StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) context.getInstance().getDynamicField();
         if (cacheObject.getConnectionInfo() != null) {
-            AppMetricUtils.handleException(context);
+            TransactionMetricUtils.handleException(context);
             TracerUtils.handleException(t);
         }
     }

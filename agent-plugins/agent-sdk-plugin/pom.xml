@@ -19,8 +19,13 @@
     <dependencies>
         <dependency>
             <groupId>cloud.erda</groupId>
+            <artifactId>agent-app-insight-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cloud.erda</groupId>
             <artifactId>msp-monitor-sdk</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

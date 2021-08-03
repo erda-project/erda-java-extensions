@@ -25,8 +25,8 @@ import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.CollectionUtils;
@@ -45,12 +45,12 @@ public class RestResponseInterceptor implements InstanceMethodsAroundInterceptor
         }
         ClientHttpResponse response = (ClientHttpResponse) allArguments[2];
 
-        AppMetricBuilder appMetricBuilder =
+        TransactionMetricBuilder transactionMetricBuilder =
                 TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
-        if (appMetricBuilder != null) {
+        if (transactionMetricBuilder != null) {
             HttpHeaders headers = response.getHeaders();
             if (headers == null || CollectionUtils.isEmpty(headers.get(Constants.Carriers.RESPONSE_TERMINUS_KEY))) {
-                AppMetricUtils.handleStatusCode(appMetricBuilder, response.getStatusCode().value());
+                TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.getStatusCode().value());
             } else {
                 TracerManager.tracer().context().setAttachment(Constants.Keys.METRIC_BUILDER, null);
             }

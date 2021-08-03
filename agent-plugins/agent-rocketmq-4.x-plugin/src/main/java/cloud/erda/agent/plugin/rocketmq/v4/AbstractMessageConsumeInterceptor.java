@@ -29,9 +29,9 @@ import cloud.erda.agent.core.tracing.propagator.TextMapCarrier;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import org.apache.rocketmq.common.message.MessageExt;
 
 import java.net.InetSocketAddress;
@@ -81,9 +81,9 @@ public abstract class AbstractMessageConsumeInterceptor implements InstanceMetho
         span.tag(Constants.Tags.HOST, nameServerAddress);
         span.tag(Constants.Tags.MESSAGE_BUS_DESTINATION, topic);
 
-        AppMetricBuilder appMetricBuilder = new AppMetricBuilder(Constants.Metrics.APPLICATION_MQ, true);
-        context.setAttachment(Constants.Keys.METRIC_BUILDER, appMetricBuilder);
-        appMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_ROCKETMQ)
+        TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_MQ, true);
+        context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
+        transactionMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_ROCKETMQ)
                 .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CONSUMER)
                 .tag(Constants.Tags.PEER_ADDRESS, peerAddress)
                 .tag(Constants.Tags.HOST, nameServerAddress)
@@ -92,15 +92,15 @@ public abstract class AbstractMessageConsumeInterceptor implements InstanceMetho
 
     @Override
     public final void handleMethodException(IMethodInterceptContext context, Throwable t) {
-        AppMetricUtils.handleException(context);
+        TransactionMetricUtils.handleException(context);
         TracerUtils.handleException(t);
     }
 
     protected void sendMetric(IMethodInterceptContext context, String status) {
-        AppMetricBuilder appMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
-        if (appMetricBuilder != null) {
-            appMetricBuilder.tag(Constants.Tags.MESSAGE_BUS_STATUS, status);
-            AppMetricRecorder.record(appMetricBuilder);
+        TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
+        if (transactionMetricBuilder != null) {
+            transactionMetricBuilder.tag(Constants.Tags.MESSAGE_BUS_STATUS, status);
+            MetricReporter.report(transactionMetricBuilder);
         }
     }
 }

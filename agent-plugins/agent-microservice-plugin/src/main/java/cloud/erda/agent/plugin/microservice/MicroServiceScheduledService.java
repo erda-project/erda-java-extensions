@@ -18,9 +18,9 @@ package cloud.erda.agent.plugin.microservice;
 
 import org.apache.skywalking.apm.agent.core.boot.ScheduledService;
 import cloud.erda.agent.core.utils.AddonTypeManager;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -32,8 +32,8 @@ public class MicroServiceScheduledService extends ScheduledService {
     @Override
     protected void executing() {
         for (String addonType : AddonTypeManager.INSTANCE.getAddonTypeSet()) {
-            AppMetricBuilder appMetricBuilder = AppMetricUtils.createMiroServiceMetric(addonType);
-            AppMetricRecorder.record(appMetricBuilder);
+            TransactionMetricBuilder transactionMetricBuilder = TransactionMetricUtils.createMiroServiceMetric(addonType);
+            MetricReporter.report(transactionMetricBuilder);
         }
     }
 

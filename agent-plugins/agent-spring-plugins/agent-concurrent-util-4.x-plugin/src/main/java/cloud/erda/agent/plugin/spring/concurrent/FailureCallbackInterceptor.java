@@ -25,9 +25,9 @@ import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.Tracer;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import cloud.erda.agent.plugin.spring.EnhanceCommonInfo;
 
 public class FailureCallbackInterceptor implements InstanceMethodsAroundInterceptor {
@@ -58,10 +58,10 @@ public class FailureCallbackInterceptor implements InstanceMethodsAroundIntercep
         }
         Throwable t = (Throwable) allArguments[0];
 
-        AppMetricBuilder appMetricBuilder = info.getAppMetricBuilder();
-        if (appMetricBuilder != null) {
-            AppMetricUtils.handleException(info.getAppMetricBuilder());
-            AppMetricRecorder.record(appMetricBuilder);
+        TransactionMetricBuilder transactionMetricBuilder = info.getAppMetricBuilder();
+        if (transactionMetricBuilder != null) {
+            TransactionMetricUtils.handleException(info.getAppMetricBuilder());
+            MetricReporter.report(transactionMetricBuilder);
         }
 
         Scope scope = TracerManager.tracer().active();

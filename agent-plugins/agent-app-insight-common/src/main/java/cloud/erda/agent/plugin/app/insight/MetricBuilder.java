@@ -16,18 +16,17 @@
 
 package cloud.erda.agent.plugin.app.insight;
 
-import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
-import cloud.erda.agent.core.reporter.TelegrafReporter;
+import cloud.erda.agent.core.metric.Metric;
 
 /**
  * @author liuhaoyang
- * @since 2019-01-21 18:12
- **/
-public class AppMetricRecorder {
+ * @date 2021/8/3 11:43
+ */
+public interface MetricBuilder {
 
-    private static final TelegrafReporter transporter = ServiceManager.INSTANCE.findService(TelegrafReporter.class);
+    MetricBuilder tag(String key, String value);
 
-    public static void record(AppMetricBuilder builder) {
-        transporter.send(builder.build());
-    }
+    MetricBuilder field(String key, Object value);
+
+    Metric build();
 }

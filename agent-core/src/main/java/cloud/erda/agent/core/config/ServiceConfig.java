@@ -50,6 +50,9 @@ public class ServiceConfig implements Config {
     @Configuration(name = "DICE_ORG")
     private String orgId;
 
+    @Configuration(name = "DICE_ORG_NAME")
+    private String orgName;
+
     @Configuration(name = "DICE_WORKSPACE", defaultValue = "DEV")
     private String workspace;
 
@@ -81,6 +84,10 @@ public class ServiceConfig implements Config {
 
     public String getOrgId() {
         return orgId;
+    }
+
+    public String getOrgName() {
+        return orgName;
     }
 
     public String getProjectId() {
