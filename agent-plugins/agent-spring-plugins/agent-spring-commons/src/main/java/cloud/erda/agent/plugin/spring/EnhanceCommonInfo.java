@@ -19,7 +19,7 @@
 package cloud.erda.agent.plugin.spring;
 
 import cloud.erda.agent.core.tracing.TracerSnapshot;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 
 import java.util.Map;
 
@@ -32,7 +32,7 @@ public class EnhanceCommonInfo {
 
     private Map<String, String> context;
 
-    private AppMetricBuilder appMetricBuilder;
+    private TransactionMetricBuilder transactionMetricBuilder;
 
     public TracerSnapshot getSnapshot() {
         return snapshot;
@@ -50,11 +50,11 @@ public class EnhanceCommonInfo {
         this.context = context;
     }
 
-    public AppMetricBuilder getAppMetricBuilder() {
-        return appMetricBuilder;
+    public TransactionMetricBuilder getAppMetricBuilder() {
+        return transactionMetricBuilder;
     }
 
-    public void setAppMetricBuilder(AppMetricBuilder appMetricBuilder) {
-        this.appMetricBuilder = appMetricBuilder;
+    public void setAppMetricBuilder(TransactionMetricBuilder transactionMetricBuilder) {
+        this.transactionMetricBuilder = transactionMetricBuilder;
     }
 }

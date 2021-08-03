@@ -34,10 +34,10 @@ import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.HttpUtils;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricContext;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricContext;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -89,7 +89,7 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
         span.tag(Constants.Tags.HTTP_PATH, path);
         span.tag(Constants.Tags.HTTP_METHOD, request.method().toUpperCase());
 
-        tracer.context().put(AppMetricContext.instance);
+        tracer.context().put(TransactionMetricContext.instance);
         Map<String, String> map = new HashMap<String, String>(16);
         TextMapCarrier carrier = new TextMapCarrier(map);
         tracer.inject(span.getContext(), carrier);
@@ -114,8 +114,8 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
         }
         headersField.set(request, Collections.unmodifiableMap(headers));
 
-        AppMetricBuilder appMetricBuilder = AppMetricUtils.createHttpMetric(peerHost);
-        context.setAttachment(Constants.Keys.METRIC_BUILDER, appMetricBuilder);
+        TransactionMetricBuilder transactionMetricBuilder = TransactionMetricUtils.createHttpMetric(peerHost);
+        context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
     }
 
     /**
@@ -138,12 +138,12 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
         }
         Response response = (Response) ret;
 
-        AppMetricBuilder appMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
-        if (appMetricBuilder != null) {
+        TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
+        if (transactionMetricBuilder != null) {
             Map headers = response.headers();
             if (headers == null || !headers.containsKey(Constants.Carriers.RESPONSE_TERMINUS_KEY)) {
-                AppMetricUtils.handleStatusCode(appMetricBuilder, response.status());
-                AppMetricRecorder.record(appMetricBuilder);
+                TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.status());
+                MetricReporter.report(transactionMetricBuilder);
             }
         }
 

@@ -30,9 +30,9 @@ import cloud.erda.agent.core.tracing.propagator.TextMapCarrier;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.HttpUtils;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricContext;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricContext;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import cloud.erda.agent.plugin.spring.EnhanceCommonInfo;
 import org.springframework.http.HttpMethod;
 
@@ -73,17 +73,17 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
         span.tag(Constants.Tags.HTTP_PATH, path);
         span.tag(Constants.Tags.HTTP_METHOD, method.name().toUpperCase());
 
-        tracer.context().put(AppMetricContext.instance);
+        tracer.context().put(TransactionMetricContext.instance);
         Map<String, String> map = new HashMap<String, String>(16);
         TextMapCarrier carrier = new TextMapCarrier(map);
         tracer.inject(span.getContext(), carrier);
 
-        AppMetricBuilder appMetricBuilder = AppMetricUtils.createHttpMetric(peerHost);
+        TransactionMetricBuilder transactionMetricBuilder = TransactionMetricUtils.createHttpMetric(peerHost);
 
         EnhanceCommonInfo info = new EnhanceCommonInfo();
         info.setSnapshot(tracer.capture());
         info.setContext(map);
-        info.setAppMetricBuilder(appMetricBuilder);
+        info.setAppMetricBuilder(transactionMetricBuilder);
         context.getInstance().setDynamicField(info);
     }
 

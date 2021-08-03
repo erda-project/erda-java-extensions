@@ -24,9 +24,9 @@ import cloud.erda.agent.core.tracing.propagator.TextMapCarrier;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import org.apache.skywalking.apm.agent.core.util.Strings;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricContext;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricContext;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import okhttp3.Headers;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -44,7 +44,7 @@ import static cloud.erda.agent.core.utils.Constants.Tags.*;
  */
 public class CallInterceptorUtils {
 
-    static AppMetricBuilder createRequestAppMetric(Request request) {
+    static TransactionMetricBuilder createRequestAppMetric(Request request) {
         if (request == null) {
             return null;
         }
@@ -54,12 +54,12 @@ public class CallInterceptorUtils {
         if (uri.getPort() > 0) {
             hostname += ":" + uri.getPort();
         }
-        return AppMetricUtils.createHttpMetric(hostname);
+        return TransactionMetricUtils.createHttpMetric(hostname);
     }
 
-    static AppMetricBuilder wrapResponseAppMetric(AppMetricBuilder appMetricBuilder, Response response) {
+    static TransactionMetricBuilder wrapResponseAppMetric(TransactionMetricBuilder transactionMetricBuilder, Response response) {
         if (response == null) {
-            return appMetricBuilder;
+            return transactionMetricBuilder;
         }
 
         String terminusKey = response.header(Constants.Carriers.RESPONSE_TERMINUS_KEY);
@@ -67,8 +67,8 @@ public class CallInterceptorUtils {
             return null;
         }
 
-        AppMetricUtils.handleStatusCode(appMetricBuilder, response.code());
-        return appMetricBuilder;
+        TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.code());
+        return transactionMetricBuilder;
     }
 
     static void wrapRequestSpan(Span span, Request request) {
@@ -102,7 +102,7 @@ public class CallInterceptorUtils {
 
     static void injectRequestHeader(Request request, Span span) throws Throwable {
         Tracer tracer = TracerManager.tracer();
-        tracer.context().put(AppMetricContext.instance);
+        tracer.context().put(TransactionMetricContext.instance);
         Map<String, String> map = new HashMap<String, String>(16);
         TextMapCarrier carrier = new TextMapCarrier(map);
         tracer.inject(span.getContext(), carrier);

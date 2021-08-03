@@ -24,9 +24,9 @@ import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import cloud.erda.agent.plugin.httpasyncclient.v4.ThreadTransferInfo;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -105,15 +105,15 @@ public class FutureCallbackWrapper<T> implements FutureCallback<T> {
         HttpResponse response = (HttpResponse) o;
         StatusLine status = response.getStatusLine();
 
-        AppMetricBuilder appMetricBuilder =
+        TransactionMetricBuilder transactionMetricBuilder =
                 TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
-        if (appMetricBuilder != null) {
+        if (transactionMetricBuilder != null) {
             Header[] headers = response.getHeaders(Constants.Carriers.RESPONSE_TERMINUS_KEY);
             if (headers == null || headers.length <= 0) {
                 if (status != null) {
-                    AppMetricUtils.handleStatusCode(appMetricBuilder, status.getStatusCode());
+                    TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, status.getStatusCode());
                 }
-                AppMetricRecorder.record(appMetricBuilder);
+                MetricReporter.report(transactionMetricBuilder);
             }
         }
 

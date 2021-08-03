@@ -25,8 +25,8 @@ import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
@@ -67,9 +67,9 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
         CallInterceptorUtils.wrapRequestSpan(span, request);
         CallInterceptorUtils.injectRequestHeader(request, span);
 
-        AppMetricBuilder appMetricBuilder = CallInterceptorUtils.createRequestAppMetric(request);
-        if (appMetricBuilder != null) {
-            context.setAttachment(Constants.Keys.METRIC_BUILDER, appMetricBuilder);
+        TransactionMetricBuilder transactionMetricBuilder = CallInterceptorUtils.createRequestAppMetric(request);
+        if (transactionMetricBuilder != null) {
+            context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
         }
     }
 
@@ -86,10 +86,10 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
         Response response = (Response) ret;
 
-        AppMetricBuilder appMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
-        appMetricBuilder = CallInterceptorUtils.wrapResponseAppMetric(appMetricBuilder, response);
-        if (appMetricBuilder != null) {
-            AppMetricRecorder.record(appMetricBuilder);
+        TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
+        transactionMetricBuilder = CallInterceptorUtils.wrapResponseAppMetric(transactionMetricBuilder, response);
+        if (transactionMetricBuilder != null) {
+            MetricReporter.report(transactionMetricBuilder);
         }
 
         Scope scope = TracerManager.tracer().active();

@@ -29,10 +29,10 @@ import cloud.erda.agent.core.tracing.propagator.TextMapCarrier;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricContext;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricContext;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageDecoder;
 import org.apache.rocketmq.common.protocol.header.SendMessageRequestHeader;
@@ -77,7 +77,7 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         span.tag(HOST, nameServerAddress);
         span.tag(MESSAGE_BUS_DESTINATION, message.getTopic());
 
-        tracer.context().put(AppMetricContext.instance);
+        tracer.context().put(TransactionMetricContext.instance);
         tracer.context().put(NAME_SERVER_ADDRESS, nameServerAddress);
         Map<String, String> map = new HashMap<String, String>(16);
         TextMapCarrier carrier = new TextMapCarrier(map);
@@ -97,26 +97,26 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         }
         requestHeader.setProperties(properties.toString());
 
-        AppMetricBuilder appMetricBuilder = new AppMetricBuilder(Constants.Metrics.APPLICATION_MQ, false);
-        appMetricBuilder.tag(COMPONENT, COMPONENT_ROCKETMQ)
+        TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_MQ, false);
+        transactionMetricBuilder.tag(COMPONENT, COMPONENT_ROCKETMQ)
                 .tag(SPAN_KIND, SPAN_KIND_PRODUCER)
                 .tag(PEER_ADDRESS, (String) allArguments[0])
                 .tag(HOST, nameServerAddress)
                 .tag(MESSAGE_BUS_DESTINATION, message.getTopic());
         if (IS_SYNC.get()) {
-            context.setAttachment(Constants.Keys.METRIC_BUILDER, appMetricBuilder);
+            context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
         } else {
             EnhancedInstance instance = (EnhancedInstance) allArguments[6];
-            MessageSendAsyncInfo info = new MessageSendAsyncInfo(tracer.capture(), appMetricBuilder);
+            MessageSendAsyncInfo info = new MessageSendAsyncInfo(tracer.capture(), transactionMetricBuilder);
             instance.setDynamicField(info);
         }
     }
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        AppMetricBuilder appMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
-        if (appMetricBuilder != null) {
-            AppMetricRecorder.record(appMetricBuilder);
+        TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
+        if (transactionMetricBuilder != null) {
+            MetricReporter.report(transactionMetricBuilder);
         }
 
         TracerManager.tracer().active().close(IS_SYNC.get());
@@ -126,7 +126,7 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
 
     @Override
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
-        AppMetricUtils.handleException(context);
+        TransactionMetricUtils.handleException(context);
         TracerUtils.handleException(t);
     }
 }

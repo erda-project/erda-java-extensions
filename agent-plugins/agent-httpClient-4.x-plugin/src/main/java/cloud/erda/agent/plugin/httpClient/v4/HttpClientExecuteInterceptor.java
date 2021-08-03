@@ -30,10 +30,10 @@ import cloud.erda.agent.core.tracing.propagator.TextMapCarrier;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricContext;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricContext;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import org.apache.http.*;
 
 import java.net.URL;
@@ -73,7 +73,7 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
         span.tag(HTTP_URL, httpRequest.getRequestLine().getUri());
         span.tag(HTTP_METHOD, httpRequest.getRequestLine().getMethod());
 
-        tracer.context().put(AppMetricContext.instance);
+        tracer.context().put(TransactionMetricContext.instance);
         Map<String, String> map = new HashMap<String, String>(16);
         TextMapCarrier carrier = new TextMapCarrier(map);
         tracer.inject(span.getContext(), carrier);
@@ -89,8 +89,8 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
             httpRequest.setHeader(entry.getKey(), entry.getValue());
         }
 
-        AppMetricBuilder appMetricBuilder = AppMetricUtils.createHttpMetric(hostname);
-        context.setAttachment(Constants.Keys.METRIC_BUILDER, appMetricBuilder);
+        TransactionMetricBuilder transactionMetricBuilder = TransactionMetricUtils.createHttpMetric(hostname);
+        context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
     }
 
     @Override
@@ -104,9 +104,9 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
         }
         HttpResponse response = (HttpResponse) ret;
 
-        AppMetricBuilder appMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
-        if (appMetricBuilder != null) {
-            this.recordResponseAppMetric(appMetricBuilder, response);
+        TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
+        if (transactionMetricBuilder != null) {
+            this.recordResponseAppMetric(transactionMetricBuilder, response);
         }
 
         Scope scope = TracerManager.tracer().active();
@@ -122,7 +122,7 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
         TracerUtils.handleException(t);
     }
 
-    private void recordResponseAppMetric(AppMetricBuilder appMetricBuilder, HttpResponse response) {
+    private void recordResponseAppMetric(TransactionMetricBuilder transactionMetricBuilder, HttpResponse response) {
         Header[] headers = response.getHeaders(Constants.Carriers.RESPONSE_TERMINUS_KEY);
         if (headers != null && headers.length > 0) {
             return;
@@ -133,8 +133,8 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
             return;
         }
         int statusCode = statusLine.getStatusCode();
-        AppMetricUtils.handleStatusCode(appMetricBuilder, statusCode);
-        AppMetricRecorder.record(appMetricBuilder);
+        TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, statusCode);
+        MetricReporter.report(transactionMetricBuilder);
     }
 
     private void wrapResponseSpan(Span span, HttpResponse response) {

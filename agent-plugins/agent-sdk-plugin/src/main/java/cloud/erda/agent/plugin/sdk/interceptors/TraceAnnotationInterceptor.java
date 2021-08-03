@@ -16,6 +16,7 @@
 
 package cloud.erda.agent.plugin.sdk.interceptors;
 
+import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.SpanContext;
 import cloud.erda.agent.core.tracing.Tracer;
 import cloud.erda.agent.core.tracing.TracerManager;
@@ -40,7 +41,9 @@ public class TraceAnnotationInterceptor implements InstanceMethodsAroundIntercep
         Tracer tracer = TracerManager.tracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         SpanBuilder spanBuilder = tracer.buildSpan(getOperationName(context));
-        Span span = spanBuilder.childOf(spanContext).startActive().span();
+        Scope scope = spanBuilder.childOf(spanContext).startActive();
+        context.setAttachment(Constants.Keys.TRACE_SCOPE, scope);
+        Span span = scope.span();
         span.tag(Constants.Tags.CLASS, context.getOriginClass().getName());
         span.tag(Constants.Tags.METHOD, context.getMethod().getName());
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_LOCAL);
@@ -48,7 +51,10 @@ public class TraceAnnotationInterceptor implements InstanceMethodsAroundIntercep
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) {
-        TracerManager.tracer().active().close();
+        Scope scope = context.getAttachment(Constants.Keys.TRACE_SCOPE);
+        if (scope != null) {
+            scope.close();
+        }
         return ret;
     }
 

@@ -24,8 +24,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
 
@@ -63,9 +63,9 @@ public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
             return ret;
         }
 
-        AppMetricBuilder builder = info.getAppMetricBuilder();
+        TransactionMetricBuilder builder = info.getAppMetricBuilder();
         if (builder != null) {
-            AppMetricRecorder.record(builder);
+            MetricReporter.report(builder);
         }
         TracerManager.tracer().active().close();
         return ret;
@@ -78,7 +78,7 @@ public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
             return;
         }
 
-        AppMetricBuilder builder = info.getAppMetricBuilder();
+        TransactionMetricBuilder builder = info.getAppMetricBuilder();
         if (builder != null) {
             builder.tag(ERROR, ERROR_TRUE);
         }

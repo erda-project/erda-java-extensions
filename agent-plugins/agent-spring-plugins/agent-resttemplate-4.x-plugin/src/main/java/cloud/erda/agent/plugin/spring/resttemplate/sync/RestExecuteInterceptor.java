@@ -30,10 +30,10 @@ import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.HttpUtils;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricContext;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricContext;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import cloud.erda.agent.plugin.spring.EnhanceCommonInfo;
 import org.springframework.http.HttpMethod;
 
@@ -74,7 +74,7 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
         span.tag(Constants.Tags.HTTP_PATH, path);
         span.tag(Constants.Tags.HTTP_METHOD, method.name().toUpperCase());
 
-        tracer.context().put(AppMetricContext.instance);
+        tracer.context().put(TransactionMetricContext.instance);
         Map<String, String> map = new HashMap<String, String>(16);
         TextMapCarrier carrier = new TextMapCarrier(map);
         tracer.inject(span.getContext(), carrier);
@@ -83,8 +83,8 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
         info.setContext(map);
         context.getInstance().setDynamicField(info);
 
-        AppMetricBuilder appMetricBuilder = AppMetricUtils.createHttpMetric(peerHost);
-        tracer.context().setAttachment(Constants.Keys.METRIC_BUILDER, appMetricBuilder);
+        TransactionMetricBuilder transactionMetricBuilder = TransactionMetricUtils.createHttpMetric(peerHost);
+        tracer.context().setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
     }
 
     @Override
@@ -95,10 +95,10 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
             return ret;
         }
 
-        AppMetricBuilder appMetricBuilder =
+        TransactionMetricBuilder transactionMetricBuilder =
                 TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
-        if (appMetricBuilder != null) {
-            AppMetricRecorder.record(appMetricBuilder);
+        if (transactionMetricBuilder != null) {
+            MetricReporter.report(transactionMetricBuilder);
         }
 
         Scope scope = TracerManager.tracer().active();

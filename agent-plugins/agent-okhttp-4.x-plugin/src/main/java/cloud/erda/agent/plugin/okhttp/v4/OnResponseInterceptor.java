@@ -22,7 +22,7 @@ import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import okhttp3.Response;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -43,11 +43,11 @@ public class OnResponseInterceptor implements InstanceMethodsAroundInterceptor {
         Span span = TracerManager.tracer().active().span();
         CallInterceptorUtils.wrapResponseSpan(span, response);
 
-        AppMetricBuilder appMetricBuilder =
+        TransactionMetricBuilder transactionMetricBuilder =
                 TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
-        if (appMetricBuilder != null) {
-            appMetricBuilder = CallInterceptorUtils.wrapResponseAppMetric(appMetricBuilder, response);
-            TracerManager.tracer().context().setAttachment(Constants.Keys.METRIC_BUILDER, appMetricBuilder);
+        if (transactionMetricBuilder != null) {
+            transactionMetricBuilder = CallInterceptorUtils.wrapResponseAppMetric(transactionMetricBuilder, response);
+            TracerManager.tracer().context().setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
         }
     }
 

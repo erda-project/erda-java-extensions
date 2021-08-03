@@ -36,10 +36,10 @@ import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.tracing.span.SpanBuilder;
 import cloud.erda.agent.core.utils.Caller;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricContext;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricContext;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 
 /**
  * {@link DubboInterceptor} define how to enhance class {@link org.apache.dubbo.monitor.support.MonitorFilter#invoke
@@ -78,7 +78,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
             context.setAttachment(Constants.Keys.TRACE_SCOPE, scope);
             span = scope.span();
             TextMapCarrier carrier = new TextMapCarrier(rpcContext.getAttachments());
-            tracer.context().put(AppMetricContext.instance);
+            tracer.context().put(TransactionMetricContext.instance);
             tracer.inject(span.getContext(), carrier);
             span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
         } else {
@@ -91,9 +91,9 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
             span = scope.span();
             span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_SERVER);
 
-            AppMetricBuilder appMetricBuilder = new AppMetricBuilder(Constants.Metrics.APPLICATION_RPC, true);
-            context.setAttachment(Constants.Keys.METRIC_BUILDER, appMetricBuilder);
-            appMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_DUBBO)
+            TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_RPC, true);
+            context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
+            transactionMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_DUBBO)
                     .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_SERVER)
                     .tag(Constants.Tags.PEER_ADDRESS, rpcContext.getRemoteAddressString())
                     .tag(Constants.Tags.PEER_SERVICE, invoker.getInterface().getName())
@@ -119,15 +119,15 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
             @Override
             public void invoke() throws Exception {
                 final Result result = (Result) ret;
-                AppMetricBuilder appMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
+                TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
                 if (result != null && result.getException() != null) {
                     TracerUtils.handleException(result.getException());
-                    if (appMetricBuilder != null) {
-                        AppMetricUtils.handleException(appMetricBuilder);
+                    if (transactionMetricBuilder != null) {
+                        TransactionMetricUtils.handleException(transactionMetricBuilder);
                     }
                 }
-                if (appMetricBuilder != null) {
-                    AppMetricRecorder.record(appMetricBuilder);
+                if (transactionMetricBuilder != null) {
+                    MetricReporter.report(transactionMetricBuilder);
                 }
             }
         });
@@ -148,7 +148,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
-        AppMetricUtils.handleException(context);
+        TransactionMetricUtils.handleException(context);
         TracerUtils.handleException(t);
     }
 

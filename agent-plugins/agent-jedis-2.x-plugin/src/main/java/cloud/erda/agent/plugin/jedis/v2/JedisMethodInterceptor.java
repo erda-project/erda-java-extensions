@@ -30,9 +30,9 @@ import cloud.erda.agent.core.tracing.span.SpanBuilder;
 import cloud.erda.agent.core.utils.Constants;
 import org.apache.skywalking.apm.agent.core.util.Strings;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricRecorder;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 
 import java.lang.reflect.Method;
 
@@ -73,9 +73,9 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         if (Strings.isEmpty(statement)) {
             return;
         }
-        AppMetricBuilder appMetricBuilder = new AppMetricBuilder(Constants.Metrics.APPLICATION_CACHE, false);
-        context.setAttachment(Constants.Keys.METRIC_BUILDER, appMetricBuilder);
-        appMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_REDIS)
+        TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_CACHE, false);
+        context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
+        transactionMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_REDIS)
             .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT)
             .tag(Constants.Tags.PEER_SERVICE, peer)
             .tag(Constants.Tags.HOST, peer)
@@ -85,9 +85,9 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        AppMetricBuilder appMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
-        if (appMetricBuilder != null) {
-            AppMetricRecorder.record(appMetricBuilder);
+        TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
+        if (transactionMetricBuilder != null) {
+            MetricReporter.report(transactionMetricBuilder);
         }
         TracerManager.tracer().active().close();
         return ret;
@@ -95,7 +95,7 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
 
     @Override
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
-        AppMetricUtils.handleException(context);
+        TransactionMetricUtils.handleException(context);
         TracerUtils.handleException(t);
     }
 }

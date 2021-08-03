@@ -28,9 +28,9 @@ import cloud.erda.agent.core.tracing.propagator.TextMapCarrier;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.AppMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.AppMetricContext;
-import cloud.erda.agent.plugin.app.insight.AppMetricUtils;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricContext;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.RequestLine;
 import org.apache.http.client.methods.HttpRequestWrapper;
@@ -82,7 +82,7 @@ public class HttpAsyncRequestExecutorInterceptor implements InstanceMethodsAroun
         span.tag(HTTP_URL, requestWrapper.getOriginal().getRequestLine().getUri());
         span.tag(HTTP_METHOD, requestLine.getMethod());
 
-        tracer.context().put(AppMetricContext.instance);
+        tracer.context().put(TransactionMetricContext.instance);
         Map<String, String> map = new HashMap<String, String>(16);
         TextMapCarrier carrier = new TextMapCarrier(map);
         tracer.inject(span.getContext(), carrier);
@@ -98,8 +98,8 @@ public class HttpAsyncRequestExecutorInterceptor implements InstanceMethodsAroun
             requestWrapper.setHeader(entry.getKey(), entry.getValue());
         }
 
-        AppMetricBuilder appMetricBuilder = AppMetricUtils.createHttpMetric(hostname);
-        tracer.context().setAttachment(Constants.Keys.METRIC_BUILDER, appMetricBuilder);
+        TransactionMetricBuilder transactionMetricBuilder = TransactionMetricUtils.createHttpMetric(hostname);
+        tracer.context().setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
     }
 
     @Override

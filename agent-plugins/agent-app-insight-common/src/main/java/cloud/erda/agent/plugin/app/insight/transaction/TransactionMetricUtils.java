@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.app.insight;
+package cloud.erda.agent.plugin.app.insight.transaction;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import cloud.erda.agent.core.utils.Constants;
@@ -22,42 +22,42 @@ import cloud.erda.agent.core.utils.Constants;
 /**
  * @author randomnil
  */
-public class AppMetricUtils {
+public class TransactionMetricUtils {
 
-    public static AppMetricBuilder createHttpMetric(String host) {
-        return new AppMetricBuilder(Constants.Metrics.APPLICATION_HTTP, false)
+    public static TransactionMetricBuilder createHttpMetric(String host) {
+        return (TransactionMetricBuilder)new TransactionMetricBuilder(Constants.Metrics.APPLICATION_HTTP, false)
                 .tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_HTTP)
                 .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT)
                 .tag(Constants.Tags.HOST, host);
     }
 
-    public static AppMetricBuilder createMiroServiceMetric(String addonType) {
-        return new AppMetricBuilder(Constants.Metrics.APPLICATION_MICRO_SERVICE, false)
+    public static TransactionMetricBuilder createMiroServiceMetric(String addonType) {
+        return (TransactionMetricBuilder)new TransactionMetricBuilder(Constants.Metrics.APPLICATION_MICRO_SERVICE, false)
                 .tag(Constants.Metrics.TARGET_ADDON_TYPE, addonType)
                 .tag(Constants.Metrics.TARGET_ADDON_ID, addonType);
     }
 
-    public static void handleStatusCode(AppMetricBuilder appMetricBuilder, int statusCode) {
-        if (appMetricBuilder == null) {
+    public static void handleStatusCode(TransactionMetricBuilder transactionMetricBuilder, int statusCode) {
+        if (transactionMetricBuilder == null) {
             return;
         }
 
         if (statusCode >= 500) {
-            handleException(appMetricBuilder);
+            handleException(transactionMetricBuilder);
         }
-        appMetricBuilder.field(Constants.Tags.HTTP_STATUS, statusCode);
-        appMetricBuilder.tag(Constants.Tags.HTTP_STATUS, String.valueOf(statusCode));
+        transactionMetricBuilder.field(Constants.Tags.HTTP_STATUS, statusCode);
+        transactionMetricBuilder.tag(Constants.Tags.HTTP_STATUS, String.valueOf(statusCode));
     }
 
     public static void handleException(IMethodInterceptContext context) {
-        AppMetricBuilder appMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
-        handleException(appMetricBuilder);
+        TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
+        handleException(transactionMetricBuilder);
     }
 
-    public static void handleException(AppMetricBuilder appMetricBuilder) {
-        if (appMetricBuilder == null) {
+    public static void handleException(TransactionMetricBuilder transactionMetricBuilder) {
+        if (transactionMetricBuilder == null) {
             return;
         }
-        appMetricBuilder.tag(Constants.Tags.ERROR, Constants.Tags.ERROR_TRUE);
+        transactionMetricBuilder.tag(Constants.Tags.ERROR, Constants.Tags.ERROR_TRUE);
     }
 }
