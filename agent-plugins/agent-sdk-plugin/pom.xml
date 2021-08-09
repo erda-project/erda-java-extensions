@@ -11,22 +11,17 @@
 
     <artifactId>agent-sdk-plugin</artifactId>
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>cloud.erda</groupId>
             <artifactId>agent-app-insight-common</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>cloud.erda</groupId>
             <artifactId>msp-monitor-sdk</artifactId>
-            <version>1.0.5</version>
-            <scope>provided</scope>
+            <version>1.0.6</version>
         </dependency>
     </dependencies>
 

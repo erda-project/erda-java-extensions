@@ -152,7 +152,7 @@ public class JavaAgent {
         @Override
         public void onError(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded,
                             Throwable throwable) {
-            logger.error("Enhance class " + typeName + " error.", throwable);
+            logger.error("Enhance class " + typeName + "[ " + classLoader.getClass().getName() + " ]" + "error.", throwable);
         }
 
         @Override
