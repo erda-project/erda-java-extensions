@@ -31,11 +31,9 @@
         <shade.org.apache.http.source>org.apache.http</shade.org.apache.http.source>
         <shade.org.apache.http.target>${shade.package}.${shade.org.apache.http.source}</shade.org.apache.http.target>
         <shade.org.apache.commons.source>org.apache.commons</shade.org.apache.commons.source>
-        <shade.org.apache.commons.target>${shade.package}.${shade.org.apache.http.source}
-        </shade.org.apache.commons.target>
+        <shade.org.apache.commons.target>${shade.package}.${shade.org.apache.http.source}</shade.org.apache.commons.target>
         <shade.io.prometheus.client.source>io.prometheus.client</shade.io.prometheus.client.source>
-        <shade.io.prometheus.client.target>${shade.package}.${shade.io.prometheus.client.source}
-        </shade.io.prometheus.client.target>
+        <shade.io.prometheus.client.target>${shade.package}.${shade.io.prometheus.client.source}</shade.io.prometheus.client.target>
 
         <shade.lombok.source>lombok</shade.lombok.source>
         <shade.lombok.target>${shade.package}.${shade.lombok.source}</shade.lombok.target>
@@ -120,10 +118,10 @@
                                     <pattern>${shade.com.google.source}</pattern>
                                     <shadedPattern>${shade.com.google.target}</shadedPattern>
                                 </relocation>
-                                <!--<relocation>-->
-                                <!--<pattern>${shade.io.grpc.source}</pattern>-->
-                                <!--<shadedPattern>${shade.io.grpc.target}</shadedPattern>-->
-                                <!--</relocation>-->
+<!--                                <relocation>-->
+<!--                                <pattern>${shade.io.grpc.source}</pattern>-->
+<!--                                <shadedPattern>${shade.io.grpc.target}</shadedPattern>-->
+<!--                                </relocation>-->
                                 <relocation>
                                     <pattern>${shade.io.netty.source}</pattern>
                                     <shadedPattern>${shade.io.netty.target}</shadedPattern>
@@ -136,10 +134,10 @@
                                     <pattern>${shade.org.apache.commons.source}</pattern>
                                     <shadedPattern>${shade.org.apache.commons.target}</shadedPattern>
                                 </relocation>
-                                <!--                                <relocation>-->
-                                <!--                                    <pattern>${shade.io.prometheus.client.source}</pattern>-->
-                                <!--                                    <shadedPattern>${shade.io.prometheus.client.target}</shadedPattern>-->
-                                <!--                                </relocation>-->
+<!--                                <relocation>-->
+<!--                                    <pattern>${shade.io.prometheus.client.source}</pattern>-->
+<!--                                    <shadedPattern>${shade.io.prometheus.client.target}</shadedPattern>-->
+<!--                                </relocation>-->
                             </relocations>
                             <filters>
                                 <filter>
@@ -151,8 +149,7 @@
                                 </filter>
                             </filters>
                             <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                             </transformers>
                         </configuration>
                     </execution>
