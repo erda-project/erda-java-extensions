@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -30,9 +31,11 @@
         <shade.org.apache.http.source>org.apache.http</shade.org.apache.http.source>
         <shade.org.apache.http.target>${shade.package}.${shade.org.apache.http.source}</shade.org.apache.http.target>
         <shade.org.apache.commons.source>org.apache.commons</shade.org.apache.commons.source>
-        <shade.org.apache.commons.target>${shade.package}.${shade.org.apache.http.source}</shade.org.apache.commons.target>
+        <shade.org.apache.commons.target>${shade.package}.${shade.org.apache.http.source}
+        </shade.org.apache.commons.target>
         <shade.io.prometheus.client.source>io.prometheus.client</shade.io.prometheus.client.source>
-        <shade.io.prometheus.client.target>${shade.package}.${shade.io.prometheus.client.source}</shade.io.prometheus.client.target>
+        <shade.io.prometheus.client.target>${shade.package}.${shade.io.prometheus.client.source}
+        </shade.io.prometheus.client.target>
 
         <shade.lombok.source>lombok</shade.lombok.source>
         <shade.lombok.target>${shade.package}.${shade.lombok.source}</shade.lombok.target>
@@ -67,6 +70,19 @@
             <artifactId>disruptor</artifactId>
             <version>3.3.6</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>1.21</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>1.21</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
@@ -105,8 +121,8 @@
                                     <shadedPattern>${shade.com.google.target}</shadedPattern>
                                 </relocation>
                                 <!--<relocation>-->
-                                    <!--<pattern>${shade.io.grpc.source}</pattern>-->
-                                    <!--<shadedPattern>${shade.io.grpc.target}</shadedPattern>-->
+                                <!--<pattern>${shade.io.grpc.source}</pattern>-->
+                                <!--<shadedPattern>${shade.io.grpc.target}</shadedPattern>-->
                                 <!--</relocation>-->
                                 <relocation>
                                     <pattern>${shade.io.netty.source}</pattern>
@@ -120,10 +136,10 @@
                                     <pattern>${shade.org.apache.commons.source}</pattern>
                                     <shadedPattern>${shade.org.apache.commons.target}</shadedPattern>
                                 </relocation>
-<!--                                <relocation>-->
-<!--                                    <pattern>${shade.io.prometheus.client.source}</pattern>-->
-<!--                                    <shadedPattern>${shade.io.prometheus.client.target}</shadedPattern>-->
-<!--                                </relocation>-->
+                                <!--                                <relocation>-->
+                                <!--                                    <pattern>${shade.io.prometheus.client.source}</pattern>-->
+                                <!--                                    <shadedPattern>${shade.io.prometheus.client.target}</shadedPattern>-->
+                                <!--                                </relocation>-->
                             </relocations>
                             <filters>
                                 <filter>
@@ -135,7 +151,8 @@
                                 </filter>
                             </filters>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                             </transformers>
                         </configuration>
                     </execution>
@@ -152,9 +169,10 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <delete dir="${project.basedir}/packages" />
-                                <mkdir dir="${agent.package.dest.dir}" />
-                                <copy file="${project.build.directory}/classes/java-agent.properties" tofile="${agent.package.dest.dir}/java-agent.properties" overwrite="true" />
+                                <delete dir="${project.basedir}/packages"/>
+                                <mkdir dir="${agent.package.dest.dir}"/>
+                                <copy file="${project.build.directory}/classes/java-agent.properties"
+                                      tofile="${agent.package.dest.dir}/java-agent.properties" overwrite="true"/>
                             </tasks>
                         </configuration>
                     </execution>
