@@ -16,6 +16,7 @@
 
 package cloud.erda.agent.plugin.logback.appender;
 
+import ch.qos.logback.classic.AsyncAppender;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -39,27 +40,30 @@ public class AppenderProcessor {
 
     public void replace(LoggerContext loggerContext) {
         Logger logger = loggerContext.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-        List<Appender<ILoggingEvent>> appenders = new ArrayList<Appender<ILoggingEvent>>();
-        Iterator<Appender<ILoggingEvent>> appenderIterator = logger.iteratorForAppenders();
-        while (appenderIterator.hasNext()) {
-            Appender<ILoggingEvent> appender = appenderIterator.next();
-            appenders.add(appender);
-        }
-        LogConfig logConfig = logConfigAccessor.getConfig(LogConfig.class);
-        for (Appender<ILoggingEvent> appender : appenders) {
-            log.info("Find [{}] appender {}.", appender.getName(), appender.getClass().getName());
-            if (appender instanceof ConsoleAppender<?>) {
-                continue;
-            }
-            if (appender instanceof ErrorInsightAppender) {
-                continue;
-            }
-            if (logConfig.getForceStdout()) {
-                appender.stop();
-                logger.detachAppender(appender.getName());
-                log.info("Detach [{}] appender {}.", appender.getName(), appender.getClass().getName());
-            }
-        }
+//        List<Appender<ILoggingEvent>> appenders = new ArrayList<Appender<ILoggingEvent>>();
+//        Iterator<Appender<ILoggingEvent>> appenderIterator = logger.iteratorForAppenders();
+//        while (appenderIterator.hasNext()) {
+//            Appender<ILoggingEvent> appender = appenderIterator.next();
+//            appenders.add(appender);
+//        }
+//        LogConfig logConfig = logConfigAccessor.getConfig(LogConfig.class);
+//        for (Appender<ILoggingEvent> appender : appenders) {
+//            log.info("Find [{}] appender {}.", appender.getName(), appender.getClass().getName());
+//            if (appender instanceof ConsoleAppender<?>) {
+//                continue;
+//            }
+//            if (appender instanceof AsyncAppender) {
+//                continue;
+//            }
+//            if (appender instanceof ErrorInsightAppender) {
+//                continue;
+//            }
+//            if (logConfig.getForceStdout()) {
+//                appender.stop();
+//                logger.detachAppender(appender.getName());
+//                log.info("Detach [{}] appender {}.", appender.getName(), appender.getClass().getName());
+//            }
+//        }
         // add error appender
         Appender<ILoggingEvent> errorInsightAppender = logger.getAppender(ErrorConsts.ERROR_INSIGHT);
         if (errorInsightAppender == null) {
