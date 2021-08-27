@@ -80,6 +80,7 @@ public class HttpAsyncRequestExecutorInterceptor implements InstanceMethodsAroun
         span.tag(PEER_HOSTNAME, hostname);
         span.tag(PEER_PORT, String.valueOf(httpHost.getPort()));
         span.tag(HTTP_URL, requestWrapper.getOriginal().getRequestLine().getUri());
+        span.tag(HTTP_PATH, requestWrapper.getURI().getPath());
         span.tag(HTTP_METHOD, requestLine.getMethod());
 
         tracer.context().put(TransactionMetricContext.instance);
@@ -99,6 +100,14 @@ public class HttpAsyncRequestExecutorInterceptor implements InstanceMethodsAroun
         }
 
         TransactionMetricBuilder transactionMetricBuilder = TransactionMetricUtils.createHttpMetric(hostname);
+        transactionMetricBuilder.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT)
+                .tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_HTTPASYNCCLIENT)
+                .tag(Constants.Tags.PEER_ADDRESS, httpHost.getSchemeName() + "://" + hostname)
+                .tag(PEER_PORT, String.valueOf(httpHost.getPort()))
+                .tag(Constants.Tags.HTTP_URL, requestWrapper.getOriginal().getRequestLine().getUri())
+                .tag(Constants.Tags.HTTP_PATH, requestWrapper.getURI().getPath())
+                .tag(Constants.Tags.HTTP_METHOD, requestLine.getMethod().toUpperCase())
+                .tag(Constants.Tags.PEER_HOSTNAME, hostname);
         tracer.context().setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
     }
 
