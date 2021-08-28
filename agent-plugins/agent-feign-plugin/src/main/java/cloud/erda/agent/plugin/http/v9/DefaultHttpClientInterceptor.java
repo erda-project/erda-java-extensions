@@ -115,6 +115,13 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
         headersField.set(request, Collections.unmodifiableMap(headers));
 
         TransactionMetricBuilder transactionMetricBuilder = TransactionMetricUtils.createHttpMetric(peerHost);
+        transactionMetricBuilder.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT)
+                .tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_FEIGN)
+                .tag(Constants.Tags.PEER_ADDRESS, request.url())
+                .tag(Constants.Tags.HTTP_URL, request.url())
+                .tag(Constants.Tags.HTTP_PATH, path)
+                .tag(Constants.Tags.HTTP_METHOD, request.method().toUpperCase())
+                .tag(Constants.Tags.PEER_HOSTNAME, peerHost);
         context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
     }
 

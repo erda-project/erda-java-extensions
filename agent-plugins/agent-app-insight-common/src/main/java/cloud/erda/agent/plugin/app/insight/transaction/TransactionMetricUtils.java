@@ -26,9 +26,7 @@ public class TransactionMetricUtils {
 
     public static TransactionMetricBuilder createHttpMetric(String host) {
         return (TransactionMetricBuilder)new TransactionMetricBuilder(Constants.Metrics.APPLICATION_HTTP, false)
-                .tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_HTTP)
-                .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT)
-                .tag(Constants.Tags.HOST, host);
+                .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
     }
 
     public static TransactionMetricBuilder createMiroServiceMetric(String addonType) {

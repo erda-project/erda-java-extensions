@@ -54,7 +54,16 @@ public class CallInterceptorUtils {
         if (uri.getPort() > 0) {
             hostname += ":" + uri.getPort();
         }
-        return TransactionMetricUtils.createHttpMetric(hostname);
+        TransactionMetricBuilder transactionMetricBuilder = TransactionMetricUtils.createHttpMetric(hostname);
+        transactionMetricBuilder.tag(SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT)
+                .tag(COMPONENT, Constants.Tags.COMPONENT_OKHTTP)
+                .tag(PEER_ADDRESS, uri.getScheme() + "://" + hostname)
+                .tag(PEER_PORT, String.valueOf(uri.getPort()))
+                .tag(HTTP_URL, uri.toString())
+                .tag(HTTP_PATH, uri.getPath())
+                .tag(HTTP_METHOD, request.method().toUpperCase())
+                .tag(PEER_HOSTNAME, hostname);
+        return transactionMetricBuilder;
     }
 
     static TransactionMetricBuilder wrapResponseAppMetric(TransactionMetricBuilder transactionMetricBuilder, Response response) {

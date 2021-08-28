@@ -118,9 +118,10 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
         }
         TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_HTTP, true);
         context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
-        transactionMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_HTTP)
+        transactionMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_SPRING_BOOT)
                 .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_SERVER)
                 .tag(Constants.Tags.HOST, host)
+                .tag(Constants.Tags.PEER_ADDRESS, host)
                 .tag(Constants.Tags.HTTP_URL, request.getRequestURL().toString())
                 .tag(Constants.Tags.HTTP_PATH, request.getRequestURI())
                 .tag(Constants.Tags.HTTP_METHOD, request.getMethod())

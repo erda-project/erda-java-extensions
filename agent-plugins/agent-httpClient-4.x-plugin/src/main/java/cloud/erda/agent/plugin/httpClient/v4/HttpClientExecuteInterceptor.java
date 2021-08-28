@@ -63,7 +63,7 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
 
         Tracer tracer = TracerManager.tracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
-        Span span = tracer.buildSpan(url.getPath()).childOf(spanContext).startActive().span();
+        Span span = tracer.buildSpan("HTTP " + httpRequest.getRequestLine().getMethod() + " " + url.getPath()).childOf(spanContext).startActive().span();
         span.tag(COMPONENT, COMPONENT_HTTPCLIENT);
         span.tag(SPAN_KIND, SPAN_KIND_CLIENT);
         span.tag(SPAN_LAYER, SPAN_LAYER_HTTP);
@@ -71,6 +71,7 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
         span.tag(PEER_HOSTNAME, hostname);
         span.tag(PEER_PORT, String.valueOf(httpHost.getPort()));
         span.tag(HTTP_URL, httpRequest.getRequestLine().getUri());
+        span.tag(HTTP_PATH, url.getPath());
         span.tag(HTTP_METHOD, httpRequest.getRequestLine().getMethod());
 
         tracer.context().put(TransactionMetricContext.instance);
@@ -90,6 +91,14 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
         }
 
         TransactionMetricBuilder transactionMetricBuilder = TransactionMetricUtils.createHttpMetric(hostname);
+        transactionMetricBuilder.tag(SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT)
+                .tag(COMPONENT, Constants.Tags.COMPONENT_HTTPCLIENT)
+                .tag(PEER_ADDRESS, httpHost.getSchemeName() + "://" + hostname)
+                .tag(PEER_PORT, String.valueOf(httpHost.getPort()))
+                .tag(HTTP_URL, httpRequest.getRequestLine().getUri())
+                .tag(HTTP_PATH, url.getPath())
+                .tag(HTTP_METHOD, httpRequest.getRequestLine().getMethod().toUpperCase())
+                .tag(PEER_HOSTNAME, hostname);
         context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
     }
 
