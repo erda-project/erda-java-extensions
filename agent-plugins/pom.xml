@@ -20,7 +20,6 @@
         <module>agent-jedis-2.x-plugin</module>
         <module>agent-log-plugins</module>
         <module>agent-jvm-plugin</module>
-        <module>agent-okhttp-3.x-plugin</module>
         <module>agent-httpasyncclient-4.x-plugin</module>
         <module>agent-servlet-plugins</module>
         <module>agent-rocketmq-4.x-plugin</module>
@@ -30,7 +29,7 @@
         <module>agent-microservice-plugin</module>
         <module>agent-sharding-sphere-4.x-plugin</module>
         <module>agent-lettuce-plugins</module>
-        <module>agent-okhttp-4.x-plugin</module>
+        <module>agent-okhttp-plugins</module>
         <module>agent-sdk-plugin</module>
         <module>agent-method-plugin</module>
     </modules>
