@@ -98,7 +98,13 @@ public class Constants {
 
         public static final String DB_TYPE = "db_type";
 
-        public static final String COMPONENT_REDIS = "Redis";
+        public static final String DB_TYPE_REDIS = "Redis";
+
+        public static final String COMPONENT_JEDIS = "Jedis";
+
+        public static final String COMPONENT_REDISSON = "Redisson";
+
+        public static final String COMPONENT_LETTUCE = "Lettuce";
 
         public static final String SPAN_LAYER_CACHE = "cache";
 

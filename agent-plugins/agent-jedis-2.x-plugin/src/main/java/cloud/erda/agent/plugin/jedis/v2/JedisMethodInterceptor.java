@@ -46,15 +46,6 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
 
         String peer = String.valueOf(objInst.getDynamicField());
 
-        Tracer tracer = TracerManager.tracer();
-        SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
-        SpanBuilder spanBuilder = tracer.buildSpan("Jedis/" + method.getName());
-        Span span = spanBuilder.childOf(spanContext).startActive().span();
-        span.tag(Constants.Tags.DB_TYPE, Constants.Tags.COMPONENT_REDIS);
-        span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_REDIS);
-        span.tag(Constants.Tags.PEER_SERVICE, peer);
-        span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_CACHE);
-        span.tag(Constants.Tags.HOST, peer);
         if (allArguments.length == 0) {
             return;
         }
@@ -68,19 +59,29 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
             return;
         }
         String statement = (method.getName() + " " + key).replace("\n", "");
-        span.tag(Constants.Tags.DB_STATEMENT, statement);
-
         if (Strings.isEmpty(statement)) {
             return;
         }
+
+        Tracer tracer = TracerManager.tracer();
+        SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
+        SpanBuilder spanBuilder = tracer.buildSpan("Jedis/" + method.getName());
+        Span span = spanBuilder.childOf(spanContext).startActive().span();
+        span.tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
+        span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_JEDIS);
+        span.tag(Constants.Tags.PEER_SERVICE, peer);
+        span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_CACHE);
+        span.tag(Constants.Tags.HOST, peer);
+        span.tag(Constants.Tags.DB_STATEMENT, statement);
+
         TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_CACHE, false);
         context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
-        transactionMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_REDIS)
+        transactionMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_LETTUCE)
             .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT)
             .tag(Constants.Tags.PEER_SERVICE, peer)
             .tag(Constants.Tags.HOST, peer)
             .tag(Constants.Tags.DB_STATEMENT, statement)
-            .tag(Constants.Tags.DB_TYPE, Constants.Tags.COMPONENT_REDIS);
+            .tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
     }
 
     @Override
