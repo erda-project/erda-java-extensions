@@ -41,7 +41,6 @@ public class OnResponseInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
         Response response = (Response) context.getArguments()[1];
-        log.info("FFFF======  " + Thread.currentThread().getId());
         Span span = TracerManager.tracer().active().span();
         CallInterceptorUtils.wrapResponseSpan(span, response);
 
