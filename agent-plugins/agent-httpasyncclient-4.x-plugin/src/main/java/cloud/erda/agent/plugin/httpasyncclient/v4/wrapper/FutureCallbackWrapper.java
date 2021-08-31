@@ -108,13 +108,13 @@ public class FutureCallbackWrapper<T> implements FutureCallback<T> {
         TransactionMetricBuilder transactionMetricBuilder =
                 TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
         if (transactionMetricBuilder != null) {
-            Header[] headers = response.getHeaders(Constants.Carriers.RESPONSE_TERMINUS_KEY);
-            if (headers == null || headers.length <= 0) {
+//            Header[] headers = response.getHeaders(Constants.Carriers.RESPONSE_TERMINUS_KEY);
+//            if (headers == null || headers.length <= 0) {
                 if (status != null) {
                     TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, status.getStatusCode());
                 }
                 MetricReporter.report(transactionMetricBuilder);
-            }
+//            }
         }
 
         Scope scope = TracerManager.tracer().active();

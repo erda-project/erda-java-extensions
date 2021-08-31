@@ -20,6 +20,8 @@ package cloud.erda.agent.plugin.http.v9;
 
 import feign.Request;
 import feign.Response;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.util.Strings;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -51,6 +53,8 @@ import java.util.*;
  */
 public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterceptor {
 
+    private static ILog log = LogManager.getLogger(DefaultHttpClientInterceptor.class);
+
     /**
      * Get the {@link feign.Request} from {@link EnhancedInstance}, then create {@link Span} and set host, port, kind,
      * component, url from {@link feign.Request}. Through the reflection of the way, set the http header of context data
@@ -78,7 +82,7 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
 
         Tracer tracer = TracerManager.tracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
-        Span span = tracer.buildSpan(path).childOf(spanContext).startActive().span();
+        Span span = tracer.buildSpan("HTTP " + request.method()).childOf(spanContext).startActive().span();
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_FEIGN);
         span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_HTTP);
@@ -147,11 +151,8 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
 
         TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
         if (transactionMetricBuilder != null) {
-            Map headers = response.headers();
-            if (headers == null || !headers.containsKey(Constants.Carriers.RESPONSE_TERMINUS_KEY)) {
-                TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.status());
-                MetricReporter.report(transactionMetricBuilder);
-            }
+            TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.status());
+            MetricReporter.report(transactionMetricBuilder);
         }
 
         Scope scope = TracerManager.tracer().active();

@@ -132,10 +132,10 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
     }
 
     private void recordResponseAppMetric(TransactionMetricBuilder transactionMetricBuilder, HttpResponse response) {
-        Header[] headers = response.getHeaders(Constants.Carriers.RESPONSE_TERMINUS_KEY);
-        if (headers != null && headers.length > 0) {
-            return;
-        }
+//        Header[] headers = response.getHeaders(Constants.Carriers.RESPONSE_TERMINUS_KEY);
+//        if (headers != null && headers.length > 0) {
+//            return;
+//        }
 
         StatusLine statusLine = response.getStatusLine();
         if (statusLine == null) {

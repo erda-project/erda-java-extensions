@@ -70,10 +70,10 @@ public class CallInterceptorUtils {
             return transactionMetricBuilder;
         }
 
-        String terminusKey = response.header(Constants.Carriers.RESPONSE_TERMINUS_KEY);
-        if (!Strings.isEmpty(terminusKey)) {
-            return null;
-        }
+//        String terminusKey = response.header(Constants.Carriers.RESPONSE_TERMINUS_KEY);
+//        if (!Strings.isEmpty(terminusKey)) {
+//            return null;
+//        }
 
         TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.code());
         return transactionMetricBuilder;

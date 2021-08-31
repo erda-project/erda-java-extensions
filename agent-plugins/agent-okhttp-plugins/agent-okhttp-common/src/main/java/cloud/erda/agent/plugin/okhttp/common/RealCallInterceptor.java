@@ -27,6 +27,8 @@ import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
@@ -39,6 +41,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
  * @author peng-yongsheng
  */
 public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, InstanceConstructorInterceptor {
+
+    private static ILog log = LogManager.getLogger(RealCallInterceptor.class);
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
@@ -60,15 +64,13 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
 
         Tracer tracer = TracerManager.tracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
-        Span span = tracer.buildSpan(request.url().uri().getPath()).childOf(spanContext).startActive().span();
+        Span span = tracer.buildSpan("HTTP " + request.method()).childOf(spanContext).startActive().span();
 
         CallInterceptorUtils.wrapRequestSpan(span, request);
         CallInterceptorUtils.injectRequestHeader(request, span);
 
         TransactionMetricBuilder transactionMetricBuilder = CallInterceptorUtils.createRequestAppMetric(request);
-        if (transactionMetricBuilder != null) {
-            context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
-        }
+        context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
     }
 
     /**
@@ -83,7 +85,6 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
         Response response = (Response) ret;
-
         TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
         transactionMetricBuilder = CallInterceptorUtils.wrapResponseAppMetric(transactionMetricBuilder, response);
         if (transactionMetricBuilder != null) {

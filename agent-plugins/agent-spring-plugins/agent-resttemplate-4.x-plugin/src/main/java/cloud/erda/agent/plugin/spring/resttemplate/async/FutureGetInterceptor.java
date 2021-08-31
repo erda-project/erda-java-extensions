@@ -63,11 +63,8 @@ public class FutureGetInterceptor implements InstanceMethodsAroundInterceptor {
 
         TransactionMetricBuilder transactionMetricBuilder = info.getAppMetricBuilder();
         if (transactionMetricBuilder != null) {
-            HttpHeaders headers = response.getHeaders();
-            if (headers == null || CollectionUtils.isEmpty(headers.get(Constants.Carriers.RESPONSE_TERMINUS_KEY))) {
-                TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.getStatusCodeValue());
-                MetricReporter.report(transactionMetricBuilder);
-            }
+            TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.getStatusCodeValue());
+            MetricReporter.report(transactionMetricBuilder);
         }
 
         Scope scope = TracerManager.tracer().active();
