@@ -48,12 +48,7 @@ public class RestResponseInterceptor implements InstanceMethodsAroundInterceptor
         TransactionMetricBuilder transactionMetricBuilder =
                 TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
         if (transactionMetricBuilder != null) {
-            HttpHeaders headers = response.getHeaders();
-            if (headers == null || CollectionUtils.isEmpty(headers.get(Constants.Carriers.RESPONSE_TERMINUS_KEY))) {
-                TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.getStatusCode().value());
-            } else {
-                TracerManager.tracer().context().setAttachment(Constants.Keys.METRIC_BUILDER, null);
-            }
+            TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.getStatusCode().value());
         }
 
         Scope scope = TracerManager.tracer().active();

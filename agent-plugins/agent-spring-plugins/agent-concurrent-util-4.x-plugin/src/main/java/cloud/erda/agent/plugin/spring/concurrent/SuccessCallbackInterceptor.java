@@ -62,10 +62,7 @@ public class SuccessCallbackInterceptor implements InstanceMethodsAroundIntercep
 
         TransactionMetricBuilder transactionMetricBuilder = info.getAppMetricBuilder();
         if (transactionMetricBuilder != null) {
-            HttpHeaders headers = response.getHeaders();
-            if (headers == null || CollectionUtils.isEmpty(headers.get(Constants.Carriers.RESPONSE_TERMINUS_KEY))) {
-                TransactionMetricUtils.handleStatusCode(info.getAppMetricBuilder(), response.getStatusCodeValue());
-            }
+            TransactionMetricUtils.handleStatusCode(info.getAppMetricBuilder(), response.getStatusCodeValue());
             MetricReporter.report(transactionMetricBuilder);
         }
 

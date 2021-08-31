@@ -114,9 +114,10 @@ public class InstMethodsInter {
         } finally {
             try {
                 ret = interceptor.afterMethod(context, ret);
-                context.clearAttachments();
             } catch (Throwable t) {
                 logger.error(t, "class[{}] after method[{}] intercept failure. [{}]", obj.getClass(), method.getName(), t.getMessage());
+            } finally {
+                context.clearAttachments();
             }
         }
 
