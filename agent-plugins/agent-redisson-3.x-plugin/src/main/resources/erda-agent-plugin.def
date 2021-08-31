@@ -1,0 +1,3 @@
+redisson-3.x=cloud.erda.agent.plugin.redisson.v3.define.ConnectionManagerInstrumentation
+redisson-3.x=cloud.erda.agent.plugin.redisson.v3.define.RedisConnectionInstrumentation
+redisson-3.x=cloud.erda.agent.plugin.redisson.v3.define.RedisClientInstrumentation
