@@ -67,9 +67,7 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
         Object[] allArguments = context.getArguments();
-        log.info("FeginIn getArguments" + allArguments.length);
         if (allArguments == null || allArguments.length < 1 || !(allArguments[0] instanceof Request)) {
-            log.info("AAA ====== FeginIn reture");
             return;
         }
         Request request = (Request) allArguments[0];

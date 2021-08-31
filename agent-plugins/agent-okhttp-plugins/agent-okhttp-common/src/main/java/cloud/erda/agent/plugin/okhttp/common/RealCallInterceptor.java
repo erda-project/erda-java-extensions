@@ -69,12 +69,8 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
         CallInterceptorUtils.wrapRequestSpan(span, request);
         CallInterceptorUtils.injectRequestHeader(request, span);
 
-        log.info("StartSpan");
-
         TransactionMetricBuilder transactionMetricBuilder = CallInterceptorUtils.createRequestAppMetric(request);
         context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
-
-        log.info("StartMetric");
     }
 
     /**
@@ -89,18 +85,15 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
         Response response = (Response) ret;
-        log.info("context.getAttachment " + context.getArguments().length);
         TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
         transactionMetricBuilder = CallInterceptorUtils.wrapResponseAppMetric(transactionMetricBuilder, response);
         if (transactionMetricBuilder != null) {
-            log.info("CloseMetric");
             MetricReporter.report(transactionMetricBuilder);
         }
 
         Scope scope = TracerManager.tracer().active();
         CallInterceptorUtils.wrapResponseSpan(scope.span(), response);
         scope.close();
-        log.info("CloseSpan");
         return ret;
     }
 
