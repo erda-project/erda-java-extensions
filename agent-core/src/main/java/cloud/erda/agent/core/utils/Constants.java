@@ -82,6 +82,12 @@ public class Constants {
 
         public static final String PEER_SERVICE = "peer_service";
 
+        public static final String PEER_SERVICE_SCOPE = "peer_service_scope";
+
+        public static final String PEER_SERVICE_EXTERNAL = "external";
+
+        public static final String PEER_SERVICE_INTERNAL = "internal";
+
         public static final String SPAN_LAYER = "span_layer";
 
         public static final String SPAN_LAYER_RPC = "rpc";

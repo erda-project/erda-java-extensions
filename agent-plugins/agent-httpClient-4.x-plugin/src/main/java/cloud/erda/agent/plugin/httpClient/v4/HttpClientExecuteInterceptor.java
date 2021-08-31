@@ -18,6 +18,8 @@
 
 package cloud.erda.agent.plugin.httpClient.v4;
 
+import cloud.erda.agent.core.config.AgentConfig;
+import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -132,18 +134,31 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
     }
 
     private void recordResponseAppMetric(TransactionMetricBuilder transactionMetricBuilder, HttpResponse response) {
-//        Header[] headers = response.getHeaders(Constants.Carriers.RESPONSE_TERMINUS_KEY);
-//        if (headers != null && headers.length > 0) {
-//            return;
-//        }
-
         StatusLine statusLine = response.getStatusLine();
         if (statusLine == null) {
             return;
         }
+        if (equalsTerminusKey(response.getHeaders(Constants.Carriers.RESPONSE_TERMINUS_KEY))) {
+            transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_INTERNAL);
+        } else {
+            transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_EXTERNAL);
+        }
         int statusCode = statusLine.getStatusCode();
         TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, statusCode);
         MetricReporter.report(transactionMetricBuilder);
+    }
+
+    private boolean equalsTerminusKey(Header[] headers) {
+        if (headers == null || headers.length == 0) {
+            return false;
+        }
+        String tk = ConfigAccessor.Default.getConfig(AgentConfig.class).terminusKey();
+        for (Header header : headers) {
+            if (tk.equals(header.getValue())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void wrapResponseSpan(Span span, HttpResponse response) {

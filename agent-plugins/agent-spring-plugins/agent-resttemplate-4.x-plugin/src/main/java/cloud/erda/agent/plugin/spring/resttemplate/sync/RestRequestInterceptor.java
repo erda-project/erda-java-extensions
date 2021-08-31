@@ -19,11 +19,11 @@
 
 package cloud.erda.agent.plugin.spring.resttemplate.sync;
 
-import org.apache.skywalking.apm.agent.core.util.Strings;
+import cloud.erda.agent.plugin.spring.EnhanceCommonInfo;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import cloud.erda.agent.plugin.spring.EnhanceCommonInfo;
+import org.apache.skywalking.apm.agent.core.util.Strings;
 import org.springframework.http.client.AbstractClientHttpRequest;
 
 import java.util.Map;

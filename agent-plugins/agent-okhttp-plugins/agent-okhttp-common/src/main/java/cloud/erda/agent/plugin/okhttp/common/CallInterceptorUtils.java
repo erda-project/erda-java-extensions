@@ -16,6 +16,8 @@
 
 package cloud.erda.agent.plugin.okhttp.common;
 
+import cloud.erda.agent.core.config.AgentConfig;
+import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import cloud.erda.agent.core.tracing.Tracer;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.tracing.propagator.TextMapCarrier;
@@ -70,11 +72,12 @@ public class CallInterceptorUtils {
             return transactionMetricBuilder;
         }
 
-//        String terminusKey = response.header(Constants.Carriers.RESPONSE_TERMINUS_KEY);
-//        if (!Strings.isEmpty(terminusKey)) {
-//            return null;
-//        }
-
+        String responseTerminusKey = response.header(Constants.Carriers.RESPONSE_TERMINUS_KEY);
+        if (responseTerminusKey != null && ConfigAccessor.Default.getConfig(AgentConfig.class).terminusKey().equals(responseTerminusKey)) {
+            transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_INTERNAL);
+        } else {
+            transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_EXTERNAL);
+        }
         TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.code());
         return transactionMetricBuilder;
     }
