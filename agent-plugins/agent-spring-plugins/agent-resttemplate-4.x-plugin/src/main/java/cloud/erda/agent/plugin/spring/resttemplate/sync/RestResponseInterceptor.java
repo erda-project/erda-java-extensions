@@ -18,18 +18,22 @@
 
 package cloud.erda.agent.plugin.spring.resttemplate.sync;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import cloud.erda.agent.core.config.AgentConfig;
+import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.TracerUtils;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
-import org.springframework.http.HttpHeaders;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+
+import static cloud.erda.agent.core.utils.Constants.Tags.*;
 
 public class RestResponseInterceptor implements InstanceMethodsAroundInterceptor {
 
@@ -48,12 +52,30 @@ public class RestResponseInterceptor implements InstanceMethodsAroundInterceptor
         TransactionMetricBuilder transactionMetricBuilder =
                 TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
         if (transactionMetricBuilder != null) {
+            if (equalsTerminusKey(response.getHeaders().get(Constants.Carriers.RESPONSE_TERMINUS_KEY))) {
+                transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_INTERNAL);
+            } else {
+                transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_EXTERNAL);
+            }
             TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.getStatusCode().value());
         }
 
         Scope scope = TracerManager.tracer().active();
         TracerUtils.handleStatusCode(scope, response.getStatusCode().value());
         return ret;
+    }
+
+    private boolean equalsTerminusKey(List<String> tkList) {
+        if (tkList == null || tkList.size() == 0) {
+            return false;
+        }
+        String tk = ConfigAccessor.Default.getConfig(AgentConfig.class).terminusKey();
+        for (String value : tkList) {
+            if (tk.equals(value)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

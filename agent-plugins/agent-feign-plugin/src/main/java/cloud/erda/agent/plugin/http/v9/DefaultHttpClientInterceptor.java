@@ -18,15 +18,8 @@
 
 package cloud.erda.agent.plugin.http.v9;
 
-import feign.Request;
-import feign.Response;
-import org.apache.skywalking.apm.agent.core.logging.api.ILog;
-import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
-import org.apache.skywalking.apm.agent.core.util.Strings;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import cloud.erda.agent.core.config.AgentConfig;
+import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.SpanContext;
 import cloud.erda.agent.core.tracing.Tracer;
@@ -36,15 +29,26 @@ import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.HttpUtils;
 import cloud.erda.agent.core.utils.TracerUtils;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricContext;
-import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
+import feign.Request;
+import feign.Response;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.util.Strings;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.*;
+
+import static cloud.erda.agent.core.utils.Constants.Tags.*;
 
 /**
  * {@link DefaultHttpClientInterceptor} intercept the default implementation of http calls by the Feign.
@@ -151,6 +155,11 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
 
         TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
         if (transactionMetricBuilder != null) {
+            if (equalsTerminusKey(response.headers().get(Constants.Carriers.RESPONSE_TERMINUS_KEY))) {
+                transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_INTERNAL);
+            } else {
+                transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_EXTERNAL);
+            }
             TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.status());
             MetricReporter.report(transactionMetricBuilder);
         }
@@ -161,6 +170,17 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
             scope.close();
         }
         return ret;
+    }
+
+    private boolean equalsTerminusKey(Collection<String> tkCollection) {
+        if (tkCollection == null) {
+            return false;
+        }
+        String[] tks = tkCollection.toArray(new String[0]);
+        if (tks.length == 0) {
+            return false;
+        }
+        return ConfigAccessor.Default.getConfig(AgentConfig.class).terminusKey().equals(tks[0]);
     }
 
     @Override

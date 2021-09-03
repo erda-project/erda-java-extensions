@@ -21,7 +21,7 @@ import cloud.erda.agent.core.config.loader.Configuration;
 import org.apache.skywalking.apm.agent.core.logging.core.LogLevel;
 
 public class AgentConfig implements Config {
-    @Configuration(name = "TERMINUS_KEY")
+    @Configuration(name = "TERMINUS_KEY", defaultValue = "")
     private String _terminusKey;
 
     @Configuration(name = "TERMINUS_SPOT_SAMPLING_RATE", defaultValue = "50")

@@ -18,9 +18,6 @@
 
 package cloud.erda.agent.plugin.spring.resttemplate.sync;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.SpanContext;
 import cloud.erda.agent.core.tracing.Tracer;
@@ -30,11 +27,14 @@ import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.HttpUtils;
 import cloud.erda.agent.core.utils.TracerUtils;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricContext;
-import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import cloud.erda.agent.plugin.spring.EnhanceCommonInfo;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.springframework.http.HttpMethod;
 
 import java.net.URI;

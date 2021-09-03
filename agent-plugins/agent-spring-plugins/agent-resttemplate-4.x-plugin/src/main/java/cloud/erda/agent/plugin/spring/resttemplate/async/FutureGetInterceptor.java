@@ -18,21 +18,25 @@
 
 package cloud.erda.agent.plugin.spring.resttemplate.async;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import cloud.erda.agent.core.config.AgentConfig;
+import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.Tracer;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import cloud.erda.agent.plugin.spring.EnhanceCommonInfo;
-import org.springframework.http.HttpHeaders;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+
+import static cloud.erda.agent.core.utils.Constants.Tags.*;
 
 public class FutureGetInterceptor implements InstanceMethodsAroundInterceptor {
 
@@ -63,6 +67,11 @@ public class FutureGetInterceptor implements InstanceMethodsAroundInterceptor {
 
         TransactionMetricBuilder transactionMetricBuilder = info.getAppMetricBuilder();
         if (transactionMetricBuilder != null) {
+            if (equalsTerminusKey(response.getHeaders().get(Constants.Carriers.RESPONSE_TERMINUS_KEY))) {
+                transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_INTERNAL);
+            } else {
+                transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_EXTERNAL);
+            }
             TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.getStatusCodeValue());
             MetricReporter.report(transactionMetricBuilder);
         }
@@ -73,6 +82,19 @@ public class FutureGetInterceptor implements InstanceMethodsAroundInterceptor {
             scope.close();
         }
         return ret;
+    }
+
+    private boolean equalsTerminusKey(List<String> tkList) {
+        if (tkList == null || tkList.size() == 0) {
+            return false;
+        }
+        String tk = ConfigAccessor.Default.getConfig(AgentConfig.class).terminusKey();
+        for (String value : tkList) {
+            if (tk.equals(value)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

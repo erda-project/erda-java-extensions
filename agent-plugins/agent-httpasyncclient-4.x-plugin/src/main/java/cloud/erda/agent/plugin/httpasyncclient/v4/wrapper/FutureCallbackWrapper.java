@@ -17,6 +17,8 @@
 
 package cloud.erda.agent.plugin.httpasyncclient.v4.wrapper;
 
+import cloud.erda.agent.core.config.AgentConfig;
+import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import cloud.erda.agent.core.tracing.Scope;
@@ -32,6 +34,8 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.concurrent.FutureCallback;
+
+import static cloud.erda.agent.core.utils.Constants.Tags.*;
 
 /**
  * a wrapper for {@link FutureCallback} so we can be notified when the hold response (when one or more request fails the
@@ -108,13 +112,15 @@ public class FutureCallbackWrapper<T> implements FutureCallback<T> {
         TransactionMetricBuilder transactionMetricBuilder =
                 TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
         if (transactionMetricBuilder != null) {
-//            Header[] headers = response.getHeaders(Constants.Carriers.RESPONSE_TERMINUS_KEY);
-//            if (headers == null || headers.length <= 0) {
-                if (status != null) {
-                    TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, status.getStatusCode());
-                }
-                MetricReporter.report(transactionMetricBuilder);
-//            }
+            if (equalsTerminusKey(response.getHeaders(Constants.Carriers.RESPONSE_TERMINUS_KEY))) {
+                transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_INTERNAL);
+            } else {
+                transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_EXTERNAL);
+            }
+            if (status != null) {
+                TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, status.getStatusCode());
+            }
+            MetricReporter.report(transactionMetricBuilder);
         }
 
         Scope scope = TracerManager.tracer().active();
@@ -124,6 +130,19 @@ public class FutureCallbackWrapper<T> implements FutureCallback<T> {
             }
             scope.close();
         }
+    }
+
+    private boolean equalsTerminusKey(Header[] headers) {
+        if (headers == null || headers.length == 0) {
+            return false;
+        }
+        String tk = ConfigAccessor.Default.getConfig(AgentConfig.class).terminusKey();
+        for (Header header : headers) {
+            if (tk.equals(header.getValue())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void finallyFailed(Exception e) {
