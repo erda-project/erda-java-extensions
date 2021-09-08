@@ -18,22 +18,23 @@
 
 package cloud.erda.agent.plugin.jdbc;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import cloud.erda.agent.core.tracing.SpanContext;
 import cloud.erda.agent.core.tracing.Tracer;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.tracing.span.SpanBuilder;
 import cloud.erda.agent.core.utils.Constants;
-import org.apache.skywalking.apm.agent.core.util.Strings;
+import cloud.erda.agent.core.utils.Md5Utils;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import cloud.erda.agent.plugin.jdbc.define.StatementEnhanceInfos;
 import cloud.erda.agent.plugin.jdbc.trace.ConnectionInfo;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.util.Strings;
 
 /**
  * @author liuhaoyang
@@ -56,11 +57,12 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
             SpanBuilder spanBuilder = tracer.buildSpan(
                     buildOperationName(connectInfo, context.getMethod().getName(), cacheObject.getStatementName()));
             Span span = spanBuilder.childOf(spanContext).startActive().span();
-
+            String dbStatementId = Md5Utils.encode(statement);
             span.tag(Constants.Tags.PEER_HOSTNAME, connectInfo.getDatabasePeer());
             span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
             span.tag(Constants.Tags.DB_INSTANCE, connectInfo.getDatabaseName());
             span.tag(Constants.Tags.DB_STATEMENT, statement);
+            span.tag(Constants.Tags.DB_STATEMENT_ID, dbStatementId);
             span.tag(Constants.Tags.DB_TYPE, connectInfo.getDBType());
             span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_DB);
             span.tag(Constants.Tags.COMPONENT, connectInfo.getComponent());
@@ -77,6 +79,7 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
                     .tag(Constants.Tags.HOST, connectInfo.getDatabasePeer())
                     .tag(Constants.Tags.DB_INSTANCE, connectInfo.getDatabaseName())
                     .tag(Constants.Tags.DB_STATEMENT, statement)
+                    .tag(Constants.Tags.DB_STATEMENT_ID, dbStatementId)
                     .tag(Constants.Tags.DB_TYPE, connectInfo.getDBType());
         }
     }
