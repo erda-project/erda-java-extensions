@@ -116,7 +116,7 @@ public class Constants {
 
         public static final String DB_STATEMENT = "db_statement";
 
-        public static final String DB_STATEMENT_ID = "db_statement";
+        public static final String DB_STATEMENT_ID = "db_statement_id";
 
         public static final String DB_INSTANCE = "db_instance";
 
