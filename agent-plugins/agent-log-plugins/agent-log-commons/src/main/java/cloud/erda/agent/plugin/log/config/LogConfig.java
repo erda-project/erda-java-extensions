@@ -31,4 +31,11 @@ public class LogConfig implements Config {
     public Boolean getForceStdout() {
         return forceStdout;
     }
+
+    @Configuration(name = "TERMINUS_LOG_FORCE_FORMAT", defaultValue = "true")
+    private boolean forceFormat;
+
+    public boolean getForceFormat() {
+        return forceFormat;
+    }
 }
