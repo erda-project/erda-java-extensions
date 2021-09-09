@@ -16,6 +16,8 @@
 
 package cloud.erda.agent.plugin.logback.pattern;
 
+import cloud.erda.agent.core.config.loader.ConfigAccessor;
+import cloud.erda.agent.plugin.log.config.LogConfig;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -23,10 +25,15 @@ import cloud.erda.agent.plugin.log.pattern.PatternStrings;
 
 public class PatternInterceptor implements InstanceMethodsAroundInterceptor {
 
+    private final static ConfigAccessor logConfigAccessor = new ConfigAccessor(LogConfig.class.getClassLoader());
+
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        Object[] allArguments = context.getArguments();
-        allArguments[0] = PatternStrings.PATTERN;
+        LogConfig logConfig = logConfigAccessor.getConfig(LogConfig.class);
+        if(logConfig.getForceFormat()){
+            Object[] allArguments = context.getArguments();
+            allArguments[0] = PatternStrings.PATTERN;
+        }
     }
 
     @Override

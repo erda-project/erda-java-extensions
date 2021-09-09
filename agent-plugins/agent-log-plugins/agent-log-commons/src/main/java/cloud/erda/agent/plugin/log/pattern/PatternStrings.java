@@ -2,7 +2,7 @@ package cloud.erda.agent.plugin.log.pattern;
 
 public class PatternStrings {
 
-    public static final String REQUEST_ID = "requestid";
+    public static final String REQUEST_ID = "traceid";
 
     public static final String SPAN_ID = "spanid";
 
