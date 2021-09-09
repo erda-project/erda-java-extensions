@@ -44,9 +44,11 @@ public class TraceAnnotationInterceptor implements InstanceMethodsAroundIntercep
         Scope scope = spanBuilder.childOf(spanContext).startActive();
         context.setAttachment(Constants.Keys.TRACE_SCOPE, scope);
         Span span = scope.span();
+        span.tag(Constants.Tags.COMPONENT, Constants.Tags.INVOKE);
         span.tag(Constants.Tags.CLASS, context.getOriginClass().getName());
         span.tag(Constants.Tags.METHOD, context.getMethod().getName());
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_LOCAL);
+        span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
     }
 
     @Override

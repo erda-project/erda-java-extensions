@@ -116,6 +116,8 @@ public class Constants {
 
         public static final String DB_STATEMENT = "db_statement";
 
+        public static final String DB_STATEMENT_ID = "db_statement_id";
+
         public static final String DB_INSTANCE = "db_instance";
 
         public static final String HTTP_URL = "http_url";
@@ -133,6 +135,8 @@ public class Constants {
         public static final String COMPONENT_POSTGRESQL = "PostgreSql";
 
         public static final String COMPONENT_H2 = "H2";
+
+        public static final String COMPONENT_INVOKE = "Invoke";
 
         public static final String SPAN_LAYER_DB = "db";
 

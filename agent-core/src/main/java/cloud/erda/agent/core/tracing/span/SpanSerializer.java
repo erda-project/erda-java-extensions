@@ -47,6 +47,7 @@ public class SpanSerializer {
 
         metric.addTag("service_name", serviceConfig.getServiceName());
         metric.addTag("service_id", serviceConfig.getServiceId());
+        metric.addTag("service_instance_id", serviceConfig.getServiceInstanceId());
         metric.addTag("terminus_key", agentConfig.terminusKey());
         metric.addTag("project_id", serviceConfig.getProjectId());
         metric.addTag("application_id", serviceConfig.getApplicationId());

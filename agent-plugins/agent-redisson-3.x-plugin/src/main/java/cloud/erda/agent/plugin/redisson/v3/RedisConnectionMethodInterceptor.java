@@ -107,6 +107,7 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_REDISSON);
         span.tag(Constants.Tags.PEER_SERVICE, peer);
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_CACHE);
+        span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
         span.tag(Constants.Tags.HOST, peer);
         span.tag(Constants.Tags.DB_STATEMENT, dbStatement.toString());
 
