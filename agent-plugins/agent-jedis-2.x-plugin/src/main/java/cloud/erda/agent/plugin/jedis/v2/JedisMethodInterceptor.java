@@ -52,9 +52,9 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
 
         String key;
         if (allArguments[0] instanceof String) {
-            key = (String)allArguments[0];
+            key = (String) allArguments[0];
         } else if (allArguments[0] instanceof byte[]) {
-            key = new String((byte[])allArguments[0]);
+            key = new String((byte[]) allArguments[0]);
         } else {
             return;
         }
@@ -71,17 +71,19 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_JEDIS);
         span.tag(Constants.Tags.PEER_SERVICE, peer);
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_CACHE);
+        span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
         span.tag(Constants.Tags.HOST, peer);
         span.tag(Constants.Tags.DB_STATEMENT, statement);
 
         TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_CACHE, false);
         context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
-        transactionMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_LETTUCE)
-            .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT)
-            .tag(Constants.Tags.PEER_SERVICE, peer)
-            .tag(Constants.Tags.HOST, peer)
-            .tag(Constants.Tags.DB_STATEMENT, statement)
-            .tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
+        transactionMetricBuilder
+                .tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_JEDIS)
+                .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT)
+                .tag(Constants.Tags.PEER_SERVICE, peer)
+                .tag(Constants.Tags.HOST, peer)
+                .tag(Constants.Tags.DB_STATEMENT, statement)
+                .tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
     }
 
     @Override

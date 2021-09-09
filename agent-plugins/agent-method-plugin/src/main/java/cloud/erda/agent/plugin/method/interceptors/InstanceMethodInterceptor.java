@@ -39,9 +39,11 @@ public class InstanceMethodInterceptor implements InstanceMethodsAroundIntercept
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         SpanBuilder spanBuilder = tracer.buildSpan("Call/" + context.getOriginClass().getName() + "." + context.getMethod().getName());
         Span span = spanBuilder.childOf(spanContext).startActive().span();
+        span.tag(Constants.Tags.COMPONENT, Constants.Tags.INVOKE);
         span.tag(Constants.Tags.CLASS, context.getOriginClass().getName());
         span.tag(Constants.Tags.METHOD, context.getMethod().getName());
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_LOCAL);
+        span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
     }
 
     @Override
