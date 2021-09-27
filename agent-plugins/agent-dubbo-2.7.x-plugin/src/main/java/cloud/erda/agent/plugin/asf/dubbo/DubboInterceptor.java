@@ -96,7 +96,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
             transactionMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_DUBBO)
                     .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_SERVER)
                     .tag(Constants.Tags.PEER_ADDRESS, rpcContext.getRemoteAddressString())
-                    .tag(Constants.Tags.PEER_SERVICE, invoker.getInterface().getName())
+                    .tag(Constants.Tags.PEER_SERVICE, invoker.getInterface().getName() + "." + invocation.getMethodName())
                     .tag(Constants.Tags.HOST, rpcContext.getLocalAddressString())
                     .tag(Constants.Tags.DUBBO_SERVICE, invoker.getInterface().getName())
                     .tag(Constants.Tags.DUBBO_METHOD, invocation.getMethodName());
@@ -106,7 +106,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_DUBBO);
         span.tag(Constants.Tags.PEER_PORT, String.valueOf(port));
         span.tag(Constants.Tags.PEER_ADDRESS, rpcContext.getRemoteAddressString());
-        span.tag(Constants.Tags.PEER_SERVICE, invoker.getInterface().getName());
+        span.tag(Constants.Tags.PEER_SERVICE, invoker.getInterface().getName() + "." + invocation.getMethodName());
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_RPC);
         span.tag(Constants.Tags.HOST, rpcContext.getLocalAddressString());
         span.tag(Constants.Tags.DUBBO_SERVICE, invoker.getInterface().getName());
