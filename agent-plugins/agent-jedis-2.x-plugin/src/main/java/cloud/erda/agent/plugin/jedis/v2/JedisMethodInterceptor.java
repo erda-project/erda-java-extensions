@@ -74,6 +74,8 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
         span.tag(Constants.Tags.HOST, peer);
         span.tag(Constants.Tags.DB_STATEMENT, statement);
+        span.tag(Constants.Tags.PEER_ADDRESS, peer);
+        span.tag(Constants.Tags.PEER_HOSTNAME, peer);
 
         TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_CACHE, false);
         context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
@@ -81,6 +83,8 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
                 .tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_JEDIS)
                 .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT)
                 .tag(Constants.Tags.PEER_SERVICE, peer)
+                .tag(Constants.Tags.PEER_ADDRESS, peer)
+                .tag(Constants.Tags.PEER_HOSTNAME, peer)
                 .tag(Constants.Tags.HOST, peer)
                 .tag(Constants.Tags.DB_STATEMENT, statement)
                 .tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
