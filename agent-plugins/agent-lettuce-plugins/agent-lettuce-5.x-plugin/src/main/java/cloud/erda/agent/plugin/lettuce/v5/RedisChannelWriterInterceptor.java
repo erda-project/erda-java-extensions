@@ -71,6 +71,8 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
         span.tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_LETTUCE);
         span.tag(Constants.Tags.PEER_SERVICE, peer);
+        span.tag(Constants.Tags.PEER_ADDRESS, peer);
+        span.tag(Constants.Tags.PEER_HOSTNAME, peer);
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_CACHE);
         span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
         span.tag(Constants.Tags.HOST, peer);
