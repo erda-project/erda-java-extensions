@@ -73,7 +73,7 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         span.tag(COMPONENT, COMPONENT_ROCKETMQ);
         span.tag(SPAN_KIND, SPAN_KIND_PRODUCER);
         span.tag(SPAN_LAYER, SPAN_LAYER_MQ);
-        span.tag(PEER_ADDRESS, (String) allArguments[0]);
+        span.tag(PEER_ADDRESS, nameServerAddress);
         span.tag(HOST, nameServerAddress);
         span.tag(MESSAGE_BUS_DESTINATION, message.getTopic());
 
@@ -100,7 +100,7 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_MQ, false);
         transactionMetricBuilder.tag(COMPONENT, COMPONENT_ROCKETMQ)
                 .tag(SPAN_KIND, SPAN_KIND_PRODUCER)
-                .tag(PEER_ADDRESS, (String) allArguments[0])
+                .tag(PEER_ADDRESS, nameServerAddress)
                 .tag(HOST, nameServerAddress)
                 .tag(MESSAGE_BUS_DESTINATION, message.getTopic());
         if (IS_SYNC.get()) {
