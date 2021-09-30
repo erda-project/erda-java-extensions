@@ -57,7 +57,6 @@ public class SpanSerializer {
         metric.addTag("project_name", serviceConfig.getProjectName());
         metric.addTag("application_name", serviceConfig.getApplicationName());
         metric.addTag("workspace", serviceConfig.getWorkspace());
-
         return metric;
     }
 }
