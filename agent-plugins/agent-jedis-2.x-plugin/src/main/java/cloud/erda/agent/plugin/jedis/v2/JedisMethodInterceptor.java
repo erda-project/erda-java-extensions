@@ -18,21 +18,20 @@
 
 package cloud.erda.agent.plugin.jedis.v2;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import cloud.erda.agent.core.tracing.SpanContext;
 import cloud.erda.agent.core.tracing.Tracer;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.tracing.span.SpanBuilder;
 import cloud.erda.agent.core.utils.Constants;
-import org.apache.skywalking.apm.agent.core.util.Strings;
 import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 
 import java.lang.reflect.Method;
 
@@ -46,22 +45,15 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
 
         String peer = String.valueOf(objInst.getDynamicField());
 
-        if (allArguments.length == 0) {
-            return;
-        }
-
-        String key;
+        String key = "";
         if (allArguments[0] instanceof String) {
             key = (String) allArguments[0];
         } else if (allArguments[0] instanceof byte[]) {
             key = new String((byte[]) allArguments[0]);
-        } else {
-            return;
+        } else if (allArguments[0] instanceof Integer) {
+            key = String.valueOf(allArguments[0]);
         }
         String statement = (method.getName() + " " + key).replace("\n", "");
-        if (Strings.isEmpty(statement)) {
-            return;
-        }
 
         Tracer tracer = TracerManager.tracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
