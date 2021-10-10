@@ -166,13 +166,15 @@ public class ErdaMeterRegistry extends StepMeterRegistry {
         metric.setTimestamp(this.clock.wallTime());
         Map<String, String> tags = this.getConventionTags(id).stream().filter((t) -> StringUtils.isNotBlank(t.getValue())).collect(Collectors.toMap(Tag::getKey, Tag::getValue));
         tags.put("metric_type", metricType);
+        tags.put("_custom", "true");
         tags.put("_meta", "true");
         tags.put("_metric_scope", "micro_service");
-        tags.put("_metric_scope_id",this.config.mspEnvId());
+        tags.put("_metric_scope_id", this.config.mspEnvId());
         tags.put("_metric_src_instrument", "micrometer");
         tags.put("_metric_src", "integrated_client");
         tags.put("msp_env_id", this.config.mspEnvId());
         tags.put("terminus_key", this.config.mspEnvId());
+        tags.put("org_name", this.config.orgName());
         metric.setTags(tags);
         metric.setFields(fieldBuilder.build());
         return metric;

@@ -54,6 +54,10 @@ public interface ErdaConfig extends StepRegistryConfig {
         return PropertyValidator.getString(this, "mspEnvToken").orElse(null);
     }
 
+    default String orgName() {
+        return PropertyValidator.getString(this, "orgName").orElse(System.getenv("DICE_ORG_NAME"));
+    }
+
     @Override
     default String get(String s) {
         return null;
