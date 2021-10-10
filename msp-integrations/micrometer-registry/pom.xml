@@ -27,7 +27,7 @@
 
     <artifactId>micrometer-registry-erda</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.4</version>
+    <version>0.1.0</version>
     <dependencies>
         <dependency>
             <groupId>io.micrometer</groupId>
