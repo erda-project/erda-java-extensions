@@ -17,10 +17,8 @@
 package cloud.erda.agent.plugin.sdk.interceptors;
 
 import cloud.erda.agent.core.tracing.Scope;
-import cloud.erda.agent.core.tracing.Tracer;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.plugin.sdk.SpanWrapper;
-import cloud.erda.msp.monitor.tracing.Span;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
