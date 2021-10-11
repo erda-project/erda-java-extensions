@@ -159,11 +159,10 @@ public class ErdaMeterRegistry extends StepMeterRegistry {
         return Double.isFinite(count) ? Stream.of(this.metricProtocol(gauge.getId(), "gauge", Metric.FieldBuilder.newFields().add("value", count))) : Stream.empty();
     }
 
-
     private Metric metricProtocol(Meter.Id id, String metricType, Metric.FieldBuilder fieldBuilder) {
         Metric metric = new Metric();
         metric.setName(this.getConventionName(id));
-        metric.setTimestamp(this.clock.wallTime());
+        metric.setTimestamp(this.clock.wallTime() * 1000000L);
         Map<String, String> tags = this.getConventionTags(id).stream().filter((t) -> StringUtils.isNotBlank(t.getValue())).collect(Collectors.toMap(Tag::getKey, Tag::getValue));
         tags.put("metric_type", metricType);
         tags.put("_custom", "true");
