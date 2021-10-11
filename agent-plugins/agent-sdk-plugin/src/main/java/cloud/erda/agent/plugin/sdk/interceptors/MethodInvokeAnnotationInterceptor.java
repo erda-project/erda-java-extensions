@@ -16,13 +16,11 @@
 
 package cloud.erda.agent.plugin.sdk.interceptors;
 
-import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.plugin.app.insight.MetricBuilder;
 import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import cloud.erda.agent.plugin.app.insight.invoke.InvokeMetricBuilder;
 import cloud.erda.msp.monitor.metrics.MethodInvoke;
-import cloud.erda.msp.monitor.tracing.Trace;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;

@@ -89,6 +89,7 @@
                         <configuration>
                             <tasks>
                                 <delete dir="${agent.package.dest.dir}/plugins" />
+                                <delete dir="${agent.package.dest.dir}/integrations" />
                                 <mkdir dir="${agent.package.dest.dir}" />
                                 <delete dir="${agent.package.dest.dir}/logs" />
                                 <delete dir="${agent.package.dest.dir}/licenses" />

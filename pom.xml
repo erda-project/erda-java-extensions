@@ -10,8 +10,8 @@
         <module>agent-core</module>
         <module>agent-main</module>
         <module>agent-plugins</module>
+        <module>msp-integrations</module>
         <module>agent-pack</module>
-        <module>agent-sdk</module>
     </modules>
     <packaging>pom</packaging>
 
