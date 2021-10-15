@@ -16,7 +16,7 @@
 
 package cloud.erda.agent.plugin.log.error;
 
-import cloud.erda.agent.core.metric.Metric;
+import cloud.erda.agent.core.metrics.Metric;
 import cloud.erda.agent.core.utils.GsonUtils;
 
 import java.util.List;

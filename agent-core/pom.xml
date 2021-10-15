@@ -32,21 +32,13 @@
         <shade.org.apache.http.target>${shade.package}.${shade.org.apache.http.source}</shade.org.apache.http.target>
         <shade.org.apache.commons.source>org.apache.commons</shade.org.apache.commons.source>
         <shade.org.apache.commons.target>${shade.package}.${shade.org.apache.http.source}</shade.org.apache.commons.target>
-        <shade.io.prometheus.client.source>io.prometheus.client</shade.io.prometheus.client.source>
-        <shade.io.prometheus.client.target>${shade.package}.${shade.io.prometheus.client.source}</shade.io.prometheus.client.target>
-
         <shade.lombok.source>lombok</shade.lombok.source>
         <shade.lombok.target>${shade.package}.${shade.lombok.source}</shade.lombok.target>
-
         <agent.package.dest.dir>${project.basedir}/../dist/erda-java-agent</agent.package.dest.dir>
+        <opentelemetry.version>1.7.0-alpha</opentelemetry.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>io.prometheus</groupId>
-            <artifactId>simpleclient</artifactId>
-            <version>0.8.1</version>
-        </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -67,6 +59,16 @@
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
             <version>3.3.6</version>
+        </dependency>
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-api-metrics</artifactId>
+            <version>${opentelemetry.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-sdk-metrics</artifactId>
+            <version>${opentelemetry.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
@@ -107,6 +109,7 @@
                                     <exclude>net.bytebuddy:byte-buddy:jar:</exclude>
                                     <exclude>com.google.errorprone:error_prone_annotations:jar:</exclude>
                                     <exclude>com.google.code.findbugs:jsr305:jar:</exclude>
+                                    <exclude>io.opentelemetry:opentelemetry-api-metrics:jar:</exclude>
                                 </excludes>
                             </artifactSet>
                             <relocations>
@@ -126,6 +129,10 @@
                                     <pattern>${shade.io.netty.source}</pattern>
                                     <shadedPattern>${shade.io.netty.target}</shadedPattern>
                                 </relocation>
+<!--                                <relocation>-->
+<!--                                    <pattern>${shade.io.opentelemetry.source}</pattern>-->
+<!--                                    <shadedPattern>${shade.io.opentelemetry.target}</shadedPattern>-->
+<!--                                </relocation>-->
                                 <relocation>
                                     <pattern>${shade.org.apache.http.source}</pattern>
                                     <shadedPattern>${shade.org.apache.http.target}</shadedPattern>
@@ -134,10 +141,6 @@
                                     <pattern>${shade.org.apache.commons.source}</pattern>
                                     <shadedPattern>${shade.org.apache.commons.target}</shadedPattern>
                                 </relocation>
-<!--                                <relocation>-->
-<!--                                    <pattern>${shade.io.prometheus.client.source}</pattern>-->
-<!--                                    <shadedPattern>${shade.io.prometheus.client.target}</shadedPattern>-->
-<!--                                </relocation>-->
                             </relocations>
                             <filters>
                                 <filter>

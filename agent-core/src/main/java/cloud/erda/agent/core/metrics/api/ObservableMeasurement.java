@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.core.adapter.prometheus.converters;
+package cloud.erda.agent.core.metrics.api;
+
+import io.opentelemetry.api.common.Attributes;
 
 /**
- * @author liuhaoyang 2020/3/19 17:28
+ * @author liuhaoyang
+ * @date 2021/10/14 12:11
  */
-public class HistogramConverter extends StatisticsConverter {
+public interface ObservableMeasurement {
 
-    public static final MetricConverter instance = new HistogramConverter();
-
-    public HistogramConverter() {
-        super("le");
-    }
+    void observe(double value, Attributes attributes);
 }

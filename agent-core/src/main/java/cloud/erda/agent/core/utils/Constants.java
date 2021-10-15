@@ -244,5 +244,11 @@ public class Constants {
         public static final String APPLICATION_MICRO_SERVICE = "application_micro_service";
 
         public static final String APPLICATION_SERVICE_NODE = "application_service_node";
+
+        public static final String INSTRUMENTATION_LIBRARY = "instrumentation_library";
+
+        public static final String INSTRUMENTATION_LIBRARY_VERSION = "instrumentation_library_version";
+
+        public static final String FIELD_KEY = "__field_key__";
     }
 }

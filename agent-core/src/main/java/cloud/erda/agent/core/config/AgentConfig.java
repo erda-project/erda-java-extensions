@@ -19,6 +19,7 @@ package cloud.erda.agent.core.config;
 import cloud.erda.agent.core.config.loader.Config;
 import cloud.erda.agent.core.config.loader.Configuration;
 import org.apache.skywalking.apm.agent.core.logging.core.LogLevel;
+import org.apache.skywalking.apm.agent.core.util.Strings;
 
 public class AgentConfig implements Config {
     @Configuration(name = "TERMINUS_KEY", defaultValue = "")
@@ -48,8 +49,21 @@ public class AgentConfig implements Config {
     @Configuration(name = "MONITOR_AGENT_OS")
     private String _agentOsInfo;
 
+    @Configuration(name = "MSP_ENV_ID", defaultValue = "")
+    private String _mspEnvId;
+
+    @Configuration(name = "MSP_ENV_TOKEN", defaultValue = "")
+    private String _mspEnvToken;
+
     public String terminusKey() {
-        return _terminusKey;
+        if (!Strings.isEmpty(_terminusKey)) {
+            return _terminusKey;
+        }
+        return _mspEnvId;
+    }
+
+    public String mspEnvToken() {
+        return _mspEnvToken;
     }
 
     public int samplingRate() {

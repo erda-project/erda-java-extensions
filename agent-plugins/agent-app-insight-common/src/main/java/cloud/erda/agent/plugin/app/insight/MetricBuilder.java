@@ -16,7 +16,7 @@
 
 package cloud.erda.agent.plugin.app.insight;
 
-import cloud.erda.agent.core.metric.Metric;
+import cloud.erda.agent.core.metrics.Metric;
 
 /**
  * @author liuhaoyang

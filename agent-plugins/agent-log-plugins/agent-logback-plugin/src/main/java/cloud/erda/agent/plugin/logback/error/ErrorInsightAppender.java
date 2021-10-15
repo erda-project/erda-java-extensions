@@ -24,7 +24,7 @@ import ch.qos.logback.core.AppenderBase;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
-import cloud.erda.agent.core.reporter.TelegrafReporter;
+import cloud.erda.agent.core.metrics.reporter.TelegrafReporter;
 import cloud.erda.agent.plugin.log.error.ErrorConsts;
 import cloud.erda.agent.plugin.log.error.ErrorEventBuilder;
 

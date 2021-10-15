@@ -21,8 +21,8 @@ import cloud.erda.agent.core.config.AgentConfig;
 import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import cloud.erda.agent.core.config.ServiceConfig;
 import cloud.erda.agent.core.config.ServiceMeshConfig;
-import cloud.erda.agent.core.metric.Metric;
-import cloud.erda.agent.core.reporter.TelegrafReporter;
+import cloud.erda.agent.core.metrics.Metric;
+import cloud.erda.agent.core.metrics.reporter.TelegrafReporter;
 
 import java.util.ArrayList;
 import java.util.List;

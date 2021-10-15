@@ -18,7 +18,7 @@ package cloud.erda.agent.core.tracing.span;
 
 import cloud.erda.agent.core.config.AgentConfig;
 import cloud.erda.agent.core.config.ServiceConfig;
-import cloud.erda.agent.core.metric.Metric;
+import cloud.erda.agent.core.metrics.Metric;
 import cloud.erda.agent.core.config.loader.ConfigAccessor;
 
 import java.util.Map;
@@ -41,9 +41,9 @@ public class SpanSerializer {
         for (Map.Entry<String, String> tag : span.getTags().entrySet()) {
             metric.addTag(tag.getKey().replace('.', '_'), tag.getValue());
         }
-        metric.addField("start_time", String.valueOf(span.getStartTime()));
-        metric.addField("end_time", String.valueOf(span.getEndTime()));
-        metric.addField("duration", String.valueOf((Math.abs(span.getEndTime() - span.getStartTime()))));
+        metric.addField("start_time", span.getStartTime());
+        metric.addField("end_time", span.getEndTime());
+        metric.addField("duration", (Math.abs(span.getEndTime() - span.getStartTime())));
 
         metric.addTag("service_name", serviceConfig.getServiceName());
         metric.addTag("service_id", serviceConfig.getServiceId());

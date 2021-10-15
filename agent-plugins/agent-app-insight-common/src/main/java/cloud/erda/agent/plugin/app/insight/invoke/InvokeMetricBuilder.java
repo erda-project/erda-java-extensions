@@ -16,11 +16,7 @@
 
 package cloud.erda.agent.plugin.app.insight.invoke;
 
-import cloud.erda.agent.core.config.AddonConfig;
-import cloud.erda.agent.core.config.AgentConfig;
-import cloud.erda.agent.core.config.ServiceConfig;
-import cloud.erda.agent.core.config.loader.ConfigAccessor;
-import cloud.erda.agent.core.metric.Metric;
+import cloud.erda.agent.core.metrics.Metric;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.DateTimeUtils;
 import cloud.erda.agent.plugin.app.insight.Configs;

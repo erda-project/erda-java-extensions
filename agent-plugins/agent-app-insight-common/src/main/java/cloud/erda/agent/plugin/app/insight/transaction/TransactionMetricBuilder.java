@@ -16,7 +16,7 @@
 
 package cloud.erda.agent.plugin.app.insight.transaction;
 
-import cloud.erda.agent.core.metric.Metric;
+import cloud.erda.agent.core.metrics.Metric;
 import cloud.erda.agent.core.tracing.TracerContext;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.utils.Constants;

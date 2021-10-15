@@ -14,8 +14,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>agent-tomcat-plugin</module>
-        <module>agent-jetty-plugin</module>
+        <module>agent-tomcat-servlet-plugin</module>
+        <module>agent-jetty-servlet-plugin</module>
         <module>agent-servlet-commons</module>
     </modules>
 
