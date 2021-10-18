@@ -40,6 +40,6 @@ public class ServletInvokeInterceptor extends BaseServletInvokeInterceptor {
 
     @Override
     protected String getComponent() {
-        return Constants.Tags.COMPONENT_SPRING_BOOT;
+        return Constants.Tags.COMPONENT_TOMCAT;
     }
 }
