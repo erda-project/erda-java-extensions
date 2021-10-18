@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.core.metric;
+package cloud.erda.agent.core.metrics;
 
 import org.apache.skywalking.apm.agent.core.util.Strings;
 
@@ -54,6 +54,16 @@ public class Metric {
         return this;
     }
 
+    public Metric addFields(FieldBuilder fieldBuilder) {
+        this.fields.putAll(fieldBuilder.build());
+        return this;
+    }
+
+    public Metric addTags(TagBuilder tagBuilder) {
+        this.tags.putAll(tagBuilder.build());
+        return this;
+    }
+
     public String getName() {
         return name;
     }
@@ -72,5 +82,51 @@ public class Metric {
 
     public static Metric New(String name, long timestamp) {
         return new Metric(name, timestamp);
+    }
+
+    public static class FieldBuilder {
+
+        private final Map<String, Object> fields = new HashMap<>();
+
+        public FieldBuilder add(String key, Object value) {
+            fields.put(key, value);
+            return this;
+        }
+
+        public Map<String, Object> build() {
+            return fields;
+        }
+
+        public static FieldBuilder newFields() {
+            return new FieldBuilder();
+        }
+    }
+
+    public static class TagBuilder {
+
+        private final Map<String, String> tags = new HashMap<>();
+
+        public TagBuilder add(String key, String value) {
+            if (key.contains("__")) {
+                return this;
+            }
+            tags.put(key, value);
+            return this;
+        }
+
+        public Map<String, String> build() {
+            return tags;
+        }
+
+        public static TagBuilder newTags() {
+            return new TagBuilder();
+        }
+
+        public String getOrDefault(String key, String defaultValue) {
+            if (tags.containsKey(key)) {
+                return tags.get(key);
+            }
+            return defaultValue;
+        }
     }
 }

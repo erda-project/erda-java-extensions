@@ -17,7 +17,7 @@
 package cloud.erda.agent.plugin.app.insight;
 
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
-import cloud.erda.agent.core.reporter.TelegrafReporter;
+import cloud.erda.agent.core.metrics.reporter.TelegrafReporter;
 
 /**
  * @author liuhaoyang

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.core.reporter;
+package cloud.erda.agent.core.metrics.reporter;
 
-import cloud.erda.agent.core.metric.Metric;
+import cloud.erda.agent.core.metrics.Metric;
 import cloud.erda.agent.core.utils.GsonUtils;
 import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
@@ -34,7 +34,6 @@ public class TelegrafReporter implements BootService {
 
     private static final ILog log = LogManager.getLogger(TelegrafReporter.class);
 
-    private TelegrafProxyConfig config;
     private InetSocketAddress socketAddress;
     private DatagramSocket socket;
     private boolean init;
@@ -45,7 +44,7 @@ public class TelegrafReporter implements BootService {
 
     @Override
     public void boot() throws Throwable {
-        this.config = ConfigAccessor.Default.getConfig(TelegrafProxyConfig.class);
+        TelegrafProxyConfig config = ConfigAccessor.Default.getConfig(TelegrafProxyConfig.class);
         this.socketAddress = new InetSocketAddress(config.getHost(), config.getHostPort());
         log.info("Telegraf proxy addr " + socketAddress.toString());
         try {
@@ -96,7 +95,7 @@ public class TelegrafReporter implements BootService {
             }
         } catch (IOException e) {
             if (log.isErrorEnable()) {
-                log.error("Send data fail.", e);
+                log.error(e, "Sen {}({}KB)d data fail.", buckets.length, data.length / (float) 1024);
             }
         }
     }

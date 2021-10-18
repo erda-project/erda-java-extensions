@@ -40,9 +40,25 @@ public enum ServiceManager {
     public void boot() {
         bootedServices = loadAllServices();
 
-        beforeBoot();
-        startup();
-        afterBoot();
+        for (BootService service : bootedServices.values()) {
+            try {
+                service.beforeBoot();
+            } catch (Throwable e) {
+                logger.error(e, "ServiceManager try to pre-start [{}] fail.", service.getClass().getName());
+                continue;
+            }
+            try {
+                service.boot();
+            } catch (Throwable e) {
+                logger.error(e, "ServiceManager try to start [{}] fail.", service.getClass().getName());
+                continue;
+            }
+            try {
+                service.afterBoot();
+            } catch (Throwable e) {
+                logger.error(e, "ServiceManager try to post-start [{}] fail.", service.getClass().getName());
+            }
+        }
     }
 
     public void shutdown() {
@@ -56,11 +72,29 @@ public enum ServiceManager {
     }
 
     private Map<Class, BootService> loadAllServices() {
-        Map<Class, BootService> bootedServices = new LinkedHashMap<Class, BootService>();
-        Iterator<BootService> serviceIterator = load().iterator();
-        while (serviceIterator.hasNext()) {
-            BootService bootService = serviceIterator.next();
+        Map<Class, BootService> bootedServices = new HashMap<>();
+        for (BootService bootService : load()) {
             bootedServices.put(bootService.getClass(), bootService);
+        }
+        Map<Class, BootService> dependencies = new LinkedHashMap<>();
+        for (Map.Entry<Class, BootService> service : bootedServices.entrySet()) {
+            DependsOn dependsOn = (DependsOn) service.getKey().getAnnotation(DependsOn.class);
+            if (dependsOn != null) {
+                for (Class depend : dependsOn.value()) {
+                    BootService dependsOnInstance = bootedServices.get(depend);
+                    if (dependsOnInstance == null) {
+                        continue;
+                    }
+                    if (dependencies.containsKey(depend)) {
+                        continue;
+                    }
+                    dependencies.put(depend, dependsOnInstance);
+                }
+            }
+            if (dependencies.containsKey(service.getKey())) {
+                continue;
+            }
+            dependencies.put(service.getKey(), service.getValue());
         }
         return bootedServices;
     }

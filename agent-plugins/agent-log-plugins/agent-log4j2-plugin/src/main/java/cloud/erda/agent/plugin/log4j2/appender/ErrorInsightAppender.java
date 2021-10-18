@@ -17,7 +17,7 @@
 package cloud.erda.agent.plugin.log4j2.appender;
 
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
-import cloud.erda.agent.core.reporter.TelegrafReporter;
+import cloud.erda.agent.core.metrics.reporter.TelegrafReporter;
 import cloud.erda.agent.plugin.log.error.ErrorConsts;
 import cloud.erda.agent.plugin.log.error.ErrorEventBuilder;
 import org.apache.logging.log4j.Level;

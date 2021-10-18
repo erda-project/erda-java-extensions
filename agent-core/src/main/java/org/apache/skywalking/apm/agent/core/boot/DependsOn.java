@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.core.adapter.prometheus.converters;
+package org.apache.skywalking.apm.agent.core.boot;
 
-import cloud.erda.agent.core.metric.Metric;
-import io.prometheus.client.Collector.MetricFamilySamples;
-
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * @author liuhaoyang 2020/3/19 15:55
+ * @author liuhaoyang
+ * @date 2021/10/14 13:35
  */
-public interface MetricConverter {
-    List<Metric> convert(MetricFamilySamples metricFamilySamples, long timestamp);
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface DependsOn {
+    Class[] value();
 }

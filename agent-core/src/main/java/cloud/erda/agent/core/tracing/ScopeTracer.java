@@ -22,7 +22,7 @@ import cloud.erda.agent.core.tracing.propagator.Carrier;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.tracing.span.SpanBuilder;
 import cloud.erda.agent.core.tracing.span.SpanSerializer;
-import cloud.erda.agent.core.reporter.TelegrafReporter;
+import cloud.erda.agent.core.metrics.reporter.TelegrafReporter;
 
 /**
  * @author liuhaoyang
