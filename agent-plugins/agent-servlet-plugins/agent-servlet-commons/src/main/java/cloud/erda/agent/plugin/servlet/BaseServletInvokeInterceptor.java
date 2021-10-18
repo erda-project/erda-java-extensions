@@ -58,23 +58,17 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
     @Override
     public Object afterMethod(final IMethodInterceptContext context, Object ret) throws Throwable {
 
-        Caller.invoke(new Caller.Action() {
-            @Override
-            public void invoke() throws Exception {
-                HttpServletRequest request = getRequest(context);
-                HttpServletResponse response = getResponse(context);
-                postRequest(context, request, response);
-            }
+        Caller.invoke(() -> {
+            HttpServletRequest request = getRequest(context);
+            HttpServletResponse response = getResponse(context);
+            postRequest(context, request, response);
         });
 
         // 安全关闭http的入口span，避免request-id泄漏
-        Caller.invoke(new Caller.Action() {
-            @Override
-            public void invoke() throws Exception {
-                Scope scope = context.getAttachment(Constants.Keys.TRACE_SCOPE);
-                if (scope != null) {
-                    scope.close();
-                }
+        Caller.invoke(() -> {
+            Scope scope = context.getAttachment(Constants.Keys.TRACE_SCOPE);
+            if (scope != null) {
+                scope.close();
             }
         });
         return ret;
@@ -112,14 +106,14 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
         span.tag(Constants.Tags.HTTP_URL, request.getRequestURL().toString());
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_HTTP);
         span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_SERVER);
-        span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_SPRING_BOOT);
+        span.tag(Constants.Tags.COMPONENT, getComponent());
 
         if (Strings.isEmpty(request.getRequestURI())) {
             return;
         }
         TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_HTTP, true);
         context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
-        transactionMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_SPRING_BOOT)
+        transactionMetricBuilder.tag(Constants.Tags.COMPONENT, getComponent())
                 .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_SERVER)
                 .tag(Constants.Tags.HOST, host)
                 .tag(Constants.Tags.PEER_ADDRESS, host)
@@ -165,4 +159,6 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
     protected abstract HttpServletRequest getRequest(IMethodInterceptContext context);
 
     protected abstract HttpServletResponse getResponse(IMethodInterceptContext context);
+
+    protected abstract String getComponent();
 }

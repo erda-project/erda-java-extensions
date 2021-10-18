@@ -126,7 +126,7 @@ public class TomcatStatsCollector {
         for (Map.Entry<ObjectName, List<BiConsumer<ObjectName, Attributes>>> item : metricListeners.entrySet()) {
             ObjectName objectName = item.getKey();
             String type = objectName.getKeyProperty("type");
-            Attributes attributes = Attributes.of(AttributeKey.stringKey("component"), "tomcat", AttributeKey.stringKey("type"), type, AttributeKey.stringKey("_metric_index"), "apm_component_tomcat");
+            Attributes attributes = Attributes.of(AttributeKey.stringKey(Constants.Tags.COMPONENT), Constants.Tags.COMPONENT_TOMCAT, AttributeKey.stringKey("type"), type, AttributeKey.stringKey("_metric_index"), "apm_component_tomcat");
             for (BiConsumer<ObjectName, Attributes> listener : item.getValue()) {
                 listener.accept(objectName, attributes);
             }

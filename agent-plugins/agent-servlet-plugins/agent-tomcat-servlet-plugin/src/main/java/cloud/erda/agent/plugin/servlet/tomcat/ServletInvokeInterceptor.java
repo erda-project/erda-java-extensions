@@ -16,6 +16,7 @@
 
 package cloud.erda.agent.plugin.servlet.tomcat;
 
+import cloud.erda.agent.core.utils.Constants;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import cloud.erda.agent.plugin.servlet.BaseServletInvokeInterceptor;
 
@@ -35,5 +36,10 @@ public class ServletInvokeInterceptor extends BaseServletInvokeInterceptor {
     @Override
     protected HttpServletResponse getResponse(IMethodInterceptContext context) {
         return (HttpServletResponse) context.getArguments()[1];
+    }
+
+    @Override
+    protected String getComponent() {
+        return Constants.Tags.COMPONENT_SPRING_BOOT;
     }
 }

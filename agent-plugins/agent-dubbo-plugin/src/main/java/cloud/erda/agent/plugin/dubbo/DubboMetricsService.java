@@ -17,6 +17,7 @@
 package cloud.erda.agent.plugin.dubbo;
 
 import cloud.erda.agent.core.metrics.MetricProviderService;
+import cloud.erda.agent.core.utils.Constants;
 import com.alibaba.dubbo.common.extension.ExtensionLoader;
 import com.alibaba.dubbo.common.store.DataStore;
 import io.opentelemetry.api.common.AttributeKey;
@@ -62,7 +63,7 @@ public class DubboMetricsService extends ScheduledService {
         this.logger = LogManager.getLogger(DubboMetricsService.class);
         this.meter = ServiceManager.INSTANCE.findService(MetricProviderService.class).getMeter();
         this.listeners = initListeners();
-        this.attributes = Attributes.of(AttributeKey.stringKey("component"), "dubbo", AttributeKey.stringKey("type"), "ThreadPool", AttributeKey.stringKey("_metric_index"), "apm_component_dubbo");
+        this.attributes = Attributes.of(AttributeKey.stringKey(Constants.Tags.COMPONENT), Constants.Tags.COMPONENT_DUBBO, AttributeKey.stringKey("type"), "ThreadPool", AttributeKey.stringKey("_metric_index"), "apm_component_dubbo");
     }
 
     @Override
