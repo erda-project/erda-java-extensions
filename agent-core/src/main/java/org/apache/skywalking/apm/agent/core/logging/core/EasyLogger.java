@@ -80,7 +80,7 @@ public class EasyLogger implements ILog {
     String format(LogLevel level, String message, Throwable t) {
         return Strings.join(' ', level.name(),
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),
-                targetClass.getSimpleName(),
+                targetClass.getName(),
                 ": ",
                 message,
                 t == null ? "" : format(t)

@@ -250,5 +250,7 @@ public class Constants {
         public static final String INSTRUMENTATION_LIBRARY_VERSION = "instrumentation_library_version";
 
         public static final String FIELD_KEY = "__field_key__";
+
+        public static final String SCOPE_MICRO_SERVICE = "micro_service";
     }
 }

@@ -58,20 +58,26 @@ public class TomcatStatsCollector {
         this.metricListeners = new LinkedHashMap<>();
         this.notificationListeners = ConcurrentHashMap.newKeySet();
 
-        registerCacheMetrics();
+        this.registerGlobalRequestMetrics();
         this.registerThreadPoolMetrics();
     }
 
-    private void registerCacheMetrics() {
-        this.meter.counterBuilder("apm_tomcat_global_request").buildWithCallback(observableLongMeasurement -> {
-            registerMetricsEventually(JMX_DOMAIN_EMBEDDED + ":type=GlobalRequestProcessor,name=*", objectName -> {
-                List<BiConsumer<ObjectName, Attributes>> listeners = metricListeners.computeIfAbsent(objectName, k -> new ArrayList<>());
+    private void registerGlobalRequestMetrics() {
+        registerMetricsEventually(JMX_DOMAIN_EMBEDDED + ":type=GlobalRequestProcessor,name=*", objectName -> {
+            List<BiConsumer<ObjectName, Attributes>> listeners = metricListeners.computeIfAbsent(objectName, k -> new ArrayList<>());
+            this.meter.counterBuilder("apm_tomcat_global_request_bytes_sent").buildWithCallback(observableLongMeasurement -> {
                 listeners.add((name, attributes) ->
                         observableLongMeasurement.observe(this.getMBeanAttribute(name, "bytesSent"), getGlobalRequestAttributes(name, "bytes_sent", attributes)));
+            });
+            this.meter.counterBuilder("apm_tomcat_global_request_bytes_received").buildWithCallback(observableLongMeasurement -> {
                 listeners.add((name, attributes) ->
                         observableLongMeasurement.observe(this.getMBeanAttribute(name, "bytesReceived"), getGlobalRequestAttributes(name, "bytes_received", attributes)));
+            });
+            this.meter.counterBuilder("apm_tomcat_global_request_error_count").buildWithCallback(observableLongMeasurement -> {
                 listeners.add((name, attributes) ->
                         observableLongMeasurement.observe(this.getMBeanAttribute(name, "errorCount"), getGlobalRequestAttributes(name, "error_count", attributes)));
+            });
+            this.meter.counterBuilder("apm_tomcat_global_request_request_count").buildWithCallback(observableLongMeasurement -> {
                 listeners.add((name, attributes) ->
                         observableLongMeasurement.observe(this.getMBeanAttribute(name, "requestCount"), getGlobalRequestAttributes(name, "request_count", attributes)));
             });
@@ -79,23 +85,37 @@ public class TomcatStatsCollector {
     }
 
     private void registerThreadPoolMetrics() {
-        this.meter.gaugeBuilder("apm_tomcat_thread_pool").ofLongs().buildWithCallback(observableLongMeasurement -> {
-            registerMetricsEventually(JMX_DOMAIN_EMBEDDED + ":type=ThreadPool,name=*", objectName -> {
-                List<BiConsumer<ObjectName, Attributes>> listeners = metricListeners.computeIfAbsent(objectName, k -> new ArrayList<>());
+        registerMetricsEventually(JMX_DOMAIN_EMBEDDED + ":type=ThreadPool,name=*", objectName -> {
+            List<BiConsumer<ObjectName, Attributes>> listeners = metricListeners.computeIfAbsent(objectName, k -> new ArrayList<>());
+            this.meter.gaugeBuilder("apm_tomcat_thread_pool_max_threads").ofLongs().buildWithCallback(observableLongMeasurement -> {
                 listeners.add((name, attributes) ->
                         observableLongMeasurement.observe(this.getMBeanAttribute(name, "maxThreads"), getThreadPoolAttributes(name, "max_threads", attributes)));
+            });
+            this.meter.gaugeBuilder("apm_tomcat_thread_pool_threads_busy").ofLongs().buildWithCallback(observableLongMeasurement -> {
                 listeners.add((name, attributes) ->
                         observableLongMeasurement.observe(this.getMBeanAttribute(name, "currentThreadsBusy"), getThreadPoolAttributes(name, "threads_busy", attributes)));
+            });
+            this.meter.gaugeBuilder("apm_tomcat_thread_pool_connection_count").ofLongs().buildWithCallback(observableLongMeasurement -> {
                 listeners.add((name, attributes) ->
                         observableLongMeasurement.observe(this.getMBeanAttribute(name, "connectionCount"), getThreadPoolAttributes(name, "connection_count", attributes)));
+            });
+            this.meter.gaugeBuilder("apm_tomcat_thread_pool_accept_count").ofLongs().buildWithCallback(observableLongMeasurement -> {
                 listeners.add((name, attributes) ->
                         observableLongMeasurement.observe(this.getMBeanAttribute(name, "acceptCount"), getThreadPoolAttributes(name, "accept_count", attributes)));
+            });
+            this.meter.gaugeBuilder("apm_tomcat_thread_pool_max_connections").ofLongs().buildWithCallback(observableLongMeasurement -> {
                 listeners.add((name, attributes) ->
                         observableLongMeasurement.observe(this.getMBeanAttribute(name, "maxConnections"), getThreadPoolAttributes(name, "max_connections", attributes)));
+            });
+            this.meter.gaugeBuilder("apm_tomcat_thread_pool_keep_alive_count").ofLongs().buildWithCallback(observableLongMeasurement -> {
                 listeners.add((name, attributes) ->
                         observableLongMeasurement.observe(this.getMBeanAttribute(name, "keepAliveCount"), getThreadPoolAttributes(name, "keep_alive_count", attributes)));
+            });
+            this.meter.gaugeBuilder("apm_tomcat_thread_pool_acceptor_thread_count").ofLongs().buildWithCallback(observableLongMeasurement -> {
                 listeners.add((name, attributes) ->
                         observableLongMeasurement.observe(this.getMBeanAttribute(name, "acceptorThreadCount"), getThreadPoolAttributes(name, "acceptor_thread_count", attributes)));
+            });
+            this.meter.gaugeBuilder("apm_tomcat_thread_pool_poller_thread_count").ofLongs().buildWithCallback(observableLongMeasurement -> {
                 listeners.add((name, attributes) ->
                         observableLongMeasurement.observe(this.getMBeanAttribute(name, "pollerThreadCount"), getThreadPoolAttributes(name, "poller_thread_count", attributes)));
             });
@@ -106,7 +126,7 @@ public class TomcatStatsCollector {
         for (Map.Entry<ObjectName, List<BiConsumer<ObjectName, Attributes>>> item : metricListeners.entrySet()) {
             ObjectName objectName = item.getKey();
             String type = objectName.getKeyProperty("type");
-            Attributes attributes = Attributes.of(AttributeKey.stringKey("component"), "Tomcat", AttributeKey.stringKey("type"), type);
+            Attributes attributes = Attributes.of(AttributeKey.stringKey("component"), "tomcat", AttributeKey.stringKey("type"), type, AttributeKey.stringKey("_metric_index"), "apm_component_tomcat");
             for (BiConsumer<ObjectName, Attributes> listener : item.getValue()) {
                 listener.accept(objectName, attributes);
             }
@@ -123,7 +143,7 @@ public class TomcatStatsCollector {
         Set<ObjectName> objectNames = this.mBeanServer.queryNames(objectName, null);
         if (!objectNames.isEmpty()) {
             // MBeans are present, so we can register metrics now.
-            objectNames.forEach(perObject::accept);
+            objectNames.forEach(perObject);
         } else {
             ObjectName readonlyObjName = objectName;
             NotificationListener notificationListener = new NotificationListener() {

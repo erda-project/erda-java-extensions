@@ -109,7 +109,8 @@ public class TelegrafMetricExporter implements MetricExporter {
     }
 
     private Metric createMetric(String name, Long timestamp, Metric.TagBuilder tagBuilder, Metric.FieldBuilder fieldBuilder) {
-        return Metric.New(name, timestamp)
+        String indexName = tagBuilder.getOrDefault("_metric_index", null);
+        return Metric.New(indexName != null ? indexName : name, timestamp)
                 .addTags(tagBuilder).addFields(fieldBuilder);
     }
 

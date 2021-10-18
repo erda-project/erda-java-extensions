@@ -19,8 +19,8 @@ package cloud.erda.agent.core.metrics;
 import cloud.erda.agent.core.config.AgentConfig;
 import cloud.erda.agent.core.config.ServiceConfig;
 import cloud.erda.agent.core.config.loader.ConfigAccessor;
-import cloud.erda.agent.core.metrics.api.GaugeListener;
 import cloud.erda.agent.core.metrics.reporter.TelegrafReporter;
+import cloud.erda.agent.core.utils.Constants;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.sdk.common.Clock;
@@ -56,10 +56,6 @@ public class MetricProviderService implements BootService {
         return meterProvider;
     }
 
-    public GaugeListener addGauge(String name) {
-        return new GaugeListener(meter, name);
-    }
-
     @Override
     public void boot() throws Throwable {
 
@@ -75,8 +71,12 @@ public class MetricProviderService implements BootService {
                 put("application_name", serviceConfig.getApplicationName()).
                 put("project_name", serviceConfig.getProjectName()).
                 put("workspace", serviceConfig.getWorkspace()).
-                put("org_name", serviceConfig.getOrgName()).build();
-        Resource  resource = Resource.create(attributes);
+                put("org_name", serviceConfig.getOrgName()).
+                put("_meta", String.valueOf(true)).
+                put("_metric_scope", Constants.Metrics.SCOPE_MICRO_SERVICE).
+                put("_metric_scope_id", agentConfig.terminusKey()).
+                build();
+        Resource resource = Resource.create(attributes);
 
         TelegrafMetricExporter telegrafMetricExporter = new TelegrafMetricExporter(this.reporter);
         meterProvider = SdkMeterProvider.builder()
