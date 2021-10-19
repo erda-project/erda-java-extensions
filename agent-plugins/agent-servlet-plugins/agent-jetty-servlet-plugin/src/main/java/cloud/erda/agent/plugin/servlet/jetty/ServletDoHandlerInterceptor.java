@@ -16,6 +16,7 @@
 
 package cloud.erda.agent.plugin.servlet.jetty;
 
+import cloud.erda.agent.core.utils.Constants;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import cloud.erda.agent.plugin.servlet.BaseServletInvokeInterceptor;
 
@@ -35,5 +36,10 @@ public class ServletDoHandlerInterceptor extends BaseServletInvokeInterceptor {
     @Override
     protected HttpServletResponse getResponse(IMethodInterceptContext context) {
         return (HttpServletResponse) context.getArguments()[3];
+    }
+
+    @Override
+    protected String getComponent() {
+        return Constants.Tags.COMPONENT_JETTY;
     }
 }

@@ -144,6 +144,10 @@ public class Constants {
 
         public static final String COMPONENT_SPRING_BOOT = "SpringBoot";
 
+        public static final String COMPONENT_TOMCAT = "Tomcat";
+
+        public static final String COMPONENT_JETTY = "Jetty";
+
         public static final String NAME_SERVER_ADDRESS = "name_server_address";
 
         public static final String MESSAGE_BUS_DESTINATION = "message_bus_destination";
