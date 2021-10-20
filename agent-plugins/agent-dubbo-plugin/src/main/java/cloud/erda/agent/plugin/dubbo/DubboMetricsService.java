@@ -69,7 +69,7 @@ public class DubboMetricsService extends ScheduledService {
     @Override
     protected void executing() {
         if (!DUBBO_PROVIDER) {
-            logger.debug("not in alibaba-dubbo environment.");
+            logger.info("not in alibaba-dubbo environment.");
             return;
         }
         DataStore dataStore = ExtensionLoader.getExtensionLoader(DataStore.class).getDefaultExtension();

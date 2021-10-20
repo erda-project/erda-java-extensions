@@ -21,6 +21,7 @@ import cloud.erda.agent.plugin.sdk.interceptors.UserDefineStaticMethodPointsInte
 import cloud.erda.agent.plugin.sdk.match.PackageMatch;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
@@ -28,7 +29,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassEnha
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassStaticMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
-import static net.bytebuddy.matcher.ElementMatchers.any;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 
 /**
  * @author liuhaoyang
@@ -58,8 +59,9 @@ public class PackageInterceptInstrumentation extends ClassEnhancePluginDefine {
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return any();
+                        return ElementMatchers.not(named("getDynamicField").or(isAbstract()).or(nameContainsIgnoreCase("$EnhancerBySpringCGLIB$")));
                     }
+
                     @Override
                     public String getMethodsInterceptor() {
                         return UserDefineInstanceMethodPointsInterceptor.INTERCEPTOR_CLASS;
@@ -79,7 +81,8 @@ public class PackageInterceptInstrumentation extends ClassEnhancePluginDefine {
                 new StaticMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return any();
+
+                        return not(nameContainsIgnoreCase("*$EnhancerBySpringCGLIB$"));
                     }
 
                     @Override

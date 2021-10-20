@@ -37,25 +37,25 @@ public class UserDefineInstanceMethodPointsInterceptor implements InstanceMethod
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        Tracer tracer = TracerManager.tracer();
-        SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
-        SpanBuilder spanBuilder = tracer.buildSpan("Call/" + context.getOriginClass().getName() + "." + context.getMethod().getName());
-        Span span = spanBuilder.childOf(spanContext).startActive().span();
-        span.tag(Constants.Tags.COMPONENT, Constants.Tags.INVOKE);
-        span.tag(Constants.Tags.CLASS, context.getOriginClass().getName());
-        span.tag(Constants.Tags.METHOD, context.getMethod().getName());
-        span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_LOCAL);
-        span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
+//        Tracer tracer = TracerManager.tracer();
+//        SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
+//        SpanBuilder spanBuilder = tracer.buildSpan("Call/" + context.getOriginClass().getName() + "." + context.getMethod().getName());
+//        Span span = spanBuilder.childOf(spanContext).startActive().span();
+//        span.tag(Constants.Tags.COMPONENT, Constants.Tags.INVOKE);
+//        span.tag(Constants.Tags.CLASS, context.getOriginClass().getName());
+//        span.tag(Constants.Tags.METHOD, context.getMethod().getName());
+//        span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_LOCAL);
+//        span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
     }
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        TracerManager.tracer().active().close();
+//        TracerManager.tracer().active().close();
         return ret;
     }
 
     @Override
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
-        TracerUtils.handleException(t);
+//        TracerUtils.handleException(t);
     }
 }

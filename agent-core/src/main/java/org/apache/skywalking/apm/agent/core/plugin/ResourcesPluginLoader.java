@@ -59,7 +59,7 @@ public class ResourcesPluginLoader implements PluginLoader {
         List<AbstractClassEnhancePluginDefine> plugins = new ArrayList<AbstractClassEnhancePluginDefine>();
         for (PluginDefine pluginDefine : pluginClassList) {
             try {
-                logger.debug("loading plugin class {}.", pluginDefine.getDefineClass());
+                logger.info("loading plugin class {}.", pluginDefine.getDefineClass());
                 AbstractClassEnhancePluginDefine plugin =
                         (AbstractClassEnhancePluginDefine)Class.forName(pluginDefine.getDefineClass(),
                                 true,

@@ -44,17 +44,17 @@ public class UserDefineInterceptPointPluginLoader implements PluginLoader {
         InterceptPointConfig interceptPointConfig = new ConfigAccessor(getClass().getClassLoader()).getConfig(InterceptPointConfig.class);
         for (String packageName : interceptPointConfig.getPackageInterceptPoints()) {
             pluginDefines.add(new PackageInterceptInstrumentation(packageName));
-            logger.debug("loading package interceptPoint. package {}", packageName);
+            logger.info("loading package[{}] interceptPoint.", packageName);
         }
         MethodInterceptPointResolver instanceMethodInterceptPointResolver = new MethodInterceptPointResolver(interceptPointConfig.getInstancePoints());
         for (InterceptPoint interceptPoint : instanceMethodInterceptPointResolver.resolve()) {
             pluginDefines.add(new InstanceMethodInterceptInstrumentation(interceptPoint));
-            logger.debug("loading instance interceptPoint. class {} methods {}", interceptPoint.getClassName(), Arrays.stream(interceptPoint.getMethodNames()).reduce((x, y) -> x + "," + y));
+            logger.info("loading instance interceptPoint. class {} methods {}", interceptPoint.getClassName(), Arrays.stream(interceptPoint.getMethodNames()).reduce((x, y) -> x + "," + y));
         }
         MethodInterceptPointResolver staticMethodInterceptPointResolver = new MethodInterceptPointResolver(interceptPointConfig.getStaticPoints());
         for (InterceptPoint interceptPoint : staticMethodInterceptPointResolver.resolve()) {
             pluginDefines.add(new StaticMethodInterceptInstrumentation(interceptPoint));
-            logger.debug("loading static interceptPoint. class {} methods {}", interceptPoint.getClassName(), Arrays.stream(interceptPoint.getMethodNames()).reduce((x, y) -> x + "," + y));
+            logger.info("loading static interceptPoint. class {} methods {}", interceptPoint.getClassName(), Arrays.stream(interceptPoint.getMethodNames()).reduce((x, y) -> x + "," + y));
         }
         return pluginDefines;
     }

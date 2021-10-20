@@ -40,21 +40,25 @@ public enum ServiceManager {
     public void boot() {
         bootedServices = loadAllServices();
 
-        for (BootService service : bootedServices.values()) {
+        for (Map.Entry<Class, BootService> entry : bootedServices.entrySet()) {
+            BootService service = entry.getValue();
             try {
                 service.beforeBoot();
+                logger.info("ServiceManager pre-start [{}]", service.getClass().getName());
             } catch (Throwable e) {
                 logger.error(e, "ServiceManager try to pre-start [{}] fail.", service.getClass().getName());
                 continue;
             }
             try {
                 service.boot();
+                logger.info("ServiceManager start [{}]", service.getClass().getName());
             } catch (Throwable e) {
                 logger.error(e, "ServiceManager try to start [{}] fail.", service.getClass().getName());
                 continue;
             }
             try {
                 service.afterBoot();
+                logger.info("ServiceManager post-start [{}]", service.getClass().getName());
             } catch (Throwable e) {
                 logger.error(e, "ServiceManager try to post-start [{}] fail.", service.getClass().getName());
             }
@@ -96,7 +100,7 @@ public enum ServiceManager {
             }
             dependencies.put(service.getKey(), service.getValue());
         }
-        return bootedServices;
+        return dependencies;
     }
 
     private void beforeBoot() {
