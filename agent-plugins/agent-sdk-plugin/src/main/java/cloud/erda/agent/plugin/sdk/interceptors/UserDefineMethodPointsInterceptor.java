@@ -47,7 +47,7 @@ public class UserDefineMethodPointsInterceptor implements StaticMethodsAroundInt
         Scope scope = TracerManager.tracer().active();
         if (scope != null) {
             Long start = context.getAttachment(START_TIME_KEY);
-            scope.span().log(now).event(LogFields.Event, String.format("[cost %.3fms] %s:%s", (now - start) / 1000000f, context.getOriginClass().getName(), context.getMethod().getName()));
+            scope.span().log(now).event(LogFields.Event, String.format("[%.3fms] %s:%s", (now - start) / 1000000f, context.getOriginClass().getName(), context.getMethod().getName()));
         }
         return ret;
     }
