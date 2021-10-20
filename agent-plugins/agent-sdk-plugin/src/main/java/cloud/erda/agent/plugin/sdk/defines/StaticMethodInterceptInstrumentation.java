@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.method.defines;
+package cloud.erda.agent.plugin.sdk.defines;
 
-import cloud.erda.agent.plugin.method.InterceptPoint;
+import cloud.erda.agent.plugin.sdk.interceptPoint.InterceptPoint;
+import cloud.erda.agent.plugin.sdk.interceptors.UserDefineStaticMethodPointsInterceptor;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassStaticMethodsEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
@@ -29,15 +30,13 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
 
 /**
  * @author liuhaoyang
- * @date 2021/5/10 15:34
+ * @date 2021/5/10 15:37
  */
-public class InstanceMethodInterceptInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-
-    private static final String INTERCEPT_CLASS = "cloud.erda.agent.plugin.method.interceptors.InstanceMethodInterceptor";
+public class StaticMethodInterceptInstrumentation extends ClassStaticMethodsEnhancePluginDefine {
 
     private InterceptPoint interceptPoint;
 
-    public InstanceMethodInterceptInstrumentation(InterceptPoint interceptPoint) {
+    public StaticMethodInterceptInstrumentation(InterceptPoint interceptPoint) {
         this.interceptPoint = interceptPoint;
     }
 
@@ -47,17 +46,12 @@ public class InstanceMethodInterceptInstrumentation extends ClassInstanceMethods
     }
 
     @Override
-    protected ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[0];
-    }
-
-    @Override
-    protected InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
+    protected StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
         String[] methodNames = interceptPoint.getMethodNames();
-        InstanceMethodsInterceptPoint[] instanceMethodsInterceptPoints = new InstanceMethodsInterceptPoint[methodNames.length];
+        StaticMethodsInterceptPoint[] staticMethodsInterceptPoints = new StaticMethodsInterceptPoint[methodNames.length];
         for (int i = 0; i < methodNames.length; i++) {
             int index = i;
-            instanceMethodsInterceptPoints[i] = new InstanceMethodsInterceptPoint() {
+            staticMethodsInterceptPoints[i] = new StaticMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
                     return named(methodNames[index]);
@@ -65,7 +59,7 @@ public class InstanceMethodInterceptInstrumentation extends ClassInstanceMethods
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return INTERCEPT_CLASS;
+                    return UserDefineStaticMethodPointsInterceptor.INTERCEPTOR_CLASS;
                 }
 
                 @Override
@@ -74,6 +68,6 @@ public class InstanceMethodInterceptInstrumentation extends ClassInstanceMethods
                 }
             };
         }
-        return instanceMethodsInterceptPoints;
+        return staticMethodsInterceptPoints;
     }
 }

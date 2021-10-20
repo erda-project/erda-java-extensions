@@ -31,7 +31,6 @@
         <module>agent-lettuce-plugins</module>
         <module>agent-okhttp-plugins</module>
         <module>agent-sdk-plugin</module>
-        <module>agent-method-plugin</module>
         <module>agent-redisson-3.x-plugin</module>
         <module>agent-tomcat-metric-plugin</module>
     </modules>

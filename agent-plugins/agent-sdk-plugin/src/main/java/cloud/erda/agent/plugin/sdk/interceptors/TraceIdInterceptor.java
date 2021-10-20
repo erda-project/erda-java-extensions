@@ -25,7 +25,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMet
  * @author liuhaoyang
  * @date 2021/5/26 17:20
  */
-public class RequestIdInterceptor implements StaticMethodsAroundInterceptor {
+public class TraceIdInterceptor implements StaticMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) {

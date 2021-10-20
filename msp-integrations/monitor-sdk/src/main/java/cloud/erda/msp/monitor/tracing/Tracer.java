@@ -35,4 +35,8 @@ public class Tracer {
     public static boolean sampled() {
         return false;
     }
+
+    public static String traceId() {
+        return "";
+    }
 }

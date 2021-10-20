@@ -16,32 +16,61 @@
 
 package cloud.erda.agent.plugin.sdk.defines;
 
+import cloud.erda.agent.plugin.sdk.interceptors.UserDefineInstanceMethodPointsInterceptor;
+import cloud.erda.agent.plugin.sdk.interceptors.UserDefineStaticMethodPointsInterceptor;
+import cloud.erda.agent.plugin.sdk.match.PackageMatch;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassStaticMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
-import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.any;
 
 /**
  * @author liuhaoyang
- * @date 2021/5/27 11:01
+ * @date 2021/10/20 14:06
  */
-public class TracerInstrumentation extends ClassStaticMethodsEnhancePluginDefine {
+public class PackageInterceptInstrumentation extends ClassEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "cloud.erda.msp.monitor.tracing.Tracer";
+    private String packages;
 
-    private static final String SPAN_WRAPPER_INTERCEPTOR = "cloud.erda.agent.plugin.sdk.interceptors.SpanWrapperInterceptor";
-
-    private static final String TRACE_ID_INTERCEPTOR = "cloud.erda.agent.plugin.sdk.interceptors.TraceIdInterceptor";
-
-    private static final String SAMPLED_INTERCEPTOR = "cloud.erda.agent.plugin.sdk.interceptors.SampledInterceptor";
+    public PackageInterceptInstrumentation(String packages) {
+        this.packages = packages;
+    }
 
     @Override
     protected ClassMatch enhanceClass() {
-        return NameMatch.byName(ENHANCE_CLASS);
+        return PackageMatch.byPackages(packages);
+    }
+
+    @Override
+    protected ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
+        return new ConstructorInterceptPoint[0];
+    }
+
+    @Override
+    protected InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
+        return new InstanceMethodsInterceptPoint[]{
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return any();
+                    }
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return UserDefineInstanceMethodPointsInterceptor.INTERCEPTOR_CLASS;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return true;
+                    }
+                }
+        };
     }
 
     @Override
@@ -50,49 +79,17 @@ public class TracerInstrumentation extends ClassStaticMethodsEnhancePluginDefine
                 new StaticMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("activeSpan");
+                        return any();
                     }
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return SPAN_WRAPPER_INTERCEPTOR;
+                        return UserDefineStaticMethodPointsInterceptor.INTERCEPTOR_CLASS;
                     }
 
                     @Override
                     public boolean isOverrideArgs() {
-                        return false;
-                    }
-                },
-                new StaticMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("requestId").or(named("traceId"));
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return TRACE_ID_INTERCEPTOR;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                },
-                new StaticMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("sampled");
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return SAMPLED_INTERCEPTOR;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
+                        return true;
                     }
                 }
         };
