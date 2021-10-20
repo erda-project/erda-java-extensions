@@ -20,7 +20,7 @@ import cloud.erda.agent.core.metrics.Metric;
 import cloud.erda.agent.core.tracing.TracerContext;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.utils.Constants;
-import cloud.erda.agent.core.utils.DateTimeUtils;
+import cloud.erda.agent.core.utils.DateTime;
 import cloud.erda.agent.plugin.app.insight.Configs;
 import cloud.erda.agent.plugin.app.insight.MetricBuilder;
 import cloud.erda.agent.plugin.app.insight.StopWatch;
@@ -47,7 +47,7 @@ public class TransactionMetricBuilder implements MetricBuilder {
         this.name = name;
         this.tags = new HashMap<String, String>();
         this.fields = new HashMap<String, Object>();
-        this.timestamp = DateTimeUtils.currentTimeNano();
+        this.timestamp = DateTime.currentTimeNano();
         this.watch = new StopWatch(this.timestamp);
 
         if (isTarget) {

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.method.defines;
+package cloud.erda.agent.plugin.sdk.defines;
 
-import cloud.erda.agent.plugin.method.InterceptPoint;
+import cloud.erda.agent.plugin.sdk.interceptPoint.InterceptPoint;
+import cloud.erda.agent.plugin.sdk.interceptors.UserDefineMethodPointsInterceptor;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
@@ -32,8 +33,6 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
  * @date 2021/5/10 15:34
  */
 public class InstanceMethodInterceptInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-
-    private static final String INTERCEPT_CLASS = "cloud.erda.agent.plugin.method.interceptors.InstanceMethodInterceptor";
 
     private InterceptPoint interceptPoint;
 
@@ -65,7 +64,7 @@ public class InstanceMethodInterceptInstrumentation extends ClassInstanceMethods
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return INTERCEPT_CLASS;
+                    return UserDefineMethodPointsInterceptor.INTERCEPTOR_CLASS;
                 }
 
                 @Override

@@ -17,7 +17,7 @@
 package cloud.erda.agent.plugin.jvm;
 
 import cloud.erda.agent.core.metrics.Metric;
-import cloud.erda.agent.core.utils.DateTimeUtils;
+import cloud.erda.agent.core.utils.DateTime;
 
 import java.lang.management.ClassLoadingMXBean;
 import java.lang.management.ManagementFactory;
@@ -31,7 +31,7 @@ public class ClassLoaderStatsProvider implements StatsProvider {
     @Override
     public List<Metric> get() {
         return Arrays.asList(Metric.
-                New("jvm_class_loader", DateTimeUtils.currentTimeNano()).
+                New("jvm_class_loader", DateTime.currentTimeNano()).
                 addField("loaded", mxBean.getTotalLoadedClassCount()).addField("unloaded", mxBean.getUnloadedClassCount()));
     }
 }

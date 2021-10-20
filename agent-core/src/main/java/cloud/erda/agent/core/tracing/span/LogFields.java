@@ -16,34 +16,21 @@
 
 package cloud.erda.agent.core.tracing.span;
 
-import cloud.erda.agent.core.tracing.SpanContext;
-
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author liuhaoyang
- * @since 2019-01-04 16:53
- **/
-public interface Span {
+ * @date 2021/10/20 18:12
+ */
+public class LogFields {
 
-    SpanContext getContext();
+    public final static String ErrorKind = "error.kind";
 
-    String getOperationName();
+    public final static String ErrorObject = "error.object";
 
-    void setOperationName(String operationName);
+    public final static String Event = "event";
 
-    long getStartTime();
+    public final static String Message = "message";
 
-    long getEndTime();
+    public final static String Stack = "stack";
 
-    Map<String, String> getTags();
-
-    void tag(String key, String value);
-
-    SpanLog log(Long timestamp);
-
-    List<SpanLog> getLogs();
-
-    void finish();
+    public final static String Error = "Error";
 }

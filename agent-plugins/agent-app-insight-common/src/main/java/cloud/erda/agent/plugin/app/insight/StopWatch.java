@@ -16,7 +16,7 @@
 
 package cloud.erda.agent.plugin.app.insight;
 
-import cloud.erda.agent.core.utils.DateTimeUtils;
+import cloud.erda.agent.core.utils.DateTime;
 
 /**
  * @author liuhaoyang
@@ -28,18 +28,18 @@ public class StopWatch {
     private Long end;
 
     public StopWatch(Long start) {
-        this.start = start == null ? DateTimeUtils.currentTimeNano() : start;
+        this.start = start == null ? DateTime.currentTimeNano() : start;
     }
 
     public void stop() {
         if (end == null) {
-            end = DateTimeUtils.currentTimeNano();
+            end = DateTime.currentTimeNano();
         }
     }
 
     public long elapsed() {
         if (end == null) {
-            return  Math.abs(DateTimeUtils.currentTimeNano() - start);
+            return  Math.abs(DateTime.currentTimeNano() - start);
         }
         return Math.abs(end - start);
     }

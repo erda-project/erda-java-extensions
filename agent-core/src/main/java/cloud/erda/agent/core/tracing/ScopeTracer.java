@@ -22,7 +22,7 @@ import cloud.erda.agent.core.tracing.propagator.Carrier;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.tracing.span.SpanBuilder;
 import cloud.erda.agent.core.tracing.span.SpanSerializer;
-import cloud.erda.agent.core.metrics.reporter.TelegrafReporter;
+import cloud.erda.agent.core.metrics.MetricDispatcher;
 
 /**
  * @author liuhaoyang
@@ -34,7 +34,7 @@ public class ScopeTracer implements Tracer {
     private Scope activeScope;
     private TracerContext context = new TracerContext();
     private SpanSerializer spanSerializer = new SpanSerializer();
-    private TelegrafReporter transporter = ServiceManager.INSTANCE.findService(TelegrafReporter.class);
+    private MetricDispatcher transporter = ServiceManager.INSTANCE.findService(MetricDispatcher.class);
     private Sampler sampler = ServiceManager.INSTANCE.findService(Sampler.class);
 
     @Override
@@ -67,7 +67,7 @@ public class ScopeTracer implements Tracer {
 
     @Override
     public void dispatch(Span span) {
-        transporter.send(spanSerializer.serialize(span));
+        transporter.dispatch(spanSerializer.serialize(span));
     }
 
     @Override

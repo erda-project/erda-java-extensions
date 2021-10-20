@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.method;
+package cloud.erda.agent.plugin.sdk.interceptPoint;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,11 +25,11 @@ import java.util.Map;
  * @author liuhaoyang
  * @date 2021/5/10 15:52
  */
-public class InterceptPointResolver {
+public class MethodInterceptPointResolver {
 
-    private String[] interceptPoints;
+    private final String[] interceptPoints;
 
-    public InterceptPointResolver(String[] interceptPoints) {
+    public MethodInterceptPointResolver(String[] interceptPoints) {
         this.interceptPoints = interceptPoints;
     }
 

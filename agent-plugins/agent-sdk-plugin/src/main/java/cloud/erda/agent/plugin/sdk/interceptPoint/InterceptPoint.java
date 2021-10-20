@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.method;
+package cloud.erda.agent.plugin.sdk.interceptPoint;
 
 import java.util.Arrays;
 import java.util.HashSet;

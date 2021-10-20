@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.core.utils;
+package cloud.erda.agent.core.tracing.span;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
-public class DateTimeUtils {
+/**
+ * @author liuhaoyang
+ * @date 2021/10/20 18:21
+ */
+public interface SpanLog {
 
-    public static long currentTimeNano() {
-        Instant instant = Instant.now().atZone(ZoneId.systemDefault()).toInstant();
-        return TimeUnit.NANOSECONDS.convert(instant.getEpochSecond(), TimeUnit.SECONDS) + instant.getNano();
-    }
+    long getTimestamp();
+
+    Map<String, String> getFields();
+
+    SpanLog event(String key, String field);
 }

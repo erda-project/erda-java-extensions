@@ -33,7 +33,7 @@ public abstract class ScheduledService implements BootService {
     private volatile ScheduledFuture<?> scheduledFuture;
 
     @Override
-    public void beforeBoot() throws Throwable {
+    public void prepare() throws Throwable {
     }
 
     @Override
@@ -58,7 +58,7 @@ public abstract class ScheduledService implements BootService {
     }
 
     @Override
-    public void afterBoot() throws Throwable {
+    public void complete() throws Throwable {
     }
 
     @Override

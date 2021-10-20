@@ -17,9 +17,11 @@
 package cloud.erda.agent.core.tracing.span;
 
 import cloud.erda.agent.core.tracing.SpanContext;
-import cloud.erda.agent.core.utils.DateTimeUtils;
+import cloud.erda.agent.core.utils.DateTime;
 import cloud.erda.agent.core.tracing.Tracer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,13 +36,15 @@ public class SpanImpl implements Span {
     private String operationName;
     private Map<String, String> tags;
     private Tracer tracer;
+    private List<SpanLog> logs;
 
     public SpanImpl(String operationName, Map<String, String> tags, SpanContext spanContext, Tracer tracer) {
         this.operationName = operationName;
         this.spanContext = spanContext;
         this.tags = tags;
-        this.startTime = DateTimeUtils.currentTimeNano();
+        this.startTime = DateTime.currentTimeNano();
         this.tracer = tracer;
+        this.logs = new ArrayList<>();
     }
 
     @Override
@@ -69,7 +73,7 @@ public class SpanImpl implements Span {
     @Override
     public long getEndTime() {
         if (endTime == null) {
-            return DateTimeUtils.currentTimeNano();
+            return DateTime.currentTimeNano();
         }
         return endTime;
     }
@@ -85,9 +89,21 @@ public class SpanImpl implements Span {
     }
 
     @Override
+    public SpanLogImpl log(Long timestamp) {
+        SpanLogImpl log = new SpanLogImpl(timestamp);
+        logs.add(log);
+        return log;
+    }
+
+    @Override
+    public List<SpanLog> getLogs() {
+        return logs;
+    }
+
+    @Override
     public void finish() {
         if (endTime == null) {
-            endTime = DateTimeUtils.currentTimeNano();
+            endTime = DateTime.currentTimeNano();
             tracer.dispatch(this);
         }
     }

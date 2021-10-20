@@ -21,6 +21,7 @@ import cloud.erda.agent.core.config.ServiceConfig;
 import cloud.erda.agent.core.metrics.Metric;
 import cloud.erda.agent.core.config.loader.ConfigAccessor;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,7 +33,7 @@ public class SpanSerializer {
     private final ServiceConfig serviceConfig = ConfigAccessor.Default.getConfig(ServiceConfig.class);
     private final AgentConfig agentConfig = ConfigAccessor.Default.getConfig(AgentConfig.class);
 
-    public Metric serialize(Span span) {
+    public Metric[] serialize(Span span) {
         Metric metric = Metric.New("span", span.getStartTime());
         metric.addTag("trace_id", span.getContext().getTracerContext().requestId());
         metric.addTag("span_id", span.getContext().getSpanId());
@@ -44,7 +45,6 @@ public class SpanSerializer {
         metric.addField("start_time", span.getStartTime());
         metric.addField("end_time", span.getEndTime());
         metric.addField("duration", (Math.abs(span.getEndTime() - span.getStartTime())));
-
         metric.addTag("service_name", serviceConfig.getServiceName());
         metric.addTag("service_id", serviceConfig.getServiceId());
         metric.addTag("service_instance_id", serviceConfig.getServiceInstanceId());
@@ -57,6 +57,21 @@ public class SpanSerializer {
         metric.addTag("project_name", serviceConfig.getProjectName());
         metric.addTag("application_name", serviceConfig.getApplicationName());
         metric.addTag("workspace", serviceConfig.getWorkspace());
-        return metric;
+        List<SpanLog> spanLogs = span.getLogs();
+        Metric[] metrics = new Metric[spanLogs.size() + 1];
+        metrics[0] = metric;
+        for (int i = 0; i < spanLogs.size(); i++) {
+            SpanLog log = spanLogs.get(i);
+            Metric logMetric = Metric.New("apm_span_event", log.getTimestamp());
+            for (Map.Entry<String, String> tag : log.getFields().entrySet()) {
+                logMetric.addTag(tag.getKey().replace('.', '_'), tag.getValue());
+            }
+            logMetric.addTag("trace_id", span.getContext().getTracerContext().requestId());
+            logMetric.addTag("span_id", span.getContext().getSpanId());
+            logMetric.addTag("terminus_key", agentConfig.terminusKey());
+            logMetric.addField("field_count", log.getFields().size());
+            metrics[i + 1] = logMetric;
+        }
+        return metrics;
     }
 }

@@ -35,7 +35,7 @@ public class TracerInstrumentation extends ClassStaticMethodsEnhancePluginDefine
 
     private static final String SPAN_WRAPPER_INTERCEPTOR = "cloud.erda.agent.plugin.sdk.interceptors.SpanWrapperInterceptor";
 
-    private static final String REQUEST_ID_INTERCEPTOR = "cloud.erda.agent.plugin.sdk.interceptors.RequestIdInterceptor";
+    private static final String TRACE_ID_INTERCEPTOR = "cloud.erda.agent.plugin.sdk.interceptors.TraceIdInterceptor";
 
     private static final String SAMPLED_INTERCEPTOR = "cloud.erda.agent.plugin.sdk.interceptors.SampledInterceptor";
 
@@ -66,12 +66,12 @@ public class TracerInstrumentation extends ClassStaticMethodsEnhancePluginDefine
                 new StaticMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("requestId");
+                        return named("requestId").or(named("traceId"));
                     }
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return REQUEST_ID_INTERCEPTOR;
+                        return TRACE_ID_INTERCEPTOR;
                     }
 
                     @Override

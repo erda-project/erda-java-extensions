@@ -24,7 +24,7 @@ import ch.qos.logback.core.AppenderBase;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
-import cloud.erda.agent.core.metrics.reporter.TelegrafReporter;
+import cloud.erda.agent.core.metrics.MetricDispatcher;
 import cloud.erda.agent.plugin.log.error.ErrorConsts;
 import cloud.erda.agent.plugin.log.error.ErrorEventBuilder;
 
@@ -63,7 +63,7 @@ public class ErrorInsightAppender extends AppenderBase<ILoggingEvent> {
                     builder.addStack(stackTraceElementProxies[index].getStackTraceElement(), index);
                 }
             }
-            ServiceManager.INSTANCE.findService(TelegrafReporter.class).send(builder.build().toMetric());
+            ServiceManager.INSTANCE.findService(MetricDispatcher.class).dispatch(builder.build().toMetric());
         }
     }
 }

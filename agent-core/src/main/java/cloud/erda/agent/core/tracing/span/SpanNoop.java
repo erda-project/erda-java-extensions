@@ -18,14 +18,20 @@ package cloud.erda.agent.core.tracing.span;
 
 import cloud.erda.agent.core.tracing.SpanContext;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author liuhaoyang
  * @since 2019-01-07 21:30
  **/
 public class SpanNoop implements Span {
+
+    private static SpanLogNoop noopLog = new SpanLogNoop();
+    private static ArrayList<SpanLog> noopLogs = new ArrayList<>();
 
     private static Map<String, String> noopTags = new HashMap<String, String>(0);
 
@@ -66,6 +72,16 @@ public class SpanNoop implements Span {
 
     @Override
     public void tag(String key, String value) {
+    }
+
+    @Override
+    public SpanLog log(Long timestamp) {
+        return noopLog;
+    }
+
+    @Override
+    public List<SpanLog> getLogs() {
+        return noopLogs;
     }
 
     @Override

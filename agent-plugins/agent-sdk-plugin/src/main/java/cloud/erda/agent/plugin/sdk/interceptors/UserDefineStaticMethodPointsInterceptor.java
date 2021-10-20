@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.method.interceptors;
+package cloud.erda.agent.plugin.sdk.interceptors;
 
 import cloud.erda.agent.core.tracing.SpanContext;
 import cloud.erda.agent.core.tracing.Tracer;
@@ -31,7 +31,9 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMet
  * @author liuhaoyang
  * @date 2021/5/9 18:36
  */
-public class StaticMethodInterceptor implements StaticMethodsAroundInterceptor {
+public class UserDefineStaticMethodPointsInterceptor implements StaticMethodsAroundInterceptor {
+
+    public final static String INTERCEPTOR_CLASS = "cloud.erda.agent.plugin.sdk.interceptors.UserDefineStaticMethodPointsInterceptor";
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) {

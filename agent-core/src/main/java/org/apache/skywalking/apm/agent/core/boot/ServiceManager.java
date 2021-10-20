@@ -40,23 +40,27 @@ public enum ServiceManager {
     public void boot() {
         bootedServices = loadAllServices();
 
-        for (BootService service : bootedServices.values()) {
+        for (Map.Entry<Class, BootService> entry : bootedServices.entrySet()) {
+            BootService service = entry.getValue();
             try {
-                service.beforeBoot();
+                service.prepare();
+                logger.info("ServiceManager prepare [{}]", service.getClass().getName());
             } catch (Throwable e) {
-                logger.error(e, "ServiceManager try to pre-start [{}] fail.", service.getClass().getName());
+                logger.error(e, "ServiceManager try to prepare [{}] fail.", service.getClass().getName());
                 continue;
             }
             try {
                 service.boot();
+                logger.info("ServiceManager start [{}]", service.getClass().getName());
             } catch (Throwable e) {
                 logger.error(e, "ServiceManager try to start [{}] fail.", service.getClass().getName());
                 continue;
             }
             try {
-                service.afterBoot();
+                service.complete();
+                logger.info("ServiceManager complete [{}]", service.getClass().getName());
             } catch (Throwable e) {
-                logger.error(e, "ServiceManager try to post-start [{}] fail.", service.getClass().getName());
+                logger.error(e, "ServiceManager try to complete [{}] fail.", service.getClass().getName());
             }
         }
     }
@@ -96,13 +100,13 @@ public enum ServiceManager {
             }
             dependencies.put(service.getKey(), service.getValue());
         }
-        return bootedServices;
+        return dependencies;
     }
 
     private void beforeBoot() {
         for (BootService service : bootedServices.values()) {
             try {
-                service.beforeBoot();
+                service.prepare();
             } catch (Throwable e) {
                 logger.error(e, "ServiceManager try to pre-start [{}] fail.", service.getClass().getName());
             }
@@ -123,7 +127,7 @@ public enum ServiceManager {
     private void afterBoot() {
         for (BootService service : bootedServices.values()) {
             try {
-                service.afterBoot();
+                service.complete();
             } catch (Throwable e) {
                 logger.error(e, "Service [{}] AfterBoot process fails.", service.getClass().getName());
             }

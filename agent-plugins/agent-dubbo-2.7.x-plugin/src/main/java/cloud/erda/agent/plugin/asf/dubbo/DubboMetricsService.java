@@ -71,7 +71,7 @@ public class DubboMetricsService extends ScheduledService {
     private List<Listener> listeners;
 
     @Override
-    public void beforeBoot() throws Throwable {
+    public void prepare() throws Throwable {
         this.logger = LogManager.getLogger(DubboMetricsService.class);
         this.meter = ServiceManager.INSTANCE.findService(MetricProviderService.class).getMeter();
         this.listeners = initListeners();

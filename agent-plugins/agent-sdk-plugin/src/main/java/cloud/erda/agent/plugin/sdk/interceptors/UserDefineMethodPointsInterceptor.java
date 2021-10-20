@@ -16,27 +16,44 @@
 
 package cloud.erda.agent.plugin.sdk.interceptors;
 
+import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.TracerManager;
+import cloud.erda.agent.core.tracing.span.LogFields;
+import cloud.erda.agent.core.utils.Constants;
+import cloud.erda.agent.core.utils.DateTime;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
 
 /**
  * @author liuhaoyang
- * @date 2021/5/26 17:20
+ * @date 2021/10/20 19:23
  */
-public class RequestIdInterceptor implements StaticMethodsAroundInterceptor {
+public class UserDefineMethodPointsInterceptor implements StaticMethodsAroundInterceptor, InstanceMethodsAroundInterceptor {
+
+    public final static String INTERCEPTOR_CLASS = "cloud.erda.agent.plugin.sdk.interceptors.UserDefineMethodPointsInterceptor";
+    private final static String START_TIME_KEY = "START_TIME";
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) {
+        Long start = DateTime.currentTimeNano();
+        context.setAttachment(START_TIME_KEY, start);
     }
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        return TracerManager.tracer().context().requestId();
+        Long now = DateTime.currentTimeNano();
+        Scope scope = TracerManager.tracer().active();
+        if (scope != null) {
+            Long start = context.getAttachment(START_TIME_KEY);
+            scope.span().log(now).event(LogFields.Event, String.format("[%.3fms] %s:%s", (now - start) / 1000000f, context.getOriginClass().getName(), context.getMethod().getName()));
+        }
+        return ret;
     }
 
     @Override
-    public void handleMethodException(IMethodInterceptContext context, Throwable t) throws Throwable {
+    public void handleMethodException(IMethodInterceptContext context, Throwable t) {
+
     }
 }

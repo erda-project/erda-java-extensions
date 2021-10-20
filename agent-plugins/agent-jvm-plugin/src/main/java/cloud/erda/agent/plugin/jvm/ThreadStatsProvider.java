@@ -17,7 +17,7 @@
 package cloud.erda.agent.plugin.jvm;
 
 import cloud.erda.agent.core.metrics.Metric;
-import cloud.erda.agent.core.utils.DateTimeUtils;
+import cloud.erda.agent.core.utils.DateTime;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
@@ -30,13 +30,13 @@ public class ThreadStatsProvider implements StatsProvider {
     @Override
     public List<Metric> get() {
         List<Metric> metrics = new ArrayList<Metric>();
-        metrics.add(Metric.New("jvm_thread", DateTimeUtils.currentTimeNano()).addTag("name", "count").addField("count", threads.getThreadCount()));
-        metrics.add(Metric.New("jvm_thread", DateTimeUtils.currentTimeNano()).addTag("name", "daemon_count").addField("state", threads.getDaemonThreadCount()));
+        metrics.add(Metric.New("jvm_thread", DateTime.currentTimeNano()).addTag("name", "count").addField("count", threads.getThreadCount()));
+        metrics.add(Metric.New("jvm_thread", DateTime.currentTimeNano()).addTag("name", "daemon_count").addField("state", threads.getDaemonThreadCount()));
         long[] deadThreads = threads.findDeadlockedThreads();
-        metrics.add(Metric.New("jvm_thread", DateTimeUtils.currentTimeNano()).addTag("name", "dead_locked_count").addField("state", deadThreads == null ? 0 : deadThreads.length));
+        metrics.add(Metric.New("jvm_thread", DateTime.currentTimeNano()).addTag("name", "dead_locked_count").addField("state", deadThreads == null ? 0 : deadThreads.length));
         java.lang.management.ThreadInfo[] threadInfo = threads.getThreadInfo(threads.getAllThreadIds(), 0);
         for (final Thread.State state : Thread.State.values()) {
-            metrics.add(Metric.New("jvm_thread", DateTimeUtils.currentTimeNano()).addTag("name", state.name().toLowerCase() + "_count").addField("state", getThreadCount(state, threadInfo)));
+            metrics.add(Metric.New("jvm_thread", DateTime.currentTimeNano()).addTag("name", state.name().toLowerCase() + "_count").addField("state", getThreadCount(state, threadInfo)));
         }
         return metrics;
     }

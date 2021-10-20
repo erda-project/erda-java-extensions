@@ -20,10 +20,12 @@ import cloud.erda.agent.core.config.AgentConfig;
 import cloud.erda.agent.core.config.ServiceConfig;
 import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import cloud.erda.agent.core.tracing.*;
+import cloud.erda.agent.core.tracing.span.LogFields;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.tracing.span.SpanBuilder;
 import cloud.erda.agent.core.utils.Caller;
 import cloud.erda.agent.core.utils.Constants;
+import cloud.erda.agent.core.utils.DateTime;
 import cloud.erda.agent.core.utils.TracerUtils;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.MetricReporter;
@@ -107,7 +109,7 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_HTTP);
         span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_SERVER);
         span.tag(Constants.Tags.COMPONENT, getComponent());
-
+        span.log(DateTime.currentTimeNano()).event(LogFields.Event, "server received");
         if (Strings.isEmpty(request.getRequestURI())) {
             return;
         }
@@ -153,6 +155,7 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
             if (response.getStatus() >= 500) {
                 span.tag(Constants.Tags.ERROR, Constants.Tags.ERROR_TRUE);
             }
+            span.log(DateTime.currentTimeNano()).event(LogFields.Event, "server send");
         }
     }
 
