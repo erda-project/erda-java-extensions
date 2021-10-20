@@ -70,7 +70,6 @@ public class SpanSerializer {
             logMetric.addTag("span_id", span.getContext().getSpanId());
             logMetric.addTag("terminus_key", agentConfig.terminusKey());
             logMetric.addField("field_count", log.getFields().size());
-            logMetric.addField("time", log.getTimestamp());
             metrics[i + 1] = logMetric;
         }
         return metrics;
