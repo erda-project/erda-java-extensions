@@ -17,7 +17,7 @@
 package cloud.erda.agent.plugin.jvm;
 
 import cloud.erda.agent.core.metrics.Metric;
-import cloud.erda.agent.core.utils.DateTimeUtils;
+import cloud.erda.agent.core.utils.DateTime;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
@@ -45,7 +45,7 @@ public class MemoryStatsProvider implements StatsProvider {
     }
 
     private void addMemoryUsage(List<Metric> metrics, MemoryUsage memoryUsage, String name) {
-        metrics.add(Metric.New(JVM_MEMORY, DateTimeUtils.currentTimeNano())
+        metrics.add(Metric.New(JVM_MEMORY, DateTime.currentTimeNano())
                 .addTag("name", name.replace(' ', '_').toLowerCase())
                 .addField("init", memoryUsage.getInit())
                 .addField("used", memoryUsage.getUsed())

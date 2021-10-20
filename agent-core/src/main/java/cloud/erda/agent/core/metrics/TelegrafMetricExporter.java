@@ -16,7 +16,6 @@
 
 package cloud.erda.agent.core.metrics;
 
-import cloud.erda.agent.core.metrics.reporter.TelegrafReporter;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.Numbers;
 import io.opentelemetry.api.common.AttributeKey;
@@ -37,10 +36,10 @@ import java.util.stream.Stream;
  */
 public class TelegrafMetricExporter implements MetricExporter {
 
-    private final TelegrafReporter reporter;
+    private final MetricDispatcher reporter;
     private final ILog logger;
 
-    public TelegrafMetricExporter(TelegrafReporter reporter) {
+    public TelegrafMetricExporter(MetricDispatcher reporter) {
         this.reporter = reporter;
         this.logger = LogManager.getLogger(TelegrafMetricExporter.class);
     }
@@ -50,7 +49,7 @@ public class TelegrafMetricExporter implements MetricExporter {
 
         Metric[] metrics = collection.stream().flatMap(this::toMetrics).toArray(Metric[]::new);
         logger.info("[{}] execute export {} metrics.", this.getClass().getClassLoader(), metrics.length);
-        return new CompletableResultCode().whenComplete(() -> reporter.send(metrics)).succeed();
+        return new CompletableResultCode().whenComplete(() -> reporter.dispatch(metrics)).succeed();
     }
 
     private Stream<Metric> toMetrics(MetricData metricData) {

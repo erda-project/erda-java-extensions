@@ -27,11 +27,11 @@ package org.apache.skywalking.apm.agent.core.boot;
  * @author wusheng
  */
 public interface BootService {
-    void beforeBoot() throws Throwable;
+    void prepare() throws Throwable;
 
     void boot() throws Throwable;
 
-    void afterBoot() throws Throwable;
+    void complete() throws Throwable;
 
     void shutdown() throws Throwable;
 }

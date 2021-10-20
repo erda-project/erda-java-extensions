@@ -17,12 +17,11 @@
 package cloud.erda.agent.plugin.sdk.defines;
 
 import cloud.erda.agent.plugin.sdk.interceptPoint.InterceptPoint;
-import cloud.erda.agent.plugin.sdk.interceptors.UserDefineStaticMethodPointsInterceptor;
+import cloud.erda.agent.plugin.sdk.interceptors.UserDefineMethodPointsInterceptor;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassStaticMethodsEnhancePluginDefine;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
@@ -59,7 +58,7 @@ public class StaticMethodInterceptInstrumentation extends ClassStaticMethodsEnha
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return UserDefineStaticMethodPointsInterceptor.INTERCEPTOR_CLASS;
+                    return UserDefineMethodPointsInterceptor.INTERCEPTOR_CLASS;
                 }
 
                 @Override

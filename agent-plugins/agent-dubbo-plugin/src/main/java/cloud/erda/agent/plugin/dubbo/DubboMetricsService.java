@@ -59,7 +59,7 @@ public class DubboMetricsService extends ScheduledService {
     private ILog logger;
 
     @Override
-    public void beforeBoot() throws Throwable {
+    public void prepare() throws Throwable {
         this.logger = LogManager.getLogger(DubboMetricsService.class);
         this.meter = ServiceManager.INSTANCE.findService(MetricProviderService.class).getMeter();
         this.listeners = initListeners();

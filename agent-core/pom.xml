@@ -36,6 +36,9 @@
         <shade.lombok.target>${shade.package}.${shade.lombok.source}</shade.lombok.target>
         <agent.package.dest.dir>${project.basedir}/../dist/erda-java-agent</agent.package.dest.dir>
         <opentelemetry.version>1.7.0-alpha</opentelemetry.version>
+        <datacarrier.version>8.8.0</datacarrier.version>
+        <shade.org.apache.skywalking.apm.commons.datacarrier.source>org.apache.skywalking.apm.commons.datacarrier</shade.org.apache.skywalking.apm.commons.datacarrier.source>
+        <shade.org.apache.skywalking.apm.commons.datacarrier.target>${shade.package}.${shade.org.apache.skywalking.apm.commons.datacarrier.source}</shade.org.apache.skywalking.apm.commons.datacarrier.target>
     </properties>
 
     <dependencies>
@@ -69,6 +72,11 @@
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-sdk-metrics</artifactId>
             <version>${opentelemetry.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>apm-datacarrier</artifactId>
+            <version>${datacarrier.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
@@ -140,6 +148,10 @@
                                 <relocation>
                                     <pattern>${shade.org.apache.commons.source}</pattern>
                                     <shadedPattern>${shade.org.apache.commons.target}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>${shade.org.apache.skywalking.apm.commons.datacarrier.source}</pattern>
+                                    <shadedPattern>${shade.org.apache.skywalking.apm.commons.datacarrier.target}</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>

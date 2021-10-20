@@ -42,9 +42,9 @@
         <shade.net.bytebuddy.target>${shade.package}.${shade.net.bytebuddy.source}</shade.net.bytebuddy.target>
         <shade.io.opentelemetry.source>io.opentelemetry</shade.io.opentelemetry.source>
         <shade.io.opentelemetry.target>${shade.package}.${shade.io.opentelemetry.source}</shade.io.opentelemetry.target>
-        <agent.package.dest.dir>
-            ${project.build.directory}${sdk.plugin.related.dir}/../../../dist/erda-java-agent/
-        </agent.package.dest.dir>
+        <shade.org.apache.skywalking.apm.agent.core.source>org.apache.skywalking.apm.agent.core</shade.org.apache.skywalking.apm.agent.core.source>
+        <shade.org.apache.skywalking.apm.agent.core.target>${shade.package}.${shade.org.apache.skywalking.apm.agent.core.source}</shade.org.apache.skywalking.apm.agent.core.target>
+        <agent.package.dest.dir>${project.build.directory}${sdk.plugin.related.dir}/../../../dist/erda-java-agent/</agent.package.dest.dir>
         <plugin.dest.dir>${agent.package.dest.dir}/plugins</plugin.dest.dir>
     </properties>
 
@@ -82,6 +82,10 @@
                                     <pattern>${shade.io.opentelemetry.source}</pattern>
                                     <shadedPattern>${shade.io.opentelemetry.target}</shadedPattern>
                                 </relocation>
+<!--                                <relocation>-->
+<!--                                    <pattern>${shade.org.apache.skywalking.apm.agent.core.source}</pattern>-->
+<!--                                    <shadedPattern>${shade.org.apache.skywalking.apm.agent.core.target}</shadedPattern>-->
+<!--                                </relocation>-->
                             </relocations>
                         </configuration>
                     </execution>

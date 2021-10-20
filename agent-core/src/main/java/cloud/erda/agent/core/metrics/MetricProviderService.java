@@ -19,7 +19,6 @@ package cloud.erda.agent.core.metrics;
 import cloud.erda.agent.core.config.AgentConfig;
 import cloud.erda.agent.core.config.ServiceConfig;
 import cloud.erda.agent.core.config.loader.ConfigAccessor;
-import cloud.erda.agent.core.metrics.reporter.TelegrafReporter;
 import cloud.erda.agent.core.utils.Constants;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.metrics.Meter;
@@ -40,13 +39,13 @@ import java.util.Properties;
  * @author liuhaoyang
  * @date 2021/10/12 19:23
  */
-@DependsOn({TelegrafReporter.class})
+@DependsOn({MetricDispatcher.class})
 public class MetricProviderService implements BootService {
 
     private Properties properties;
     private SdkMeterProvider meterProvider;
     private Meter meter;
-    private TelegrafReporter reporter;
+    private MetricDispatcher reporter;
 
     public Meter getMeter() {
         return meter;
@@ -87,8 +86,8 @@ public class MetricProviderService implements BootService {
     }
 
     @Override
-    public void beforeBoot() throws Throwable {
-        reporter = ServiceManager.INSTANCE.findService(TelegrafReporter.class);
+    public void prepare() throws Throwable {
+        reporter = ServiceManager.INSTANCE.findService(MetricDispatcher.class);
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("java-agent.properties");
         properties = new Properties();
         try {
@@ -98,7 +97,7 @@ public class MetricProviderService implements BootService {
     }
 
     @Override
-    public void afterBoot() throws Throwable {
+    public void complete() throws Throwable {
     }
 
     @Override

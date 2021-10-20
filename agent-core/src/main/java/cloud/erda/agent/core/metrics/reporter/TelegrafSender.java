@@ -16,34 +16,36 @@
 
 package cloud.erda.agent.core.metrics.reporter;
 
-import cloud.erda.agent.core.metrics.Metric;
-import cloud.erda.agent.core.utils.GsonUtils;
+import cloud.erda.agent.core.config.TelegrafProxyConfig;
 import cloud.erda.agent.core.config.loader.ConfigAccessor;
+import cloud.erda.agent.core.metrics.Metric;
+import cloud.erda.agent.core.metrics.MetricDispatcher;
+import cloud.erda.agent.core.utils.GsonUtils;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
-import org.apache.skywalking.apm.agent.core.boot.BootService;
-import cloud.erda.agent.core.config.TelegrafProxyConfig;
+import org.apache.skywalking.apm.commons.datacarrier.consumer.IConsumer;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.util.List;
+import java.util.Properties;
 
-public class TelegrafReporter implements BootService {
+/**
+ * @author liuhaoyang
+ * @date 2021/10/20 17:28
+ */
+public class TelegrafSender implements IConsumer<Metric> {
 
-    private static final ILog log = LogManager.getLogger(TelegrafReporter.class);
+    private static final ILog log = LogManager.getLogger(MetricDispatcher.class);
 
-    private InetSocketAddress socketAddress;
+    private final InetSocketAddress socketAddress;
     private DatagramSocket socket;
     private boolean init;
 
-    @Override
-    public void beforeBoot() throws Throwable {
-    }
-
-    @Override
-    public void boot() throws Throwable {
+    public TelegrafSender() {
         TelegrafProxyConfig config = ConfigAccessor.Default.getConfig(TelegrafProxyConfig.class);
         this.socketAddress = new InetSocketAddress(config.getHost(), config.getHostPort());
         log.info("Telegraf proxy addr " + socketAddress.toString());
@@ -53,19 +55,26 @@ public class TelegrafReporter implements BootService {
         } catch (SocketException e) {
             init = false;
             log.error("Bind udp client address fail.", e);
-            throw e;
         }
     }
 
     @Override
-    public void afterBoot() throws Throwable {
+    public void init(Properties properties) {
     }
 
     @Override
-    public void shutdown() throws Throwable {
-        if (init) {
-            this.socket.close();
-        }
+    public void consume(List<Metric> data) {
+        this.send(data.toArray(new Metric[0]));
+    }
+
+    @Override
+    public void onError(List<Metric> data, Throwable t) {
+        log.error(t, "Try to send {} metrics to proxy, with unexpected exception.", data.size());
+    }
+
+    @Override
+    public void onExit() {
+        socket.close();
     }
 
     public void send(Metric... metrics) {

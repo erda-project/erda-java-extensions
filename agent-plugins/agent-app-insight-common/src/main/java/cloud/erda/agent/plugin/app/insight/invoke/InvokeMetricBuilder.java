@@ -18,7 +18,7 @@ package cloud.erda.agent.plugin.app.insight.invoke;
 
 import cloud.erda.agent.core.metrics.Metric;
 import cloud.erda.agent.core.utils.Constants;
-import cloud.erda.agent.core.utils.DateTimeUtils;
+import cloud.erda.agent.core.utils.DateTime;
 import cloud.erda.agent.plugin.app.insight.Configs;
 import cloud.erda.agent.plugin.app.insight.MetricBuilder;
 import cloud.erda.agent.plugin.app.insight.StopWatch;
@@ -68,6 +68,6 @@ public class InvokeMetricBuilder implements MetricBuilder {
     }
 
     public static MetricBuilder New() {
-        return new InvokeMetricBuilder(DateTimeUtils.currentTimeNano());
+        return new InvokeMetricBuilder(DateTime.currentTimeNano());
     }
 }

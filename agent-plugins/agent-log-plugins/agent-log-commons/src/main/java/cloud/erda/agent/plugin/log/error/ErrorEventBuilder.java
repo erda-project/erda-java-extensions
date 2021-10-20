@@ -22,7 +22,7 @@ import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import cloud.erda.agent.core.tracing.TracerContext;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.utils.Constants;
-import cloud.erda.agent.core.utils.DateTimeUtils;
+import cloud.erda.agent.core.utils.DateTime;
 import cloud.erda.agent.core.utils.UUIDGenerator;
 
 import javax.servlet.http.Cookie;
@@ -81,7 +81,7 @@ public class ErrorEventBuilder {
     public cloud.erda.agent.plugin.log.error.ErrorEvent build() {
         cloud.erda.agent.plugin.log.error.ErrorEvent event = new cloud.erda.agent.plugin.log.error.ErrorEvent();
         event.setEventId(UUIDGenerator.New());
-        event.setTimestamp(DateTimeUtils.currentTimeNano());
+        event.setTimestamp(DateTime.currentTimeNano());
 
         // add trace info
         TracerContext tracerContext = TracerManager.tracer().context();

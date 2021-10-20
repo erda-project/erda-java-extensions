@@ -17,7 +17,7 @@
 package cloud.erda.agent.plugin.app.insight;
 
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
-import cloud.erda.agent.core.metrics.reporter.TelegrafReporter;
+import cloud.erda.agent.core.metrics.MetricDispatcher;
 
 /**
  * @author liuhaoyang
@@ -25,9 +25,9 @@ import cloud.erda.agent.core.metrics.reporter.TelegrafReporter;
  **/
 public class MetricReporter {
 
-    private static final TelegrafReporter transporter = ServiceManager.INSTANCE.findService(TelegrafReporter.class);
+    private static final MetricDispatcher transporter = ServiceManager.INSTANCE.findService(MetricDispatcher.class);
 
     public static void report(MetricBuilder builder) {
-        transporter.send(builder.build());
+        transporter.dispatch(builder.build());
     }
 }

@@ -16,8 +16,7 @@
 
 package cloud.erda.agent.plugin.sdk.defines;
 
-import cloud.erda.agent.plugin.sdk.interceptors.UserDefineInstanceMethodPointsInterceptor;
-import cloud.erda.agent.plugin.sdk.interceptors.UserDefineStaticMethodPointsInterceptor;
+import cloud.erda.agent.plugin.sdk.interceptors.UserDefineMethodPointsInterceptor;
 import cloud.erda.agent.plugin.sdk.match.PackageMatch;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -26,7 +25,6 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterc
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassEnhancePluginDefine;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassStaticMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.*;
@@ -64,7 +62,7 @@ public class PackageInterceptInstrumentation extends ClassEnhancePluginDefine {
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return UserDefineInstanceMethodPointsInterceptor.INTERCEPTOR_CLASS;
+                        return UserDefineMethodPointsInterceptor.INTERCEPTOR_CLASS;
                     }
 
                     @Override
@@ -87,7 +85,7 @@ public class PackageInterceptInstrumentation extends ClassEnhancePluginDefine {
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return UserDefineStaticMethodPointsInterceptor.INTERCEPTOR_CLASS;
+                        return UserDefineMethodPointsInterceptor.INTERCEPTOR_CLASS;
                     }
 
                     @Override

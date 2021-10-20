@@ -43,10 +43,10 @@ public enum ServiceManager {
         for (Map.Entry<Class, BootService> entry : bootedServices.entrySet()) {
             BootService service = entry.getValue();
             try {
-                service.beforeBoot();
-                logger.info("ServiceManager pre-start [{}]", service.getClass().getName());
+                service.prepare();
+                logger.info("ServiceManager prepare [{}]", service.getClass().getName());
             } catch (Throwable e) {
-                logger.error(e, "ServiceManager try to pre-start [{}] fail.", service.getClass().getName());
+                logger.error(e, "ServiceManager try to prepare [{}] fail.", service.getClass().getName());
                 continue;
             }
             try {
@@ -57,10 +57,10 @@ public enum ServiceManager {
                 continue;
             }
             try {
-                service.afterBoot();
-                logger.info("ServiceManager post-start [{}]", service.getClass().getName());
+                service.complete();
+                logger.info("ServiceManager complete [{}]", service.getClass().getName());
             } catch (Throwable e) {
-                logger.error(e, "ServiceManager try to post-start [{}] fail.", service.getClass().getName());
+                logger.error(e, "ServiceManager try to complete [{}] fail.", service.getClass().getName());
             }
         }
     }
@@ -106,7 +106,7 @@ public enum ServiceManager {
     private void beforeBoot() {
         for (BootService service : bootedServices.values()) {
             try {
-                service.beforeBoot();
+                service.prepare();
             } catch (Throwable e) {
                 logger.error(e, "ServiceManager try to pre-start [{}] fail.", service.getClass().getName());
             }
@@ -127,7 +127,7 @@ public enum ServiceManager {
     private void afterBoot() {
         for (BootService service : bootedServices.values()) {
             try {
-                service.afterBoot();
+                service.complete();
             } catch (Throwable e) {
                 logger.error(e, "Service [{}] AfterBoot process fails.", service.getClass().getName());
             }

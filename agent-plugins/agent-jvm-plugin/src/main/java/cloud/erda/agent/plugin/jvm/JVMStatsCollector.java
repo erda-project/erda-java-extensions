@@ -22,7 +22,7 @@ import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import cloud.erda.agent.core.config.ServiceConfig;
 import cloud.erda.agent.core.config.ServiceMeshConfig;
 import cloud.erda.agent.core.metrics.Metric;
-import cloud.erda.agent.core.metrics.reporter.TelegrafReporter;
+import cloud.erda.agent.core.metrics.MetricDispatcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +70,6 @@ public class JVMStatsCollector {
                     addTag("org_name", serviceConfig.getOrgName()).
                     addTag("org_id", serviceConfig.getOrgId());
         }
-        ServiceManager.INSTANCE.findService(TelegrafReporter.class).send(metrics.toArray(new Metric[0]));
+        ServiceManager.INSTANCE.findService(MetricDispatcher.class).dispatch(metrics.toArray(new Metric[0]));
     }
 }

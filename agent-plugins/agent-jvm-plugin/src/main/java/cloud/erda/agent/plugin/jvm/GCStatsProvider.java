@@ -17,7 +17,7 @@
 package cloud.erda.agent.plugin.jvm;
 
 import cloud.erda.agent.core.metrics.Metric;
-import cloud.erda.agent.core.utils.DateTimeUtils;
+import cloud.erda.agent.core.utils.DateTime;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
@@ -44,7 +44,7 @@ public class GCStatsProvider implements StatsProvider {
     public List<Metric> get() {
         List<Metric> metrics = new ArrayList<Metric>();
         for (GarbageCollectorMXBean gc : garbageCollectors) {
-            Metric metric = Metric.New("jvm_gc", DateTimeUtils.currentTimeNano()).addTag("name", gc.getName().replace(' ', '_').toLowerCase());
+            Metric metric = Metric.New("jvm_gc", DateTime.currentTimeNano()).addTag("name", gc.getName().replace(' ', '_').toLowerCase());
             long count = gc.getCollectionCount();
             long lastCount = lastCountMap.put(gc.getName(), count);
             metric.addField("count", count - lastCount);

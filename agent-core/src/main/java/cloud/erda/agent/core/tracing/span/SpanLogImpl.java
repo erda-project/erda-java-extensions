@@ -16,34 +16,37 @@
 
 package cloud.erda.agent.core.tracing.span;
 
-import cloud.erda.agent.core.tracing.SpanContext;
-
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author liuhaoyang
- * @since 2019-01-04 16:53
- **/
-public interface Span {
+ * @date 2021/10/20 18:10
+ */
+public class SpanLogImpl implements SpanLog {
 
-    SpanContext getContext();
+    private final Long timestamp;
 
-    String getOperationName();
+    private final Map<String, String> fields;
 
-    void setOperationName(String operationName);
+    public SpanLogImpl(long timestamp) {
+        this.timestamp = timestamp;
+        this.fields = new HashMap<>();
+    }
 
-    long getStartTime();
+    @Override
+    public long getTimestamp() {
+        return timestamp;
+    }
 
-    long getEndTime();
+    @Override
+    public Map<String, String> getFields() {
+        return fields;
+    }
 
-    Map<String, String> getTags();
-
-    void tag(String key, String value);
-
-    SpanLog log(Long timestamp);
-
-    List<SpanLog> getLogs();
-
-    void finish();
+    @Override
+    public SpanLog event(String key, String field) {
+        fields.put(key, field);
+        return this;
+    }
 }

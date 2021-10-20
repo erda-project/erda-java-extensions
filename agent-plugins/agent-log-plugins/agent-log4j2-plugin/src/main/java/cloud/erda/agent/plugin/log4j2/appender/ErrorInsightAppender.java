@@ -17,7 +17,7 @@
 package cloud.erda.agent.plugin.log4j2.appender;
 
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
-import cloud.erda.agent.core.metrics.reporter.TelegrafReporter;
+import cloud.erda.agent.core.metrics.MetricDispatcher;
 import cloud.erda.agent.plugin.log.error.ErrorConsts;
 import cloud.erda.agent.plugin.log.error.ErrorEventBuilder;
 import org.apache.logging.log4j.Level;
@@ -70,6 +70,6 @@ public class ErrorInsightAppender extends AbstractAppender {
                 builder.addStack(stacks[index], index);
             }
         }
-        ServiceManager.INSTANCE.findService(TelegrafReporter.class).send(builder.build().toMetric());
+        ServiceManager.INSTANCE.findService(MetricDispatcher.class).dispatch(builder.build().toMetric());
     }
 }

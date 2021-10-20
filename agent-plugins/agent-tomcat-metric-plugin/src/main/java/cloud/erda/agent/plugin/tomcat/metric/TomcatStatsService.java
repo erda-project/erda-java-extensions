@@ -37,7 +37,7 @@ public class TomcatStatsService extends ScheduledService {
     private TomcatStatsCollector tomcatStatsCollector;
 
     @Override
-    public void beforeBoot() throws Throwable {
+    public void prepare() throws Throwable {
         MetricProviderService metricProviderService = ServiceManager.INSTANCE.findService(MetricProviderService.class);
         tomcatStatsCollector = new TomcatStatsCollector(metricProviderService.getMeter());
     }
