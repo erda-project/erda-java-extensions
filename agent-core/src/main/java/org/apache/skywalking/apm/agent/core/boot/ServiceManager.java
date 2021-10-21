@@ -82,25 +82,26 @@ public enum ServiceManager {
         }
         Map<Class, BootService> dependencies = new LinkedHashMap<>();
         for (Map.Entry<Class, BootService> service : bootedServices.entrySet()) {
-            DependsOn dependsOn = (DependsOn) service.getKey().getAnnotation(DependsOn.class);
-            if (dependsOn != null) {
-                for (Class depend : dependsOn.value()) {
-                    BootService dependsOnInstance = bootedServices.get(depend);
-                    if (dependsOnInstance == null) {
-                        continue;
-                    }
-                    if (dependencies.containsKey(depend)) {
-                        continue;
-                    }
-                    dependencies.put(depend, dependsOnInstance);
-                }
-            }
-            if (dependencies.containsKey(service.getKey())) {
-                continue;
-            }
-            dependencies.put(service.getKey(), service.getValue());
+            loadService(service.getValue(), bootedServices, dependencies);
         }
         return dependencies;
+    }
+
+    private void loadService(BootService service, Map<Class, BootService> bootedServices, Map<Class, BootService> dependencies) {
+        if (service == null) {
+            return;
+        }
+        if (dependencies.containsKey(service.getClass())) {
+            return;
+        }
+        DependsOn dependsOn = service.getClass().getAnnotation(DependsOn.class);
+        if (dependsOn != null) {
+            for (Class depend : dependsOn.value()) {
+                BootService dependsOnInstance = bootedServices.get(depend);
+                loadService(dependsOnInstance, bootedServices, dependencies);
+            }
+        }
+        dependencies.put(service.getClass(), service);
     }
 
     private void beforeBoot() {

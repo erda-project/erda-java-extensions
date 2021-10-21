@@ -19,6 +19,7 @@
 
 package cloud.erda.agent.plugin.jedis.v2;
 
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class JedisConstructorWithStringArgInterceptorTest {
     private JedisConstructorWithStringArgInterceptor interceptor;
 
     @Mock
-    private EnhancedInstance enhancedInstance;
+    private DynamicFieldEnhancedInstance enhancedInstance;
 
     @Before
     public void setUp() throws Exception {

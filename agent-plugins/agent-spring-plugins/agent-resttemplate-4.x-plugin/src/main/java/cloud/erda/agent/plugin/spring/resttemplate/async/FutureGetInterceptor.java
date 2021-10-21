@@ -30,6 +30,7 @@ import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import cloud.erda.agent.plugin.spring.EnhanceCommonInfo;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,7 @@ public class FutureGetInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        Object obj = context.getInstance().getDynamicField();
+        Object obj =  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
         if (!(obj instanceof EnhanceCommonInfo)) {
             return;
         }
@@ -54,7 +55,7 @@ public class FutureGetInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        Object obj = context.getInstance().getDynamicField();
+        Object obj =  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
         if (!(obj instanceof EnhanceCommonInfo)) {
             return ret;
         }
@@ -99,7 +100,7 @@ public class FutureGetInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
-        Object obj = context.getInstance().getDynamicField();
+        Object obj =  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
         if (!(obj instanceof EnhanceCommonInfo)) {
             return;
         }

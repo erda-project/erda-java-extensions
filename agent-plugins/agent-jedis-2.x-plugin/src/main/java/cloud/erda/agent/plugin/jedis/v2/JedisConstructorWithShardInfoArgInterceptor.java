@@ -18,6 +18,7 @@
 
 package cloud.erda.agent.plugin.jedis.v2;
 
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import redis.clients.jedis.JedisShardInfo;
@@ -29,6 +30,6 @@ public class JedisConstructorWithShardInfoArgInterceptor implements InstanceCons
         String redisConnInfo;
         JedisShardInfo shardInfo = (JedisShardInfo) allArguments[0];
         redisConnInfo = shardInfo.getHost() + ":" + shardInfo.getPort();
-        objInst.setDynamicField(redisConnInfo);
+        ((DynamicFieldEnhancedInstance)objInst).setDynamicField(redisConnInfo);
     }
 }

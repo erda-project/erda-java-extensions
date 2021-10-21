@@ -20,6 +20,7 @@ package cloud.erda.agent.plugin.jdbc.mysql.v8.define;
 
 import com.mysql.cj.conf.HostInfo;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
@@ -39,7 +40,7 @@ public class ConnectionCreateInterceptor implements StaticMethodsAroundIntercept
         if (ret instanceof EnhancedInstance) {
             HostInfo hostInfo = (HostInfo) context.getArguments()[0];
             ConnectionInfo connectionInfo = URLParser.parser(hostInfo.getDatabaseUrl(), hostInfo.getHostPortPair());
-            ((EnhancedInstance) ret).setDynamicField(connectionInfo);
+            ((DynamicFieldEnhancedInstance) ret).setDynamicField(connectionInfo);
         }
         return ret;
     }

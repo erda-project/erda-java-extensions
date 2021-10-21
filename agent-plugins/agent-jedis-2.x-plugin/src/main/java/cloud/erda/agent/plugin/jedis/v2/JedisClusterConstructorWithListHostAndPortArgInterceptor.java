@@ -18,6 +18,7 @@
 
 package cloud.erda.agent.plugin.jedis.v2;
 
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import redis.clients.jedis.HostAndPort;
@@ -34,6 +35,6 @@ public class JedisClusterConstructorWithListHostAndPortArgInterceptor implements
             redisConnInfo.append(hostAndPort.toString()).append(";");
         }
 
-        objInst.setDynamicField(redisConnInfo.toString());
+        ((DynamicFieldEnhancedInstance)objInst).setDynamicField(redisConnInfo.toString());
     }
 }

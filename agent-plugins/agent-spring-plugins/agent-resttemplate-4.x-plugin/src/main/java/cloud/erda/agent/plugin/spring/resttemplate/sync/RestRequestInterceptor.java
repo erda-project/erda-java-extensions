@@ -21,6 +21,7 @@ package cloud.erda.agent.plugin.spring.resttemplate.sync;
 
 import cloud.erda.agent.plugin.spring.EnhanceCommonInfo;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.util.Strings;
@@ -41,7 +42,7 @@ public class RestRequestInterceptor implements InstanceMethodsAroundInterceptor 
         }
         AbstractClientHttpRequest request = (AbstractClientHttpRequest) ret;
 
-        Object obj = context.getInstance().getDynamicField();
+        Object obj =  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
         if (!(obj instanceof EnhanceCommonInfo)) {
             return ret;
         }

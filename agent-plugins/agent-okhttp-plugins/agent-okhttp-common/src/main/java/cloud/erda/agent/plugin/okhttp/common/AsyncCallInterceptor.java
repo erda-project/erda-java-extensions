@@ -29,10 +29,7 @@ import okhttp3.Request;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.*;
 
 /**
  * {@link AsyncCallInterceptor} get the `EnhanceRequiredInfo` instance from `SkyWalkingDynamicField` and then put it
@@ -53,16 +50,16 @@ public class AsyncCallInterceptor implements InstanceConstructorInterceptor, Ins
          * The first argument of constructor is not the `real` parameter when the enhance class is an inner class. This
          * is the JDK compiler mechanism.
          */
-        EnhancedInstance realCallInstance = (EnhancedInstance) allArguments[1];
+        DynamicFieldEnhancedInstance realCallInstance = (DynamicFieldEnhancedInstance) allArguments[1];
         Object enhanceRequireInfo = realCallInstance.getDynamicField();
 
-        objInst.setDynamicField(enhanceRequireInfo);
+        ((DynamicFieldEnhancedInstance)objInst).setDynamicField(enhanceRequireInfo);
     }
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        EnhanceRequiredInfo enhanceRequiredInfo = (EnhanceRequiredInfo) context.getInstance().getDynamicField();
-        Request request = (Request) enhanceRequiredInfo.getRealCallEnhance().getDynamicField();
+        EnhanceRequiredInfo enhanceRequiredInfo = (EnhanceRequiredInfo) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
+        Request request = (Request) ((DynamicFieldEnhancedInstance) enhanceRequiredInfo.getRealCallEnhance()).getDynamicField();
 
         Tracer tracer = TracerManager.tracer();
         TracerSnapshot snapshot = enhanceRequiredInfo.getTracerSnapshot();

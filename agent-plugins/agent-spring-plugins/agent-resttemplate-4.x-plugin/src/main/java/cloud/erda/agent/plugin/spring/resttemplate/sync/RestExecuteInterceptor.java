@@ -33,6 +33,7 @@ import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricContext;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import cloud.erda.agent.plugin.spring.EnhanceCommonInfo;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.springframework.http.HttpMethod;
@@ -81,7 +82,7 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
 
         EnhanceCommonInfo info = new EnhanceCommonInfo();
         info.setContext(map);
-        context.getInstance().setDynamicField(info);
+        ((DynamicFieldEnhancedInstance)context.getInstance()).setDynamicField(info);
 
         TransactionMetricBuilder transactionMetricBuilder = TransactionMetricUtils.createHttpMetric(peerHost);
         tracer.context().setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);

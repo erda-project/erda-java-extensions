@@ -18,6 +18,7 @@
 package cloud.erda.agent.plugin.httpasyncclient.v4;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 
@@ -30,7 +31,7 @@ public class SessionRequestCompleteInterceptor implements InstanceMethodsAroundI
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        ThreadTransferInfo info = (ThreadTransferInfo) context.getInstance().getDynamicField();
+        ThreadTransferInfo info = (ThreadTransferInfo) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
         if (info == null) {
             return;
         }

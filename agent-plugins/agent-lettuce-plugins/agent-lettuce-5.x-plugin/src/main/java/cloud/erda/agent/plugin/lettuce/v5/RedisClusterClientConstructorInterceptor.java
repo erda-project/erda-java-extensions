@@ -20,6 +20,7 @@ package cloud.erda.agent.plugin.lettuce.v5;
 
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.cluster.RedisClusterClient;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 
@@ -33,7 +34,7 @@ public class RedisClusterClientConstructorInterceptor implements InstanceConstru
         for (RedisURI redisURI : redisURIs) {
             peer.append(redisURI.getHost()).append(":").append(redisURI.getPort()).append(";");
         }
-        EnhancedInstance optionsInst = (EnhancedInstance) redisClusterClient.getOptions();
+        DynamicFieldEnhancedInstance optionsInst = (DynamicFieldEnhancedInstance) redisClusterClient.getOptions();
         optionsInst.setDynamicField(peer.toString());
     }
 }

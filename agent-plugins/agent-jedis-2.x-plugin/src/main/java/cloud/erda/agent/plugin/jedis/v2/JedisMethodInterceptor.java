@@ -29,6 +29,7 @@ import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -43,7 +44,7 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         Method method = context.getMethod();
         Object[] allArguments = context.getArguments();
 
-        String peer = String.valueOf(objInst.getDynamicField());
+        String peer = String.valueOf(((DynamicFieldEnhancedInstance)objInst).getDynamicField());
 
         String key = "";
         if (allArguments[0] instanceof String) {

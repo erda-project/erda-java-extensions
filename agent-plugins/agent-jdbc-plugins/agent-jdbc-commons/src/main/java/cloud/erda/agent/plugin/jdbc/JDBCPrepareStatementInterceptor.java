@@ -20,6 +20,7 @@
 package cloud.erda.agent.plugin.jdbc;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -45,7 +46,7 @@ public class JDBCPrepareStatementInterceptor implements InstanceMethodsAroundInt
     @Override
     public Object afterMethod(IMethodInterceptContext context,
                               Object ret) throws Throwable {
-        EnhancedInstance objInst = context.getInstance();
+        DynamicFieldEnhancedInstance objInst = ((DynamicFieldEnhancedInstance) context.getInstance());
         if (objInst.getDynamicField() == null) {
             return ret;
         }

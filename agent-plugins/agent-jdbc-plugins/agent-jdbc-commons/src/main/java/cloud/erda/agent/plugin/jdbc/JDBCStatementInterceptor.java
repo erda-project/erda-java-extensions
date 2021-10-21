@@ -20,6 +20,7 @@
 package cloud.erda.agent.plugin.jdbc;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -45,10 +46,10 @@ public class JDBCStatementInterceptor implements InstanceMethodsAroundIntercepto
     public Object afterMethod(IMethodInterceptContext context,
                               Object ret) throws Throwable {
         EnhancedInstance objInst = context.getInstance();
-        if (objInst.getDynamicField() == null) {
+        if (((DynamicFieldEnhancedInstance) objInst).getDynamicField() == null) {
             return ret;
         }
-        return new SWStatement((Connection) objInst, (java.sql.Statement) ret, (ConnectionInfo) objInst.getDynamicField());
+        return new SWStatement((Connection) objInst, (java.sql.Statement) ret, (ConnectionInfo) ((DynamicFieldEnhancedInstance) objInst).getDynamicField());
     }
 
     @Override

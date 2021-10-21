@@ -17,6 +17,7 @@
 
 package cloud.erda.agent.plugin.httpasyncclient.v4;
 
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 
@@ -28,7 +29,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
 public class SessionRequestConstructorInterceptor implements InstanceConstructorInterceptor {
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        objInst.setDynamicField(ThreadTransferInfo.LOCAL.get());
+        ((DynamicFieldEnhancedInstance)objInst).setDynamicField(ThreadTransferInfo.LOCAL.get());
         ThreadTransferInfo.LOCAL.remove();
     }
 }

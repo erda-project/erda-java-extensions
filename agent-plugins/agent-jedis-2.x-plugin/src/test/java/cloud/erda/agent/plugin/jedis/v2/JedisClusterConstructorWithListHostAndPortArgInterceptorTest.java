@@ -18,6 +18,7 @@
 
 package cloud.erda.agent.plugin.jedis.v2;
 
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.junit.After;
 import org.junit.Before;
@@ -41,7 +42,7 @@ public class JedisClusterConstructorWithListHostAndPortArgInterceptorTest {
     private Set<HostAndPort> hostAndPortSet;
 
     @Mock
-    private EnhancedInstance enhancedInstance;
+    private DynamicFieldEnhancedInstance enhancedInstance;
 
     @Before
     public void setUp() throws Exception {

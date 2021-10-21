@@ -18,6 +18,7 @@
 
 package cloud.erda.agent.plugin.jedis.v2;
 
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 
@@ -31,6 +32,6 @@ public class JedisConstructorWithStringArgInterceptor implements InstanceConstru
             port = String.valueOf(allArguments[1]);
         }
 
-        objInst.setDynamicField(host + ":" + port);
+        ((DynamicFieldEnhancedInstance)objInst).setDynamicField(host + ":" + port);
     }
 }

@@ -69,4 +69,9 @@ public class StaticMethodInterceptInstrumentation extends ClassStaticMethodsEnha
         }
         return staticMethodsInterceptPoints;
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return false;
+    }
 }

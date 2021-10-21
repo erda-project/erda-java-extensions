@@ -19,6 +19,7 @@
 package cloud.erda.agent.plugin.spring.concurrent;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import cloud.erda.agent.core.tracing.Scope;
@@ -34,7 +35,7 @@ public class FailureCallbackInterceptor implements InstanceMethodsAroundIntercep
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        Object obj = context.getInstance().getDynamicField();
+        Object obj =  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
         if (!(obj instanceof EnhanceCommonInfo)) {
             return;
         }
@@ -46,7 +47,7 @@ public class FailureCallbackInterceptor implements InstanceMethodsAroundIntercep
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        Object obj = context.getInstance().getDynamicField();
+        Object obj =  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
         if (!(obj instanceof EnhanceCommonInfo)) {
             return ret;
         }
@@ -74,7 +75,7 @@ public class FailureCallbackInterceptor implements InstanceMethodsAroundIntercep
 
     @Override
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
-        Object obj = context.getInstance().getDynamicField();
+        Object obj =  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
         if (!(obj instanceof EnhanceCommonInfo)) {
             return;
         }
