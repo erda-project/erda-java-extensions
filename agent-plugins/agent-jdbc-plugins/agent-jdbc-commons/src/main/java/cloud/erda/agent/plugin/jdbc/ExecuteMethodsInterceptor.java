@@ -31,6 +31,7 @@ import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import cloud.erda.agent.plugin.jdbc.define.StatementEnhanceInfos;
 import cloud.erda.agent.plugin.jdbc.trace.ConnectionInfo;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.util.Strings;
@@ -45,7 +46,7 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
         if (context.getInstance() == null) return;
 
-        StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) context.getInstance().getDynamicField();
+        StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
         ConnectionInfo connectInfo = cacheObject.getConnectionInfo();
 
         if (connectInfo != null) {
@@ -92,7 +93,7 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
             MetricReporter.report(transactionMetricBuilder);
         }
 
-        StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) context.getInstance().getDynamicField();
+        StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
         if (cacheObject.getConnectionInfo() != null) {
             TracerManager.tracer().active().close();
         }
@@ -103,7 +104,7 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
         if (context.getInstance() == null) return;
 
-        StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) context.getInstance().getDynamicField();
+        StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
         if (cacheObject.getConnectionInfo() != null) {
             TransactionMetricUtils.handleException(context);
             TracerUtils.handleException(t);

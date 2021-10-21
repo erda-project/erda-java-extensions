@@ -19,6 +19,7 @@
 package cloud.erda.agent.plugin.rocketmq.v4;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import cloud.erda.agent.core.tracing.TracerManager;
@@ -44,7 +45,7 @@ public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        MessageSendAsyncInfo info = (MessageSendAsyncInfo) context.getInstance().getDynamicField();
+        MessageSendAsyncInfo info = (MessageSendAsyncInfo)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
         if (info == null) {
             return;
         }
@@ -58,7 +59,7 @@ public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        MessageSendAsyncInfo info = (MessageSendAsyncInfo) context.getInstance().getDynamicField();
+        MessageSendAsyncInfo info = (MessageSendAsyncInfo)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
         if (info == null) {
             return ret;
         }
@@ -73,7 +74,7 @@ public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
-        MessageSendAsyncInfo info = (MessageSendAsyncInfo) context.getInstance().getDynamicField();
+        MessageSendAsyncInfo info = (MessageSendAsyncInfo)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
         if (info == null) {
             return;
         }

@@ -21,6 +21,7 @@ package cloud.erda.agent.plugin.redisson.v3;
 
 import cloud.erda.agent.core.utils.ReflectUtils;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -53,7 +54,7 @@ public class ConnectionManagerInterceptor implements InstanceMethodsAroundInterc
         Object replicatedServersConfig = ReflectUtils.getObjectField(config, "replicatedServersConfig");
 
         StringBuilder peer = new StringBuilder();
-        EnhancedInstance retInst = (EnhancedInstance) ret;
+        DynamicFieldEnhancedInstance retInst = (DynamicFieldEnhancedInstance) ret;
 
         if (singleServerConfig != null) {
             Object singleAddress = ReflectUtils.getObjectField(singleServerConfig, "address");

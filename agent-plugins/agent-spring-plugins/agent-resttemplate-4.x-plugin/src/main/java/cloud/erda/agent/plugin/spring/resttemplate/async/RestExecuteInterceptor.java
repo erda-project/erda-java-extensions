@@ -20,6 +20,7 @@ package cloud.erda.agent.plugin.spring.resttemplate.async;
 
 import cloud.erda.agent.core.utils.Constants;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -84,7 +85,7 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
         info.setSnapshot(tracer.capture());
         info.setContext(map);
         info.setAppMetricBuilder(transactionMetricBuilder);
-        context.getInstance().setDynamicField(info);
+        ((DynamicFieldEnhancedInstance)context.getInstance()).setDynamicField(info);
     }
 
     @Override
@@ -98,9 +99,9 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
         if (!(ret instanceof EnhancedInstance)) {
             return ret;
         }
-        EnhancedInstance ins = (EnhancedInstance) ret;
+        DynamicFieldEnhancedInstance ins = (DynamicFieldEnhancedInstance) ret;
 
-        ins.setDynamicField(context.getInstance().getDynamicField());
+        ins.setDynamicField( ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField());
         return ret;
     }
 

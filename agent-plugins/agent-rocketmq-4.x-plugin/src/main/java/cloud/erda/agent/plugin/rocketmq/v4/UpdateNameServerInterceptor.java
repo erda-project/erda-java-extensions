@@ -19,13 +19,14 @@
 package cloud.erda.agent.plugin.rocketmq.v4;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 
 public class UpdateNameServerInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        context.getInstance().setDynamicField(context.getArguments()[0]);
+        ((DynamicFieldEnhancedInstance)context.getInstance()).setDynamicField(context.getArguments()[0]);
     }
 
     @Override

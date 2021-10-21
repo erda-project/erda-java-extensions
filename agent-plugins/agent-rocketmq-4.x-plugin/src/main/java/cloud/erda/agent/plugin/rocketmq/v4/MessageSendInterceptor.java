@@ -19,6 +19,7 @@
 package cloud.erda.agent.plugin.rocketmq.v4;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -65,7 +66,7 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         Message message = (Message) allArguments[2];
         IS_SYNC.set(allArguments[6] == null);
         String operationName = (IS_SYNC.get() ? SYNC_PRODUCER_PREFIX : ASYNC_PRODUCER_PREFIX) + message.getTopic();
-        String nameServerAddress = String.valueOf(context.getInstance().getDynamicField());
+        String nameServerAddress = String.valueOf( ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField());
 
         Tracer tracer = TracerManager.tracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
@@ -108,7 +109,7 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         } else {
             EnhancedInstance instance = (EnhancedInstance) allArguments[6];
             MessageSendAsyncInfo info = new MessageSendAsyncInfo(tracer.capture(), transactionMetricBuilder);
-            instance.setDynamicField(info);
+            ((DynamicFieldEnhancedInstance)instance).setDynamicField(info);
         }
     }
 

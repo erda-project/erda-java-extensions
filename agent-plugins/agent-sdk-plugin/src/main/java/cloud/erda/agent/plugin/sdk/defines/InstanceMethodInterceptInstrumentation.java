@@ -75,4 +75,9 @@ public class InstanceMethodInterceptInstrumentation extends ClassInstanceMethods
         }
         return instanceMethodsInterceptPoints;
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return false;
+    }
 }

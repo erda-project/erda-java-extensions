@@ -18,6 +18,7 @@
 package cloud.erda.agent.plugin.httpasyncclient.v4;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 
@@ -31,7 +32,7 @@ public class SessionRequestFailInterceptor implements InstanceMethodsAroundInter
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
         //this means actual request will not started. so the span has not been created,we cannot log the status.
-        context.getInstance().setDynamicField(null);
+        ((DynamicFieldEnhancedInstance)context.getInstance()).setDynamicField(null);
         ThreadTransferInfo.LOCAL.remove();
     }
 

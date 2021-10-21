@@ -34,10 +34,7 @@ import io.netty.channel.Channel;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.*;
 import org.redisson.client.RedisClient;
 import org.redisson.client.RedisConnection;
 import org.redisson.client.protocol.CommandData;
@@ -54,7 +51,7 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        String peer = (String) ((EnhancedInstance) allArguments[0]).getDynamicField();
+        String peer = (String) ((DynamicFieldEnhancedInstance) allArguments[0]).getDynamicField();
         if (peer == null) {
             try {
                 /*
@@ -70,12 +67,12 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
                 logger.warn("RedisConnection create peer error: ", e);
             }
         }
-        objInst.setDynamicField(peer);
+        ((DynamicFieldEnhancedInstance)objInst).setDynamicField(peer);
     }
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        String peer = (String) context.getInstance().getDynamicField();
+        String peer = (String)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
 
         RedisConnection connection = (RedisConnection) context.getInstance();
         Channel channel = connection.getChannel();

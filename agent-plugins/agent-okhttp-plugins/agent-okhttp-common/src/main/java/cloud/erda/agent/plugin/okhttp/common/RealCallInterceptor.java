@@ -30,10 +30,7 @@ import okhttp3.Response;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.*;
 
 /**
  * {@link RealCallInterceptor} intercept the synchronous http calls by the discovery of okhttp.
@@ -46,7 +43,7 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        objInst.setDynamicField(allArguments[1]);
+        ((DynamicFieldEnhancedInstance)objInst).setDynamicField(allArguments[1]);
     }
 
     /**
@@ -60,7 +57,7 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
      */
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        Request request = (Request) context.getInstance().getDynamicField();
+        Request request = (Request)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
 
         Tracer tracer = TracerManager.tracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;

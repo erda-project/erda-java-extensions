@@ -116,9 +116,12 @@ public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePlugi
          *
          */
         if (!context.isObjectExtended()) {
-            newClassBuilder = newClassBuilder.defineField(CONTEXT_ATTR_NAME, Object.class, ACC_PRIVATE)
-                    .implement(EnhancedInstance.class)
-                    .intercept(FieldAccessor.ofField(CONTEXT_ATTR_NAME));
+            newClassBuilder = newClassBuilder.implement(EnhancedInstance.class);
+            if (implementDynamicField()) {
+                newClassBuilder = newClassBuilder.defineField(CONTEXT_ATTR_NAME, Object.class, ACC_PRIVATE)
+                        .implement(DynamicFieldEnhancedInstance.class)
+                        .intercept(FieldAccessor.ofField(CONTEXT_ATTR_NAME));
+            }
             context.extendObjectCompleted();
         }
 
@@ -182,6 +185,8 @@ public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePlugi
      * @return collections of {@link InstanceMethodsInterceptPoint}
      */
     protected abstract InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints();
+
+    protected abstract boolean implementDynamicField();
 
     /**
      * Enhance a class to intercept class static methods.

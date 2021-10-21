@@ -24,10 +24,7 @@ import okhttp3.Request;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.*;
 
 /**
  * {@link EnqueueInterceptor} create a local span and the prefix of the span operation name is start with `Async` when
@@ -52,8 +49,8 @@ public class EnqueueInterceptor implements InstanceMethodsAroundInterceptor,Inst
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
 
-        EnhancedInstance callbackInstance = (EnhancedInstance) context.getArguments()[0];
-        Request request = (Request) context.getInstance().getDynamicField();
+        DynamicFieldEnhancedInstance callbackInstance = (DynamicFieldEnhancedInstance) context.getArguments()[0];
+        Request request = (Request)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
 
         Tracer tracer = TracerManager.tracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
@@ -80,6 +77,6 @@ public class EnqueueInterceptor implements InstanceMethodsAroundInterceptor,Inst
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        objInst.setDynamicField(allArguments[1]);
+        ((DynamicFieldEnhancedInstance)objInst).setDynamicField(allArguments[1]);
     }
 }

@@ -19,6 +19,7 @@
 package cloud.erda.agent.plugin.spring.resttemplate.async;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -34,14 +35,14 @@ public class ResponseCallBackInterceptor implements InstanceMethodsAroundInterce
                 || !(allArguments[0] instanceof EnhancedInstance)) {
             return;
         }
-        EnhancedInstance successCallBack = (EnhancedInstance) allArguments[0];
-        successCallBack.setDynamicField(context.getInstance().getDynamicField());
+        DynamicFieldEnhancedInstance successCallBack = (DynamicFieldEnhancedInstance) allArguments[0];
+        successCallBack.setDynamicField( ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField());
 
         if (allArguments.length < 2 || !(allArguments[1] instanceof EnhancedInstance)) {
             return;
         }
-        EnhancedInstance failedCallBack = (EnhancedInstance) allArguments[1];
-        failedCallBack.setDynamicField(context.getInstance().getDynamicField());
+        DynamicFieldEnhancedInstance failedCallBack = (DynamicFieldEnhancedInstance) allArguments[1];
+        failedCallBack.setDynamicField( ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField());
     }
 
     @Override

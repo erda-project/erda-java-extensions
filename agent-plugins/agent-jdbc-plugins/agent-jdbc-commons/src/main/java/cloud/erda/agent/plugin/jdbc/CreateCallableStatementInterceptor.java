@@ -20,6 +20,7 @@
 package cloud.erda.agent.plugin.jdbc;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -38,8 +39,8 @@ public class CreateCallableStatementInterceptor implements InstanceMethodsAround
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        if (ret instanceof EnhancedInstance) {
-            ((EnhancedInstance) ret).setDynamicField(new StatementEnhanceInfos((ConnectionInfo) context.getInstance().getDynamicField(), (String) context.getArguments()[0], "CallableStatement"));
+        if (ret instanceof DynamicFieldEnhancedInstance) {
+            ((DynamicFieldEnhancedInstance) ret).setDynamicField(new StatementEnhanceInfos((ConnectionInfo) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField(), (String) context.getArguments()[0], "CallableStatement"));
         }
         return ret;
     }

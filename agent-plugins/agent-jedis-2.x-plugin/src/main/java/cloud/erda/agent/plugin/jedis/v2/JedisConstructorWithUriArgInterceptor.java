@@ -18,6 +18,7 @@
 
 package cloud.erda.agent.plugin.jedis.v2;
 
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 
@@ -28,6 +29,6 @@ public class JedisConstructorWithUriArgInterceptor implements InstanceConstructo
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
         URI uri = (URI) allArguments[0];
-        objInst.setDynamicField(uri.getHost() + ":" + uri.getPort());
+        ((DynamicFieldEnhancedInstance)objInst).setDynamicField(uri.getHost() + ":" + uri.getPort());
     }
 }

@@ -39,4 +39,8 @@ public abstract class ClassInstanceMethodsEnhancePluginDefine extends ClassEnhan
         return null;
     }
 
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

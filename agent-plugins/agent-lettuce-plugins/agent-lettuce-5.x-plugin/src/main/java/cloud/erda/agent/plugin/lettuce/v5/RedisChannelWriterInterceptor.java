@@ -20,12 +20,9 @@ package cloud.erda.agent.plugin.lettuce.v5;
 
 import io.lettuce.core.protocol.RedisCommand;
 import cloud.erda.agent.core.utils.Constants;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.*;
 import org.apache.skywalking.apm.agent.core.util.Strings;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import cloud.erda.agent.core.tracing.SpanContext;
 import cloud.erda.agent.core.tracing.Tracer;
 import cloud.erda.agent.core.tracing.TracerManager;
@@ -41,14 +38,14 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        EnhancedInstance optionsInst = (EnhancedInstance) allArguments[0];
-        objInst.setDynamicField(optionsInst.getDynamicField());
+        DynamicFieldEnhancedInstance optionsInst = (DynamicFieldEnhancedInstance) allArguments[0];
+        ((DynamicFieldEnhancedInstance)objInst).setDynamicField(optionsInst.getDynamicField());
     }
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
         Tracer tracer = TracerManager.tracer();
-        String peer = String.valueOf(context.getInstance().getDynamicField());
+        String peer = String.valueOf( ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField());
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         String operationName = "Lettuce/";
 

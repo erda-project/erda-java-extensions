@@ -19,6 +19,7 @@
 package cloud.erda.agent.plugin.jdbc;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -41,8 +42,8 @@ public class JDBCDriverInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        if (ret instanceof EnhancedInstance) {
-            ((EnhancedInstance) ret).setDynamicField(URLParser.parser((String) context.getArguments()[0]));
+        if (ret instanceof DynamicFieldEnhancedInstance) {
+            ((DynamicFieldEnhancedInstance) ret).setDynamicField(URLParser.parser((String) context.getArguments()[0]));
         }
 
         return ret;

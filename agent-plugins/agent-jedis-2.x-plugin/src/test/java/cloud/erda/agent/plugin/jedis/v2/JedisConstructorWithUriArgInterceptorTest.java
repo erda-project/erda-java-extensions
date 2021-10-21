@@ -19,6 +19,7 @@
 
 package cloud.erda.agent.plugin.jedis.v2;
 
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class JedisConstructorWithUriArgInterceptorTest {
     private JedisConstructorWithUriArgInterceptor interceptor;
 
     @Mock
-    private EnhancedInstance enhancedInstance;
+    private DynamicFieldEnhancedInstance enhancedInstance;
     private URI uri = URI.create("http://127.0.0.1:6379");
 
     @Before

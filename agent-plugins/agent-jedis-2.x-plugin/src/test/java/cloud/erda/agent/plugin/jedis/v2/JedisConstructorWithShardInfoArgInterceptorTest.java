@@ -19,6 +19,7 @@
 
 package cloud.erda.agent.plugin.jedis.v2;
 
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.junit.After;
 import org.junit.Before;
@@ -35,7 +36,7 @@ import static org.mockito.Mockito.verify;
 public class JedisConstructorWithShardInfoArgInterceptorTest {
     private JedisConstructorWithShardInfoArgInterceptor interceptor;
     @Mock
-    private EnhancedInstance enhancedInstance;
+    private DynamicFieldEnhancedInstance enhancedInstance;
 
     @Before
     public void setUp() throws Exception {
