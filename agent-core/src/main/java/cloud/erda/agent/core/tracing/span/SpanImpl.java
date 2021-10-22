@@ -90,7 +90,7 @@ public class SpanImpl implements Span {
 
     @Override
     public SpanLogImpl log(Long timestamp) {
-        SpanLogImpl log = new SpanLogImpl(timestamp);
+        SpanLogImpl log = new SpanLogImpl(timestamp + logs.size());
         logs.add(log);
         return log;
     }

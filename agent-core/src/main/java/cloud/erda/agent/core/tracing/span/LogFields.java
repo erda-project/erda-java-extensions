@@ -32,5 +32,5 @@ public class LogFields {
 
     public final static String Stack = "stack";
 
-    public final static String Error = "Error";
+    public final static String Error = "error";
 }
