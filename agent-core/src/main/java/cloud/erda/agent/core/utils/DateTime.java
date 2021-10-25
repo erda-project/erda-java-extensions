@@ -16,14 +16,11 @@
 
 package cloud.erda.agent.core.utils;
 
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
 
 public class DateTime {
 
     public static long currentTimeNano() {
-        Instant instant = Instant.now().atZone(ZoneId.systemDefault()).toInstant();
-        return TimeUnit.NANOSECONDS.convert(instant.getEpochSecond(), TimeUnit.SECONDS) + instant.getNano();
+        return TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis());
     }
 }

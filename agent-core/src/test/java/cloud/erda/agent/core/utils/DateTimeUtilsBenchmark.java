@@ -6,15 +6,13 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author zhaihongwei
  * @since 2021/8/24
  */
-@BenchmarkMode(Mode.Throughput)
+@BenchmarkMode({Mode.Throughput, Mode.AverageTime})
 @Warmup(iterations = 3)
 @Measurement(iterations = 1, time = 10)
 @Threads(8)
@@ -22,15 +20,12 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class DateTimeUtilsBenchmark {
 
-    public static long currentTimeNanoOld() {
-        Long currentTime = System.currentTimeMillis() * 1000000;
-        Long nanoTime = System.nanoTime();
-        return currentTime + (nanoTime - nanoTime / 1000000 * 1000000);
+    public static long currentTimeNano() {
+        return TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis());
     }
 
-    public static long currentTimeNano() {
-        Instant instant = Instant.now().atZone(ZoneId.systemDefault()).toInstant();
-        return TimeUnit.NANOSECONDS.convert(instant.getEpochSecond(), TimeUnit.SECONDS) + instant.getNano();
+    public static long currentTimeNano2() {
+        return System.currentTimeMillis() * 1000000L;
     }
 
     @Benchmark
@@ -39,8 +34,8 @@ public class DateTimeUtilsBenchmark {
     }
 
     @Benchmark
-    public void testCurrentTimeNanoOld() {
-        long l = currentTimeNanoOld();
+    public void testCurrentTimeNano2() {
+        long l = currentTimeNano2();
     }
 
     public static void main(String[] args) throws RunnerException {
