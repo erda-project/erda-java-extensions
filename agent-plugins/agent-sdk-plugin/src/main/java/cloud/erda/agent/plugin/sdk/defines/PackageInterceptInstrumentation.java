@@ -57,7 +57,7 @@ public class PackageInterceptInstrumentation extends ClassEnhancePluginDefine {
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return ElementMatchers.not(named("getDynamicField").or(isAbstract()).or(nameContainsIgnoreCase("$EnhancerBySpringCGLIB$")));
+                        return ElementMatchers.not(named("getDynamicField").or(ElementMatchers.isDefaultMethod()).or(isAbstract()).or(nameContainsIgnoreCase("BySpringCGLIB$")));
                     }
 
                     @Override
@@ -85,7 +85,7 @@ public class PackageInterceptInstrumentation extends ClassEnhancePluginDefine {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
 
-                        return not(nameContainsIgnoreCase("*$EnhancerBySpringCGLIB$"));
+                        return not(nameContainsIgnoreCase("BySpringCGLIB$"));
                     }
 
                     @Override

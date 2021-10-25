@@ -80,7 +80,10 @@ public class PackageMatch implements IndirectMatch {
     public boolean isMatch(TypeDescription typeDescription) {
         String typeName = typeDescription.getTypeName();
         for (String packageName : matchPackageNames) {
-            if (isJavaClass(typeName) || typeName.matches("org.apache.skywalking.*") || typeName.matches("cloud.erda.*") || typeName.contains("BySpringCGLIB$$")) {
+            if (typeDescription.isInterface()) {
+                continue;
+            }
+            if (isJavaClass(typeName) || typeName.matches("org.apache.skywalking.*") || typeName.matches("cloud.erda.*") || typeName.matches("org.springframework.*") || typeName.contains("BySpringCGLIB$$")) {
                 continue;
             }
             if (typeName.startsWith(packageName)) {

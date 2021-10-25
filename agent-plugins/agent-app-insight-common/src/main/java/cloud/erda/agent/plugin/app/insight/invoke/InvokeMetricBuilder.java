@@ -34,7 +34,7 @@ public class InvokeMetricBuilder implements MetricBuilder {
 
     InvokeMetricBuilder(long start) {
         this.metric = Metric.New(Constants.Metrics.APPLICATION_INVOKE, start);
-        this.watch = new StopWatch(start);
+        this.watch = new StopWatch();
     }
 
     @Override
