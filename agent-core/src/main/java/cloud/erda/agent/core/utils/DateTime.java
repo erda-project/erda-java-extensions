@@ -16,11 +16,9 @@
 
 package cloud.erda.agent.core.utils;
 
-import java.util.concurrent.TimeUnit;
-
 public class DateTime {
 
     public static long currentTimeNano() {
-        return TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis());
+        return System.currentTimeMillis() * 1000000L;
     }
 }
