@@ -27,19 +27,19 @@ public class StopWatch {
 
     private Long end;
 
-    public StopWatch(Long start) {
-        this.start = start == null ? DateTime.currentTimeNano() : start;
+    public StopWatch() {
+        this.start = System.nanoTime();
     }
 
     public void stop() {
         if (end == null) {
-            end = DateTime.currentTimeNano();
+            end = System.nanoTime();
         }
     }
 
     public long elapsed() {
         if (end == null) {
-            return  Math.abs(DateTime.currentTimeNano() - start);
+            return System.nanoTime() - start;
         }
         return Math.abs(end - start);
     }

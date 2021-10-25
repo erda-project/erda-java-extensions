@@ -23,6 +23,7 @@ import cloud.erda.agent.core.tracing.Tracer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author liuhaoyang
@@ -37,6 +38,7 @@ public class SpanImpl implements Span {
     private Map<String, String> tags;
     private Tracer tracer;
     private List<SpanLog> logs;
+    private AtomicInteger logInteger;
 
     public SpanImpl(String operationName, Map<String, String> tags, SpanContext spanContext, Tracer tracer) {
         this.operationName = operationName;
@@ -45,6 +47,7 @@ public class SpanImpl implements Span {
         this.startTime = DateTime.currentTimeNano();
         this.tracer = tracer;
         this.logs = new ArrayList<>();
+        this.logInteger = new AtomicInteger();
     }
 
     @Override
@@ -90,7 +93,7 @@ public class SpanImpl implements Span {
 
     @Override
     public SpanLogImpl log(Long timestamp) {
-        SpanLogImpl log = new SpanLogImpl(timestamp + logs.size());
+        SpanLogImpl log = new SpanLogImpl(timestamp + logInteger.addAndGet(100));
         logs.add(log);
         return log;
     }

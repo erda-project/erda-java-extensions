@@ -19,8 +19,8 @@ package cloud.erda.agent.plugin.sdk.interceptors;
 import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.tracing.span.LogFields;
-import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.DateTime;
+import cloud.erda.agent.plugin.app.insight.StopWatch;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -33,21 +33,21 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMet
 public class UserDefineMethodPointsInterceptor implements StaticMethodsAroundInterceptor, InstanceMethodsAroundInterceptor {
 
     public final static String INTERCEPTOR_CLASS = "cloud.erda.agent.plugin.sdk.interceptors.UserDefineMethodPointsInterceptor";
-    private final static String START_TIME_KEY = "START_TIME";
+    private final static String STOP_WATCH_KEY = "STOP_WATCH";
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) {
-        Long start = DateTime.currentTimeNano();
-        context.setAttachment(START_TIME_KEY, start);
+        StopWatch stopWatch = new StopWatch();
+        context.setAttachment(STOP_WATCH_KEY, stopWatch);
     }
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        Long now = DateTime.currentTimeNano();
+        StopWatch stopWatch = context.getAttachment(STOP_WATCH_KEY);
+        stopWatch.stop();
         Scope scope = TracerManager.tracer().active();
         if (scope != null) {
-            Long start = context.getAttachment(START_TIME_KEY);
-            scope.span().log(now).event(LogFields.Event, String.format("[%.3fms] %s:%s", (now - start) / 1000000f, context.getOriginClass().getName(), context.getMethod().getName()));
+            scope.span().log(DateTime.currentTimeNano()).event(LogFields.Event, String.format("[%.3fms] %s:%s", stopWatch.elapsed() / 1000000f, context.getOriginClass().getName(), context.getMethod().getName()));
         }
         return ret;
     }

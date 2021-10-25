@@ -48,7 +48,7 @@ public class TransactionMetricBuilder implements MetricBuilder {
         this.tags = new HashMap<String, String>();
         this.fields = new HashMap<String, Object>();
         this.timestamp = DateTime.currentTimeNano();
-        this.watch = new StopWatch(this.timestamp);
+        this.watch = new StopWatch();
 
         if (isTarget) {
             recordContextSourceTag();
