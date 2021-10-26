@@ -75,7 +75,7 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
         span.tag(Constants.Tags.HTTP_PATH, path);
         span.tag(Constants.Tags.HTTP_METHOD, method.name().toUpperCase());
 
-        tracer.context().put(TransactionMetricContext.instance);
+        span.getContext().getBaggage().putAll(TransactionMetricContext.instance);
         Map<String, String> map = new HashMap<String, String>(16);
         TextMapCarrier carrier = new TextMapCarrier(map);
         tracer.inject(span.getContext(), carrier);

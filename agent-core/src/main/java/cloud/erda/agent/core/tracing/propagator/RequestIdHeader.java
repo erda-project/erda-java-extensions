@@ -18,7 +18,6 @@ package cloud.erda.agent.core.tracing.propagator;
 
 import cloud.erda.agent.core.tracing.SpanContext;
 import cloud.erda.agent.core.utils.UUIDGenerator;
-import cloud.erda.agent.core.tracing.TracerContext;
 
 /**
  * @author liuhaoyang
@@ -34,19 +33,16 @@ public class RequestIdHeader extends Header {
 
     @Override
     public void inject(SpanContext context, Carrier carrier) {
-        String requestId = context.getTracerContext().requestId();
+        String requestId = context.getTraceId();
         carrier.put(Request_Id, requestId);
     }
 
     @Override
     public void extract(SpanContext.Builder builder, Carrier carrier) {
-        String requestId = builder.getTracerContext().requestId();
-        if (requestId == null) {
-            requestId = carrier.get(Request_Id);
+        String traceId = carrier.get(Request_Id);
+        if (traceId == null) {
+            traceId = UUIDGenerator.New();
         }
-        if (requestId == null) {
-            requestId = UUIDGenerator.New();
-        }
-        builder.getTracerContext().put(TracerContext.REQUEST_ID, requestId);
+        builder.setTraceId(traceId);
     }
 }

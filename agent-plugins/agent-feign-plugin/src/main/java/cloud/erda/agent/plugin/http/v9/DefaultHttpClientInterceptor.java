@@ -97,9 +97,10 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
         span.tag(Constants.Tags.HTTP_PATH, path);
         span.tag(Constants.Tags.HTTP_METHOD, request.method().toUpperCase());
 
-        tracer.context().put(TransactionMetricContext.instance);
-        Map<String, String> map = new HashMap<String, String>(16);
-        TextMapCarrier carrier = new TextMapCarrier(map);
+        span.getContext().getBaggage().putAll(TransactionMetricContext.instance);
+
+        TextMapCarrier carrier = new TextMapCarrier();
+
         tracer.inject(span.getContext(), carrier);
 
         Field headersField = Request.class.getDeclaredField("headers");
@@ -108,7 +109,7 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
         modifiersField.setInt(headersField, headersField.getModifiers() & ~Modifier.FINAL);
         headersField.setAccessible(true);
         Map<String, Collection<String>> headers = new LinkedHashMap<String, Collection<String>>(request.headers());
-        for (Map.Entry<String, String> entry : map.entrySet()) {
+        for (Map.Entry<String, String> entry : carrier) {
             if (Strings.isEmpty(entry.getKey())) {
                 continue;
             }

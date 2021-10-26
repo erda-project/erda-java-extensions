@@ -20,6 +20,7 @@ import cloud.erda.agent.core.config.AddonConfig;
 import cloud.erda.agent.core.config.AgentConfig;
 import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import cloud.erda.agent.core.config.ServiceConfig;
+import cloud.erda.agent.core.tracing.Context;
 import cloud.erda.agent.core.tracing.TracerContext;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.plugin.app.insight.Configs;
@@ -32,10 +33,10 @@ import java.util.Map;
  * @author liuhaoyang
  * @since 2019-01-21 18:27
  **/
-public class TransactionMetricContext implements TracerContext.ContextIterator {
-    public static final TracerContext.ContextIterator instance = new TransactionMetricContext();
+public class TransactionMetricContext implements Context.ContextIterator<String> {
+    public static final Context.ContextIterator<String> instance = new TransactionMetricContext();
 
-    private final Map<String, String> map = new HashMap<String, String>();
+    private final Map<String, String> map = new HashMap<>();
 
     public TransactionMetricContext() {
         map.put(Constants.Metrics.SOURCE_ADDON_TYPE_ATTACH, Configs.AddonConfig.getAddonType());

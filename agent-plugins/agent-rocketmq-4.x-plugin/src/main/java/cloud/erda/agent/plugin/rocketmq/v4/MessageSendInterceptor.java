@@ -78,8 +78,8 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         span.tag(HOST, nameServerAddress);
         span.tag(MESSAGE_BUS_DESTINATION, message.getTopic());
 
-        tracer.context().put(TransactionMetricContext.instance);
-        tracer.context().put(NAME_SERVER_ADDRESS, nameServerAddress);
+        span.getContext().getBaggage().putAll(TransactionMetricContext.instance);
+        span.getContext().getBaggage().put(NAME_SERVER_ADDRESS, nameServerAddress);
         Map<String, String> map = new HashMap<String, String>(16);
         TextMapCarrier carrier = new TextMapCarrier(map);
         tracer.inject(span.getContext(), carrier);

@@ -71,7 +71,7 @@ public abstract class AbstractMessageConsumeInterceptor implements InstanceMetho
         Tracer tracer = TracerManager.tracer();
         Carrier carrier = new TextMapCarrier(map);
         SpanContext spanContext = tracer.extract(carrier);
-        String nameServerAddress = tracer.context().get(Constants.Tags.NAME_SERVER_ADDRESS);
+        String nameServerAddress = spanContext.getBaggage().get(Constants.Tags.NAME_SERVER_ADDRESS);
 
         Span span = tracer.buildSpan(operationName).childOf(spanContext).startActive().span();
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_ROCKETMQ);

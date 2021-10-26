@@ -19,6 +19,7 @@ package cloud.erda.agent.plugin.log.error;
 import cloud.erda.agent.core.config.AgentConfig;
 import cloud.erda.agent.core.config.ServiceConfig;
 import cloud.erda.agent.core.config.loader.ConfigAccessor;
+import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.TracerContext;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.utils.Constants;
@@ -84,10 +85,13 @@ public class ErrorEventBuilder {
         event.setTimestamp(DateTime.currentTimeNano());
 
         // add trace info
-        TracerContext tracerContext = TracerManager.tracer().context();
-        event.setRequestId(tracerContext.requestId());
-        Boolean sampled = tracerContext.sampled();
-        addTag("request_sampled", String.valueOf(sampled == null ? false : sampled));
+        Scope scope = TracerManager.tracer().active();
+        if (scope != null) {
+            event.setRequestId(scope.span().getContext().getTraceId());
+            Boolean sampled = scope.span().getContext().getSampled();
+            addTag("request_sampled", String.valueOf(sampled == null ? false : sampled));
+        }
+
 
         event.setTags(tags);
         event.setRequestHeaders(requestHeaders);

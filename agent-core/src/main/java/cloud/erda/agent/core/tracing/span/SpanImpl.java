@@ -61,7 +61,7 @@ public class SpanImpl implements Span {
     }
 
     @Override
-    public void setOperationName(String operationName) {
+    public void updateName(String operationName) {
         if (operationName == null) {
             return;
         }

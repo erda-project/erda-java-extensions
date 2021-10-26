@@ -26,21 +26,40 @@ import cloud.erda.agent.core.tracing.span.Span;
  **/
 public class Scope {
 
-    private static ILog log = LogManager.getLogger(Scope.class);
+    private static ILog logger = LogManager.getLogger(Scope.class);
+//    private ScopeTracer tracer;
 
-    private ScopeTracer tracer;
-    private Scope last;
-    private Span active;
+    private Scope previous;
+    private Scope next;
 
-    public Scope(ScopeTracer tracer, Span span) {
+    private Tracer tracer;
+    private Span span;
+
+    public Scope(Tracer tracer, Span span, Scope previous) {
+        this.span = span;
         this.tracer = tracer;
-        this.last = tracer.active();
-        this.active = span;
-        this.tracer.activate(this);
+        if (previous != null) {
+            previous.setNext(this);
+        }
+    }
+
+    public Scope getPrevious() {
+        return previous;
+    }
+
+    public Scope getNext() {
+        return next;
+    }
+
+    public void setNext(Scope next) {
+        this.next = next;
+        if (next != null) {
+            next.previous = this;
+        }
     }
 
     public Span span() {
-        return active;
+        return span;
     }
 
     /**
@@ -48,19 +67,16 @@ public class Scope {
      * Activate span to the tracer of the target process
      **/
     public void close(boolean finish) {
-        if (tracer.active() != this) {
-            return;
-        }
-
         //span finish
         if (finish) {
-            active.finish();
+            span.finish();
         }
-
-        if (last == null) {
-            tracer.context().close();
+        if (previous != null) {
+            previous.setNext(next);
         }
-        tracer.activate(last);
+        if (tracer.active() == this) {
+            tracer.activate(previous);
+        }
     }
 
     public void close() {

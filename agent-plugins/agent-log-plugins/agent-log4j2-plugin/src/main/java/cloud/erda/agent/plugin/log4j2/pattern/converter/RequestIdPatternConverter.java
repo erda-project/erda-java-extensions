@@ -16,7 +16,7 @@
 
 package cloud.erda.agent.plugin.log4j2.pattern.converter;
 
-import cloud.erda.agent.core.tracing.TracerContext;
+import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.TracerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
@@ -49,11 +49,11 @@ public class RequestIdPatternConverter extends LogEventPatternConverter {
      */
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
-        TracerContext context = TracerManager.tracer().context();
-        if (context == null) {
+        Scope scope = TracerManager.tracer().active();
+        if (scope == null) {
             return;
         }
 
-        toAppendTo.append(context.requestId() != null ? context.requestId() : "");
+        toAppendTo.append(scope.span().getContext().getTraceId());
     }
 }

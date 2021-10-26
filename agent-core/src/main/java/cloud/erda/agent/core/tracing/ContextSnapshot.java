@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.core.tracing.propagator;
+package cloud.erda.agent.core.tracing;
 
 /**
  * @author liuhaoyang
- * @since 2019-01-07 16:48
- **/
-public class HeaderFactory {
+ * @date 2021/10/26 11:28
+ */
+public interface ContextSnapshot<T> {
 
-    public static Header createHeader() {
-        Header header = new NoopHeader();
-        header = new BaggageHeader(header);
-        header = new SpanIdHeader(header);
-        header = new SampledHeader(header);
-        header = new RequestIdHeader(header);
-        return header;
-    }
+    void attach(T context);
+
+    T capture();
 }

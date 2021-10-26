@@ -37,7 +37,7 @@ public class SpanWrapper extends Span {
 
     @Override
     public void setOperationName(String operationName) {
-        activeSpan.setOperationName(operationName);
+        activeSpan.updateName(operationName);
     }
 
     @Override

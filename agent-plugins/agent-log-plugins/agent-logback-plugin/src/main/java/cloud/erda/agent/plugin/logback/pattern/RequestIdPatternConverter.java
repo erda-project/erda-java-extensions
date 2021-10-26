@@ -18,6 +18,7 @@ package cloud.erda.agent.plugin.logback.pattern;
 
 import ch.qos.logback.classic.pattern.ClassicConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.TracerManager;
 
 public class RequestIdPatternConverter extends ClassicConverter {
@@ -26,7 +27,7 @@ public class RequestIdPatternConverter extends ClassicConverter {
 
     @Override
     public String convert(ILoggingEvent event) {
-        String requestId = TracerManager.tracer().context().requestId();
-        return requestId == null ? "" : requestId;
+        Scope scope = TracerManager.tracer().active();
+        return scope == null ? "" : scope.span().getContext().getTraceId();
     }
 }

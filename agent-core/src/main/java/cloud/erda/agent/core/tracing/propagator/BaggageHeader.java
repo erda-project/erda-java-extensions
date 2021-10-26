@@ -16,6 +16,7 @@
 
 package cloud.erda.agent.core.tracing.propagator;
 
+import cloud.erda.agent.core.tracing.Context;
 import cloud.erda.agent.core.tracing.SpanContext;
 import cloud.erda.agent.core.tracing.TracerContext;
 
@@ -35,8 +36,8 @@ public class BaggageHeader extends Header {
 
     @Override
     public void inject(SpanContext context, Carrier carrier) {
-        for (Map.Entry<String, String> entry : context.getTracerContext()) {
-            if (TracerContext.REQUEST_ID.equals(entry.getKey()) || TracerContext.SAMPLED.equals(entry.getKey())) {
+        for (Map.Entry<String, String> entry : context.getBaggage()) {
+            if (TracerContext.TRACE_ID.equals(entry.getKey()) || TracerContext.SAMPLED.equals(entry.getKey())) {
                 continue;
             }
             carrier.put(Request_Bg + entry.getKey(), entry.getValue());
@@ -45,11 +46,8 @@ public class BaggageHeader extends Header {
 
     @Override
     public void extract(SpanContext.Builder builder, Carrier carrier) {
-        for (Map.Entry<String, String> entry : carrier) {
-            if (entry.getKey().startsWith(Request_Bg)) {
-                String key = entry.getKey().substring((Request_Bg.length()));
-                builder.getTracerContext().put(key, entry.getValue());
-            }
-        }
+        Context<String> baggage = new Context<>();
+        baggage.putAll(carrier);
+        builder.setBaggage(baggage);
     }
 }

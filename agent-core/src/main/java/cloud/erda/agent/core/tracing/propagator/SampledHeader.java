@@ -16,8 +16,8 @@
 
 package cloud.erda.agent.core.tracing.propagator;
 
+import cloud.erda.agent.core.tracing.Sampler;
 import cloud.erda.agent.core.tracing.SpanContext;
-import cloud.erda.agent.core.tracing.TracerContext;
 
 /**
  * @author liuhaoyang
@@ -26,23 +26,36 @@ import cloud.erda.agent.core.tracing.TracerContext;
 public class SampledHeader extends Header {
 
     private static final String Request_Sampled = "terminus-request-sampled";
+    private final Sampler sampler;
 
-    public SampledHeader(Header next) {
+    public SampledHeader(Sampler sampler, Header next) {
         super(next);
+        this.sampler = sampler;
     }
 
     @Override
     public void inject(SpanContext context, Carrier carrier) {
-        String sampled = String.valueOf(context.getTracerContext().sampled());
+        String sampled = String.valueOf(context.getSampled());
         carrier.put(Request_Sampled, sampled);
     }
 
     @Override
     public void extract(SpanContext.Builder builder, Carrier carrier) {
-        Boolean hasSampled = builder.getTracerContext().sampled();
-        if (hasSampled == null) {
-            String sampled = carrier.get(Request_Sampled);
-            builder.getTracerContext().put(TracerContext.SAMPLED, sampled);
+        Boolean sampled = getSample(carrier.get(Request_Sampled));
+        if (sampled == null) {
+            sampled = sampler.shouldSample();
+        }
+        builder.setSampled(sampled);
+    }
+
+    private Boolean getSample(String sampled) {
+        if (sampled == null) {
+            return null;
+        }
+        try {
+            return Boolean.parseBoolean(sampled);
+        } catch (Exception ignored) {
+            return null;
         }
     }
 }

@@ -22,15 +22,32 @@ import cloud.erda.agent.core.utils.UUIDGenerator;
  * @author liuhaoyang
  * @since 2019-01-04 17:07
  **/
-public class SpanContext {
+public class SpanContext implements ContextSnapshot<SpanContext> {
 
     private String spanId;
 
     private String parentSpanId;
 
-    private SpanContext(String spanId, String parentSpanId) {
+    private String traceId;
+
+    private Boolean sampled;
+
+    private Context<String> baggage;
+
+    private SpanContext(String traceId, String spanId, String parentSpanId, Boolean sampled, Context<String> baggage) {
+        this.traceId = traceId;
+        this.sampled = sampled;
         this.spanId = spanId;
         this.parentSpanId = parentSpanId;
+        this.baggage = baggage;
+    }
+
+    public String getTraceId() {
+        return traceId;
+    }
+
+    public Boolean getSampled() {
+        return sampled;
     }
 
     public String getSpanId() {
@@ -41,8 +58,18 @@ public class SpanContext {
         return parentSpanId;
     }
 
-    public TracerContext getTracerContext() {
-        return TracerManager.tracer().context();
+    public Context<String> getBaggage() {
+        return baggage;
+    }
+
+    @Override
+    public void attach(SpanContext context) {
+
+    }
+
+    @Override
+    public SpanContext capture() {
+        return new SpanContext(traceId, spanId, parentSpanId, sampled, new Context<>(baggage));
     }
 
     public static class Builder {
@@ -51,8 +78,22 @@ public class SpanContext {
 
         private String spanId;
 
-        public TracerContext getTracerContext() {
-            return TracerManager.tracer().context();
+        private Context<String> baggage;
+
+        private String traceId;
+
+        private Boolean sampled;
+
+        public void setBaggage(Context<String> baggage) {
+            this.baggage = baggage;
+        }
+
+        public void setSampled(Boolean sampled) {
+            this.sampled = sampled;
+        }
+
+        public void setTraceId(String traceId) {
+            this.traceId = traceId;
         }
 
         public void setParentSpanId(String parentSpanId) {
@@ -69,7 +110,7 @@ public class SpanContext {
 
         public SpanContext build(final boolean initSpanId) {
             String spanId = initSpanId ? (this.spanId != null ? this.spanId : UUIDGenerator.New()) : this.spanId;
-            return new SpanContext(spanId, parentSpanId);
+            return new SpanContext(traceId, spanId, parentSpanId, sampled, baggage != null ? baggage : new Context<>());
         }
     }
 }

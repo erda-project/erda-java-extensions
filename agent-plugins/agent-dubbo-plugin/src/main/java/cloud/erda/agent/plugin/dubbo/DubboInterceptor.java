@@ -78,7 +78,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
             context.setAttachment(Constants.Keys.TRACE_SCOPE, scope);
             span = scope.span();
             TextMapCarrier carrier = new TextMapCarrier(rpcContext.getAttachments());
-            tracer.context().put(TransactionMetricContext.instance);
+            span.getContext().getBaggage().putAll(TransactionMetricContext.instance);
             tracer.inject(span.getContext(), carrier);
             span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
         } else {
@@ -101,7 +101,6 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
                     .tag(Constants.Tags.DUBBO_SERVICE, invoker.getInterface().getName())
                     .tag(Constants.Tags.DUBBO_METHOD, invocation.getMethodName());
         }
-
 
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_DUBBO);
         span.tag(Constants.Tags.PEER_PORT, String.valueOf(port));

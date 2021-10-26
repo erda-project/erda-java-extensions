@@ -54,7 +54,10 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
 
         HttpServletResponse response = getResponse(context);
         response.setHeader(Constants.Carriers.RESPONSE_TERMINUS_KEY, ConfigAccessor.Default.getConfig(AgentConfig.class).terminusKey());
-        response.setHeader("x-msp-trace-id", TracerManager.tracer().context().requestId());
+        Scope scope = TracerManager.tracer().active();
+        if (scope != null) {
+            response.setHeader("x-msp-trace-id", scope.span().getContext().getTraceId());
+        }
     }
 
     @Override

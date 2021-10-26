@@ -16,6 +16,7 @@
 
 package cloud.erda.agent.core.tracing.propagator;
 
+import cloud.erda.agent.core.tracing.Sampler;
 import cloud.erda.agent.core.tracing.SpanContext;
 
 /**
@@ -24,10 +25,14 @@ import cloud.erda.agent.core.tracing.SpanContext;
  **/
 public class Propagator {
 
-    private static final Header HEADER = HeaderFactory.createHeader();
+    private final Header headers;
+
+    public Propagator(Sampler sampler) {
+        this.headers = createHeader(sampler);
+    }
 
     public void inject(SpanContext spanContext, Carrier carrier) {
-        Header header = HEADER;
+        Header header = headers;
         while (header.hasNext()) {
             header.inject(spanContext, carrier);
             header = header.getNext();
@@ -36,11 +41,20 @@ public class Propagator {
 
     public SpanContext extract(Carrier carrier) {
         SpanContext.Builder builder = new SpanContext.Builder();
-        Header header = HEADER;
+        Header header = headers;
         while (header.hasNext()) {
             header.extract(builder, carrier);
             header = header.getNext();
         }
         return builder.build(false);
+    }
+
+    private static Header createHeader(Sampler sampler) {
+        Header header = new NoopHeader();
+        header = new BaggageHeader(header);
+        header = new SpanIdHeader(header);
+        header = new SampledHeader(sampler, header);
+        header = new RequestIdHeader(header);
+        return header;
     }
 }

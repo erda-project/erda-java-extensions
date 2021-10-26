@@ -18,12 +18,15 @@
 
 package cloud.erda.agent.plugin.asf.dubbo;
 
+import cloud.erda.agent.core.utils.GsonUtils;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcContext;
 import cloud.erda.agent.core.utils.Constants;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -50,6 +53,9 @@ import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
  * @author zhangxin
  */
 public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
+
+    private ILog logger = LogManager.getLogger(DubboInterceptor.class);
+
     /**
      * <h2>Consumer:</h2> The serialized trace context data will
      * inject to the {@link RpcContext#attachments} for transport to provider side.
@@ -78,7 +84,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
             context.setAttachment(Constants.Keys.TRACE_SCOPE, scope);
             span = scope.span();
             TextMapCarrier carrier = new TextMapCarrier(rpcContext.getAttachments());
-            tracer.context().put(TransactionMetricContext.instance);
+            span.getContext().getBaggage().putAll(TransactionMetricContext.instance);
             tracer.inject(span.getContext(), carrier);
             span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
         } else {
