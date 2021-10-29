@@ -33,6 +33,7 @@
         <module>agent-sdk-plugin</module>
         <module>agent-redisson-3.x-plugin</module>
         <module>agent-tomcat-metric-plugin</module>
+        <module>agent-trantor-plugin</module>
     </modules>
 
     <properties>

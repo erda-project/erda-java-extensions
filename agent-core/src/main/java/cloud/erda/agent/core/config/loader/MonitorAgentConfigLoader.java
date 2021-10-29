@@ -16,9 +16,15 @@
 
 package cloud.erda.agent.core.config.loader;
 
-import java.io.IOException;
-import java.io.InputStream;
+import org.apache.skywalking.apm.agent.core.util.AgentPackageNotFoundException;
+import org.apache.skywalking.apm.agent.core.util.AgentPackagePath;
+
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Stream;
 
 @ConfigLoaderModule(priority = 2)
 public class MonitorAgentConfigLoader extends ConfigLoader {
@@ -32,17 +38,14 @@ public class MonitorAgentConfigLoader extends ConfigLoader {
         Map<String, String> configMap = new HashMap<String, String>();
         configMap.put("monitor.agent.platform", "JDK " + RUNTIME_VERSION);
         configMap.put("monitor.agent.os", OS_NAME + " " + OS_VERSION);
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("java-agent.properties");
-        Properties p = new Properties();
+        configMap.put("erda.agent.name", "erda-java-agent");
         try {
-            p.load(inputStream);
-        } catch (IOException e) {
+            String versionFile = AgentPackagePath.getPath() + "/build";
+            String version = Files
+                    .lines(Paths.get(versionFile), Charset.defaultCharset()).findFirst().orElse("unknown");
+            configMap.put("erda.agent.version", version);
+        } catch (IOException | AgentPackageNotFoundException e) {
             e.printStackTrace();
-        }
-        Enumeration<?> names = p.propertyNames();
-        while (names.hasMoreElements()) {
-            String name = (String) names.nextElement();
-            configMap.put(name, p.getProperty(name));
         }
         return configMap;
     }

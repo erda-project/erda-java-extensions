@@ -23,6 +23,8 @@ import net.bytebuddy.description.annotation.AnnotationDescription;
 import net.bytebuddy.description.annotation.AnnotationList;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +38,9 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
  * @author wusheng
  */
 public class ClassAnnotationMatch implements IndirectMatch {
+
+    private ILog logger = LogManager.getLogger(ClassAnnotationMatch.class);
+
     private String[] annotations;
 
     private ClassAnnotationMatch(String[] annotations) {
@@ -52,25 +57,29 @@ public class ClassAnnotationMatch implements IndirectMatch {
             if (junction == null) {
                 junction = buildEachAnnotation(annotation);
             } else {
-                junction = junction.and(buildEachAnnotation(annotation));
+                junction = junction.or(buildEachAnnotation(annotation));
             }
         }
-        junction = junction.and(not(isInterface()));
         return junction;
     }
 
     @Override
     public boolean isMatch(TypeDescription typeDescription) {
-        List<String> annotationList = new ArrayList<String>(Arrays.asList(annotations));
         AnnotationList declaredAnnotations = typeDescription.getDeclaredAnnotations();
-        for (AnnotationDescription annotation : declaredAnnotations) {
-            annotationList.remove(annotation.getAnnotationType().getActualName());
+        logger.info("Entry isMatch: TypeDescription: {} annotations: {}", typeDescription.getActualName(), annotations.length);
+        for (AnnotationDescription annotationDescription : declaredAnnotations) {
+            for (String annotation : annotations) {
+                if (annotationDescription.getAnnotationType().getActualName().equals(annotation)) {
+                    logger.info("annotation match: {}  annotation: {}", annotationDescription.getAnnotationType().getActualName(), annotation);
+                    return true;
+                }
+            }
         }
-        return annotationList.isEmpty();
+        return false;
     }
 
     private ElementMatcher.Junction buildEachAnnotation(String annotationName) {
-        return isAnnotatedWith(named(annotationName));
+        return declaresAnnotation(annotationType(named(annotationName)));
     }
 
     public static ClassMatch byClassAnnotationMatch(String[] annotations) {

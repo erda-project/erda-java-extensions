@@ -16,34 +16,33 @@
 
 package cloud.erda.agent.plugin.sdk.defines;
 
-import cloud.erda.agent.plugin.sdk.interceptors.UserDefineMethodPointsInterceptor;
-import cloud.erda.agent.plugin.sdk.match.PackageMatch;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
-import static net.bytebuddy.matcher.ElementMatchers.*;
+import java.util.concurrent.Callable;
 
 /**
  * @author liuhaoyang
- * @date 2021/10/20 14:06
+ * @date 2021/10/27 13:55
  */
-public class PackageInterceptInstrumentation extends ClassEnhancePluginDefine {
+public class ExecutorServiceSubmitInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private String packages;
+    private static final String[] ENHANCE_CLASS = new String[]{
+            "cloud.erda.msp.monitor.concurrent.ExecutorServiceWrapper"
+    };
 
-    public PackageInterceptInstrumentation(String packages) {
-        this.packages = packages;
-    }
+    private static final String INTERCEPT_CLASS = "cloud.erda.agent.plugin.sdk.interceptors.ExecutorServiceSubmitInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
-        return PackageMatch.byPackages(packages);
+        return MultiClassNameMatch.byMultiClassMatch(ENHANCE_CLASS);
     }
 
     @Override
@@ -57,45 +56,17 @@ public class PackageInterceptInstrumentation extends ClassEnhancePluginDefine {
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return ElementMatchers.not(named("getDynamicField").or(ElementMatchers.isDefaultMethod()).or(isAbstract()).or(nameContainsIgnoreCase("BySpringCGLIB$")));
+                        return ElementMatchers.named("submit").and(ElementMatchers.takesArguments(1)).and(ElementMatchers.takesArguments(Callable.class));
                     }
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return UserDefineMethodPointsInterceptor.INTERCEPTOR_CLASS;
+                        return INTERCEPT_CLASS;
                     }
 
                     @Override
                     public boolean isOverrideArgs() {
-                        return false;
-                    }
-                }
-        };
-    }
-
-    @Override
-    protected boolean implementDynamicField() {
-        return false;
-    }
-
-    @Override
-    protected StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
-        return new StaticMethodsInterceptPoint[]{
-                new StaticMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-
-                        return not(nameContainsIgnoreCase("BySpringCGLIB$"));
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return UserDefineMethodPointsInterceptor.INTERCEPTOR_CLASS;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
+                        return true;
                     }
                 }
         };

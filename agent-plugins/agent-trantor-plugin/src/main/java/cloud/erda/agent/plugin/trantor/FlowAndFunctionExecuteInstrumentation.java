@@ -14,36 +14,34 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.sdk.defines;
+package cloud.erda.agent.plugin.trantor;
 
-import cloud.erda.agent.plugin.sdk.interceptors.UserDefineMethodPointsInterceptor;
-import cloud.erda.agent.plugin.sdk.match.PackageMatch;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
-import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.match.ClassAnnotationMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
 /**
  * @author liuhaoyang
- * @date 2021/10/20 14:06
+ * @date 2021/10/29 17:12
  */
-public class PackageInterceptInstrumentation extends ClassEnhancePluginDefine {
+public class FlowAndFunctionExecuteInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private String packages;
+    private static final String[] ENHANCE_CLASS_ANNOTATIONS = new String[]{
+            "io.terminus.trantorframework.api.annotation.FlowImpl",
+            "io.terminus.trantorframework.api.annotation.FunctionImpl"
+    };
 
-    public PackageInterceptInstrumentation(String packages) {
-        this.packages = packages;
-    }
+    private static final String INTERCEPT_CLASS = "cloud.erda.agent.plugin.trantor.FlowAndFunctionExecuteInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
-        return PackageMatch.byPackages(packages);
+        return ClassAnnotationMatch.byClassAnnotationMatch(ENHANCE_CLASS_ANNOTATIONS);
     }
 
     @Override
@@ -57,40 +55,12 @@ public class PackageInterceptInstrumentation extends ClassEnhancePluginDefine {
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return ElementMatchers.not(named("getDynamicField").or(ElementMatchers.isDefaultMethod()).or(isAbstract()).or(nameContainsIgnoreCase("BySpringCGLIB$")));
+                        return named("execute").and(isPublic()).and(not(isAbstract()));
                     }
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return UserDefineMethodPointsInterceptor.INTERCEPTOR_CLASS;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                }
-        };
-    }
-
-    @Override
-    protected boolean implementDynamicField() {
-        return false;
-    }
-
-    @Override
-    protected StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
-        return new StaticMethodsInterceptPoint[]{
-                new StaticMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-
-                        return not(nameContainsIgnoreCase("BySpringCGLIB$"));
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return UserDefineMethodPointsInterceptor.INTERCEPTOR_CLASS;
+                        return INTERCEPT_CLASS;
                     }
 
                     @Override

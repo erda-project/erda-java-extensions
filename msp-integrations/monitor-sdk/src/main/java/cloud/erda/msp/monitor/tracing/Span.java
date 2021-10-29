@@ -22,6 +22,7 @@ import java.util.Map;
  * @author liuhaoyang
  * @date 2021/5/18 21:34
  */
+@Deprecated
 public class Span {
 
     public String spanId() {

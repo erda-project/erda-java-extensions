@@ -20,6 +20,7 @@ package cloud.erda.msp.monitor.tracing;
  * @author liuhaoyang
  * @date 2021/5/18 21:34
  */
+@Deprecated
 public class Tracer {
 
     private static final Span NOOP_SPAN = new Span();

@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package cloud.erda.msp.monitor.tracing;
+package cloud.erda.msp.monitor.concurrent;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author liuhaoyang
- * @date 2021/5/18 21:37
+ * @date 2021/10/28 11:45
  */
-@Deprecated
-@Target({ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Trace {
+public interface ExecutorServiceAccessor {
 
-    String value() default "";
+    ExecutorService getExecutorService();
 }

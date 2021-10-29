@@ -21,6 +21,7 @@ package cloud.erda.agent;
 import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import cloud.erda.agent.core.config.AgentConfig;
 import net.bytebuddy.agent.builder.AgentBuilder;
+import net.bytebuddy.agent.builder.ResettableClassFileTransformer;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.matcher.ElementMatchers;
@@ -34,7 +35,12 @@ import org.apache.skywalking.apm.agent.core.plugin.jdk9module.JDK9ModuleExporter
 import org.apache.skywalking.apm.agent.core.util.AgentPackageNotFoundException;
 import org.apache.skywalking.apm.agent.core.util.AgentPackagePath;
 
+import java.lang.instrument.ClassDefinition;
+import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
+import java.lang.instrument.UnmodifiableClassException;
+import java.security.ProtectionDomain;
+import java.util.Iterator;
 import java.util.List;
 
 import static net.bytebuddy.matcher.ElementMatchers.nameContains;
@@ -93,6 +99,7 @@ public class JavaAgent {
         agentBuilder.type(pluginFinder.buildMatch())
                 .transform(new Transformer(pluginFinder))
                 .with(new Listener())
+                .with(instrumentation.isRetransformClassesSupported() ? AgentBuilder.RedefinitionStrategy.RETRANSFORMATION : AgentBuilder.RedefinitionStrategy.DISABLED)
                 .installOn(instrumentation);
     }
 
@@ -146,6 +153,7 @@ public class JavaAgent {
         @Override
         public void onIgnored(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module,
                               boolean loaded) {
+//            logger.debug("On Ignored class {}.", typeDescription.getName());
 
         }
 
@@ -157,6 +165,7 @@ public class JavaAgent {
 
         @Override
         public void onComplete(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded) {
+//            logger.debug("On Enhance class {} completed.", typeName);
         }
     }
 }

@@ -61,7 +61,11 @@ public class ScopeTracer implements Tracer {
 
     @Override
     public TracerSnapshot capture() {
-        Scope scope = active();
+        return capture(active());
+    }
+
+    @Override
+    public TracerSnapshot capture(Scope scope) {
         return new TracerSnapshot(tracerContext, scope == null ? null : scope.span().getContext());
     }
 

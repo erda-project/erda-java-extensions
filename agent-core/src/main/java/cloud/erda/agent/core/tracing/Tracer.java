@@ -38,6 +38,8 @@ public interface Tracer {
 
     TracerSnapshot capture();
 
+    TracerSnapshot capture(Scope scope);
+
     void dispatch(Span span);
 
     void inject(SpanContext spanContext, Carrier carrier);
