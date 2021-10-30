@@ -44,8 +44,7 @@ public class MonitorAgentConfigLoader extends ConfigLoader {
             String version = Files
                     .lines(Paths.get(versionFile), Charset.defaultCharset()).findFirst().orElse("unknown");
             configMap.put("erda.agent.version", version);
-        } catch (IOException | AgentPackageNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException | AgentPackageNotFoundException ignored) {
         }
         return configMap;
     }

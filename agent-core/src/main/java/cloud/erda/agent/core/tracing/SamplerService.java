@@ -51,12 +51,12 @@ public class SamplerService extends ScheduledService implements Sampler {
 
     @Override
     protected void executing() {
-        do {
+        while (true) {
             int current = index.get();
             if (index.compareAndSet(current, 0)) {
                 break;
             }
-        } while (true);
+        }
     }
 
     @Override
