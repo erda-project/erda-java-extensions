@@ -35,7 +35,7 @@ public class SpanSerializer {
 
     public Metric[] serialize(Span span) {
         Metric metric = Metric.New("span", span.getStartTime());
-        metric.addTag("trace_id", span.getContext().getTracerContext().requestId());
+        metric.addTag("trace_id", span.getContext().getTraceId());
         metric.addTag("span_id", span.getContext().getSpanId());
         metric.addTag("parent_span_id", span.getContext().getParentSpanId());
         metric.addTag("operation_name", span.getOperationName());
@@ -66,7 +66,7 @@ public class SpanSerializer {
             for (Map.Entry<String, String> tag : log.getFields().entrySet()) {
                 logMetric.addTag(tag.getKey().replace('.', '_'), tag.getValue());
             }
-            logMetric.addTag("trace_id", span.getContext().getTracerContext().requestId());
+            logMetric.addTag("trace_id", span.getContext().getTraceId());
             logMetric.addTag("span_id", span.getContext().getSpanId());
             logMetric.addTag("terminus_key", agentConfig.terminusKey());
             logMetric.addField("field_count", log.getFields().size());

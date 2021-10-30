@@ -40,6 +40,8 @@ public class Constants {
 
         public static final String SPAN_KIND = "span_kind";
 
+        public static final String SPAN_KIND_LOCAL = "local";
+
         public static final String SPAN_KIND_CLIENT = "client";
 
         public static final String SPAN_KIND_SERVER = "server";
@@ -146,6 +148,8 @@ public class Constants {
 
         public static final String COMPONENT_TOMCAT = "Tomcat";
 
+        public static final String COMPONENT_THREAD_POOL = "ThreadPool";
+
         public static final String COMPONENT_JETTY = "Jetty";
 
         public static final String NAME_SERVER_ADDRESS = "name_server_address";
@@ -165,6 +169,8 @@ public class Constants {
         public static final String METHOD = "method";
 
         public static final String INVOKE = "invoke";
+
+        public static final String TRANTOR = "Trantor";
     }
 
     public static class Metrics {

@@ -16,13 +16,16 @@
 
 package cloud.erda.agent.core.tracing.propagator;
 
+import cloud.erda.agent.core.tracing.Context;
+
 import java.util.Map;
 
 /**
  * @author liuhaoyang
  * @since 2019-01-07 16:08
  **/
-public interface Carrier extends Iterable<Map.Entry<String, String>> {
+public interface Carrier extends Context.ContextIterator<String> {
+
     void put(String key, String value);
 
     String get(String key);

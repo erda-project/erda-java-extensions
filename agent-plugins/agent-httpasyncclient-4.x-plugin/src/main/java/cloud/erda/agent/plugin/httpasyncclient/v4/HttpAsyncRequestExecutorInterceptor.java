@@ -83,7 +83,7 @@ public class HttpAsyncRequestExecutorInterceptor implements InstanceMethodsAroun
         span.tag(HTTP_PATH, requestWrapper.getURI().getPath());
         span.tag(HTTP_METHOD, requestLine.getMethod());
 
-        tracer.context().put(TransactionMetricContext.instance);
+        span.getContext().getBaggage().putAll(TransactionMetricContext.instance);
         Map<String, String> map = new HashMap<String, String>(16);
         TextMapCarrier carrier = new TextMapCarrier(map);
         tracer.inject(span.getContext(), carrier);

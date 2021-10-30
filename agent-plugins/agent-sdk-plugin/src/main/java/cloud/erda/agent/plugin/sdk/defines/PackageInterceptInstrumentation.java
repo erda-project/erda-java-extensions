@@ -67,7 +67,7 @@ public class PackageInterceptInstrumentation extends ClassEnhancePluginDefine {
 
                     @Override
                     public boolean isOverrideArgs() {
-                        return true;
+                        return false;
                     }
                 }
         };
@@ -95,7 +95,7 @@ public class PackageInterceptInstrumentation extends ClassEnhancePluginDefine {
 
                     @Override
                     public boolean isOverrideArgs() {
-                        return true;
+                        return false;
                     }
                 }
         };

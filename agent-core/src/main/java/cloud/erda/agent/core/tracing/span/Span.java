@@ -17,6 +17,7 @@
 package cloud.erda.agent.core.tracing.span;
 
 import cloud.erda.agent.core.tracing.SpanContext;
+import cloud.erda.agent.core.tracing.TracerContext;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public interface Span {
 
     String getOperationName();
 
-    void setOperationName(String operationName);
+    void updateName(String operationName);
 
     long getStartTime();
 

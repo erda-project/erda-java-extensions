@@ -27,20 +27,23 @@ import java.util.Map;
  * @since 2019-01-07 21:43
  **/
 public class SpanBuilder {
-    private String operationName;
+    private final String operationName;
+    private final Tracer tracer;
+    private final Sampler sampler;
+
     private Map<String, String> tags;
     private SpanContext reference;
-    private Tracer tracer;
-    private Sampler sampler;
 
     public SpanBuilder(String operationName, Tracer tracer, Sampler sampler) {
         this.operationName = operationName;
-        this.tags = new HashMap<String, String>();
         this.tracer = tracer;
         this.sampler = sampler;
     }
 
     public SpanBuilder tag(String key, String value) {
+        if (tags == null) {
+            tags = new HashMap<>();
+        }
         tags.put(key, value);
         return this;
     }
@@ -55,33 +58,20 @@ public class SpanBuilder {
     }
 
     private Span build() {
-        ensureRequestId();
-        ensureSampled();
-        SpanContext.Builder spanContextBuilder = new SpanContext.Builder();
-        if (reference != null) {
-            spanContextBuilder.setParentSpanId(reference.getSpanId());
+        SpanContext.Builder contextBuilder = new SpanContext.Builder();
+        if (reference == null) {
+            contextBuilder.setTraceId(UUIDGenerator.New());
+            contextBuilder.setSampled(sampler.shouldSample());
+        } else {
+            contextBuilder.setParentSpanId(reference.getSpanId());
+            contextBuilder.setTraceId(reference.getTraceId() != null ? reference.getTraceId() : UUIDGenerator.New());
+            contextBuilder.setSampled(reference.getSampled() != null ? reference.getSampled() : sampler.shouldSample());
+            contextBuilder.setBaggage(reference.getBaggage());
         }
-        SpanContext spanContext = spanContextBuilder.build();
-        if (!tracer.context().sampled()) {
-            return new SpanNoop(spanContext);
+        SpanContext context = contextBuilder.build();
+        if (!context.getSampled()) {
+            return new SpanNoop(context);
         }
-        return new SpanImpl(operationName, tags, spanContext, tracer);
+        return new SpanImpl(operationName, tags != null ? tags : new HashMap<>(), context, tracer);
     }
-
-    private void ensureSampled() {
-        Boolean sampled = tracer.context().sampled();
-        if (sampled == null) {
-            sampled = sampler.shouldSample();
-            tracer.context().put(TracerContext.SAMPLED, String.valueOf(sampled));
-        }
-    }
-
-    private void ensureRequestId() {
-        String requestId = tracer.context().requestId();
-        if (requestId == null) {
-            requestId = UUIDGenerator.New();
-            tracer.context().put(TracerContext.REQUEST_ID, requestId);
-        }
-    }
-
 }

@@ -25,6 +25,7 @@ import java.lang.annotation.Target;
  * @author liuhaoyang
  * @date 2021/5/18 21:37
  */
+@Deprecated
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Trace {

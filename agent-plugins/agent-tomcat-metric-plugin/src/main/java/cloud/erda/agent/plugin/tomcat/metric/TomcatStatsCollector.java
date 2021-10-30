@@ -26,6 +26,7 @@ import javax.management.*;
 import java.lang.management.ManagementFactory;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -123,67 +124,71 @@ public class TomcatStatsCollector {
     }
 
     public void collect() {
-        for (Map.Entry<ObjectName, List<BiConsumer<ObjectName, Attributes>>> item : metricListeners.entrySet()) {
-            ObjectName objectName = item.getKey();
-            String type = objectName.getKeyProperty("type");
-            Attributes attributes = Attributes.of(AttributeKey.stringKey(Constants.Tags.COMPONENT), Constants.Tags.COMPONENT_TOMCAT, AttributeKey.stringKey("type"), type, AttributeKey.stringKey("_metric_index"), "apm_component_tomcat");
-            for (BiConsumer<ObjectName, Attributes> listener : item.getValue()) {
-                listener.accept(objectName, attributes);
+        synchronized (metricListeners) {
+            for (Map.Entry<ObjectName, List<BiConsumer<ObjectName, Attributes>>> item : metricListeners.entrySet()) {
+                ObjectName objectName = item.getKey();
+                String type = objectName.getKeyProperty("type");
+                Attributes attributes = Attributes.of(AttributeKey.stringKey(Constants.Tags.COMPONENT), Constants.Tags.COMPONENT_TOMCAT, AttributeKey.stringKey("type"), type, AttributeKey.stringKey("_metric_index"), "apm_component_tomcat");
+                for (BiConsumer<ObjectName, Attributes> listener : item.getValue()) {
+                    listener.accept(objectName, attributes);
+                }
             }
         }
     }
 
     private void registerMetricsEventually(String patternSuffix, Consumer<ObjectName> perObject) {
-        ObjectName objectName = null;
-        try {
-            objectName = new ObjectName(patternSuffix);
-        } catch (MalformedObjectNameException exception) {
-            throw new RuntimeException(exception);
-        }
-        Set<ObjectName> objectNames = this.mBeanServer.queryNames(objectName, null);
-        if (!objectNames.isEmpty()) {
-            // MBeans are present, so we can register metrics now.
-            objectNames.forEach(perObject);
-        } else {
-            ObjectName readonlyObjName = objectName;
-            NotificationListener notificationListener = new NotificationListener() {
-                @Override
-                public void handleNotification(Notification notification, Object handback) {
-                    MBeanServerNotification mBeanServerNotification = (MBeanServerNotification) notification;
-                    ObjectName notificationObjName = mBeanServerNotification.getMBeanName();
-                    perObject.accept(notificationObjName);
-                    if (readonlyObjName.isPattern()) {
-                        // patterns can match multiple MBeans so don't remove listener
-                        return;
-                    }
-                    try {
-                        mBeanServer.removeNotificationListener(MBeanServerDelegate.DELEGATE_NAME, this);
-                        notificationListeners.remove(this);
-                    } catch (InstanceNotFoundException | ListenerNotFoundException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-            };
-            notificationListeners.add(notificationListener);
-
-            NotificationFilter notificationFilter = notification -> {
-                if (!MBeanServerNotification.REGISTRATION_NOTIFICATION.equals(notification.getType())) {
-                    return false;
-                }
-
-                // we can safely downcast now
-                ObjectName notificationObjName = ((MBeanServerNotification) notification).getMBeanName();
-                try {
-                    return new ObjectName(OBJECT_NAME_THREAD_POOL_EMBEDDED).apply(notificationObjName);
-                } catch (MalformedObjectNameException ignored) {
-                }
-                return false;
-            };
-
+        synchronized (metricListeners) {
+            ObjectName objectName = null;
             try {
-                mBeanServer.addNotificationListener(MBeanServerDelegate.DELEGATE_NAME, notificationListener, notificationFilter, null);
-            } catch (InstanceNotFoundException e) {
-                throw new RuntimeException("Error registering MBean listener", e);
+                objectName = new ObjectName(patternSuffix);
+            } catch (MalformedObjectNameException exception) {
+                throw new RuntimeException(exception);
+            }
+            Set<ObjectName> objectNames = this.mBeanServer.queryNames(objectName, null);
+            if (!objectNames.isEmpty()) {
+                // MBeans are present, so we can register metrics now.
+                objectNames.forEach(perObject);
+            } else {
+                ObjectName readonlyObjName = objectName;
+                NotificationListener notificationListener = new NotificationListener() {
+                    @Override
+                    public void handleNotification(Notification notification, Object handback) {
+                        MBeanServerNotification mBeanServerNotification = (MBeanServerNotification) notification;
+                        ObjectName notificationObjName = mBeanServerNotification.getMBeanName();
+                        perObject.accept(notificationObjName);
+                        if (readonlyObjName.isPattern()) {
+                            // patterns can match multiple MBeans so don't remove listener
+                            return;
+                        }
+                        try {
+                            mBeanServer.removeNotificationListener(MBeanServerDelegate.DELEGATE_NAME, this);
+                            notificationListeners.remove(this);
+                        } catch (InstanceNotFoundException | ListenerNotFoundException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                };
+                notificationListeners.add(notificationListener);
+
+                NotificationFilter notificationFilter = notification -> {
+                    if (!MBeanServerNotification.REGISTRATION_NOTIFICATION.equals(notification.getType())) {
+                        return false;
+                    }
+
+                    // we can safely downcast now
+                    ObjectName notificationObjName = ((MBeanServerNotification) notification).getMBeanName();
+                    try {
+                        return new ObjectName(OBJECT_NAME_THREAD_POOL_EMBEDDED).apply(notificationObjName);
+                    } catch (MalformedObjectNameException ignored) {
+                    }
+                    return false;
+                };
+
+                try {
+                    mBeanServer.addNotificationListener(MBeanServerDelegate.DELEGATE_NAME, notificationListener, notificationFilter, null);
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException("Error registering MBean listener", e);
+                }
             }
         }
     }

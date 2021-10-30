@@ -16,6 +16,7 @@
 
 package cloud.erda.agent.plugin.sdk.interceptors;
 
+import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.TracerManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -34,7 +35,8 @@ public class SampledInterceptor implements StaticMethodsAroundInterceptor {
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        return TracerManager.tracer().context().sampled();
+        Scope scope = TracerManager.tracer().active();
+        return scope != null && scope.span().getContext().getSampled();
     }
 
     @Override

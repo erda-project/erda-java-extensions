@@ -17,7 +17,8 @@
 package cloud.erda.agent.plugin.app.insight.transaction;
 
 import cloud.erda.agent.core.metrics.Metric;
-import cloud.erda.agent.core.tracing.TracerContext;
+import cloud.erda.agent.core.tracing.Context;
+import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.DateTime;
@@ -36,7 +37,7 @@ import static cloud.erda.agent.core.utils.Constants.Tags.TRACE_SAMPLED;
  * @author liuhaoyang 2020/3/17 12:08
  */
 public class TransactionMetricBuilder implements MetricBuilder {
-    
+
     private Map<String, String> tags;
     private Map<String, Object> fields;
     private String name;
@@ -95,36 +96,39 @@ public class TransactionMetricBuilder implements MetricBuilder {
     }
 
     private void recordContextSourceTag() {
-        TracerContext tracerContext = TracerManager.tracer().context();
-        String sourceAddonType = tracerContext.get(Constants.Metrics.SOURCE_ADDON_TYPE_ATTACH);
-        String sourceAddonId = tracerContext.get(Constants.Metrics.SOURCE_ADDON_ID_ATTACH);
-        String sourceOrgId = tracerContext.get(Constants.Metrics.SOURCE_ORG_ID);
-        String sourceProjectId = tracerContext.get(Constants.Metrics.SOURCE_PROJECT_ID);
-        String sourceProjectName = tracerContext.get(Constants.Metrics.SOURCE_PROJECT_NAME);
-        String sourceApplicationId = tracerContext.get(Constants.Metrics.SOURCE_APPLICATION_ID);
-        String sourceApplicationName = tracerContext.get(Constants.Metrics.SOURCE_APPLICATION_NAME);
-        String sourceWorkspace = tracerContext.get(Constants.Metrics.SOURCE_WORKSPACE);
-        String sourceRuntimeId = tracerContext.get(Constants.Metrics.SOURCE_RUNTIME_ID);
-        String sourceRuntimeName = tracerContext.get(Constants.Metrics.SOURCE_RUNTIME_NAME);
-        String sourceServiceName = tracerContext.get(Constants.Metrics.SOURCE_SERVICE_NAME);
-        String sourceInstanceId = tracerContext.get(Constants.Metrics.SOURCE_INSTANCE_ID);
-        String sourceTerminusKey = tracerContext.get(Constants.Metrics.SOURCE_TERMINUS_KEY);
-        String sourceServiceId = tracerContext.get(Constants.Metrics.SOURCE_SERVICE_ID);
+        Scope scope = TracerManager.tracer().active();
+        if (scope != null) {
+            Context<String> baggage = scope.span().getContext().getBaggage();
+            String sourceAddonType = baggage.get(Constants.Metrics.SOURCE_ADDON_TYPE_ATTACH);
+            String sourceAddonId = baggage.get(Constants.Metrics.SOURCE_ADDON_ID_ATTACH);
+            String sourceOrgId = baggage.get(Constants.Metrics.SOURCE_ORG_ID);
+            String sourceProjectId = baggage.get(Constants.Metrics.SOURCE_PROJECT_ID);
+            String sourceProjectName = baggage.get(Constants.Metrics.SOURCE_PROJECT_NAME);
+            String sourceApplicationId = baggage.get(Constants.Metrics.SOURCE_APPLICATION_ID);
+            String sourceApplicationName = baggage.get(Constants.Metrics.SOURCE_APPLICATION_NAME);
+            String sourceWorkspace = baggage.get(Constants.Metrics.SOURCE_WORKSPACE);
+            String sourceRuntimeId = baggage.get(Constants.Metrics.SOURCE_RUNTIME_ID);
+            String sourceRuntimeName = baggage.get(Constants.Metrics.SOURCE_RUNTIME_NAME);
+            String sourceServiceName = baggage.get(Constants.Metrics.SOURCE_SERVICE_NAME);
+            String sourceInstanceId = baggage.get(Constants.Metrics.SOURCE_INSTANCE_ID);
+            String sourceTerminusKey = baggage.get(Constants.Metrics.SOURCE_TERMINUS_KEY);
+            String sourceServiceId = baggage.get(Constants.Metrics.SOURCE_SERVICE_ID);
 
-        tags.put(Constants.Metrics.SOURCE_ADDON_TYPE_METRIC, sourceAddonType);
-        tags.put(Constants.Metrics.SOURCE_ADDON_ID_METRIC, sourceAddonId);
-        tags.put(Constants.Metrics.SOURCE_ORG_ID, sourceOrgId);
-        tags.put(Constants.Metrics.SOURCE_PROJECT_ID, sourceProjectId);
-        tags.put(Constants.Metrics.SOURCE_PROJECT_NAME, sourceProjectName);
-        tags.put(Constants.Metrics.SOURCE_APPLICATION_ID, sourceApplicationId);
-        tags.put(Constants.Metrics.SOURCE_APPLICATION_NAME, sourceApplicationName);
-        tags.put(Constants.Metrics.SOURCE_WORKSPACE, sourceWorkspace);
-        tags.put(Constants.Metrics.SOURCE_RUNTIME_ID, sourceRuntimeId);
-        tags.put(Constants.Metrics.SOURCE_RUNTIME_NAME, sourceRuntimeName);
-        tags.put(Constants.Metrics.SOURCE_SERVICE_NAME, sourceServiceName);
-        tags.put(Constants.Metrics.SOURCE_INSTANCE_ID, sourceInstanceId);
-        tags.put(Constants.Metrics.SOURCE_TERMINUS_KEY, sourceTerminusKey);
-        tags.put(Constants.Metrics.SOURCE_SERVICE_ID, sourceServiceId);
+            tags.put(Constants.Metrics.SOURCE_ADDON_TYPE_METRIC, sourceAddonType);
+            tags.put(Constants.Metrics.SOURCE_ADDON_ID_METRIC, sourceAddonId);
+            tags.put(Constants.Metrics.SOURCE_ORG_ID, sourceOrgId);
+            tags.put(Constants.Metrics.SOURCE_PROJECT_ID, sourceProjectId);
+            tags.put(Constants.Metrics.SOURCE_PROJECT_NAME, sourceProjectName);
+            tags.put(Constants.Metrics.SOURCE_APPLICATION_ID, sourceApplicationId);
+            tags.put(Constants.Metrics.SOURCE_APPLICATION_NAME, sourceApplicationName);
+            tags.put(Constants.Metrics.SOURCE_WORKSPACE, sourceWorkspace);
+            tags.put(Constants.Metrics.SOURCE_RUNTIME_ID, sourceRuntimeId);
+            tags.put(Constants.Metrics.SOURCE_RUNTIME_NAME, sourceRuntimeName);
+            tags.put(Constants.Metrics.SOURCE_SERVICE_NAME, sourceServiceName);
+            tags.put(Constants.Metrics.SOURCE_INSTANCE_ID, sourceInstanceId);
+            tags.put(Constants.Metrics.SOURCE_TERMINUS_KEY, sourceTerminusKey);
+            tags.put(Constants.Metrics.SOURCE_SERVICE_ID, sourceServiceId);
+        }
     }
 
     private void recordConfigSourceTag() {
@@ -162,8 +166,10 @@ public class TransactionMetricBuilder implements MetricBuilder {
     }
 
     private void recordRequestId() {
-        TracerContext tracerContext = TracerManager.tracer().context();
-        tags.put(REQUEST_ID, tracerContext.requestId());
-        tags.put(TRACE_SAMPLED, String.valueOf(tracerContext.sampled()));
+        Scope scope = TracerManager.tracer().active();
+        if (scope != null) {
+            tags.put(REQUEST_ID, scope.span().getContext().getTraceId());
+            tags.put(TRACE_SAMPLED, String.valueOf(scope.span().getContext().getSampled()));
+        }
     }
 }

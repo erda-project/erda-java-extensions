@@ -25,6 +25,7 @@ import java.lang.annotation.Target;
  * @author liuhaoyang
  * @date 2021/8/3 10:57
  */
+@Deprecated
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MethodInvoke {

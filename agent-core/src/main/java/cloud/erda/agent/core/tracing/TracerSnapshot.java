@@ -24,19 +24,19 @@ import cloud.erda.agent.core.tracing.span.Span;
  **/
 public class TracerSnapshot {
 
-    private TracerContext tracerContext;
-    private Span span;
+    private final TracerContext tracerContext;
+    private final SpanContext spanContext;
 
-    public TracerSnapshot(TracerContext tracerContext, Span span) {
+    public TracerSnapshot(TracerContext tracerContext, SpanContext spanContext) {
         this.tracerContext = tracerContext;
-        this.span = span;
+        this.spanContext = spanContext;
     }
 
     public TracerContext getTracerContext() {
         return tracerContext;
     }
 
-    public Span getSpan() {
-        return span;
+    public SpanContext getSpanContext() {
+        return spanContext;
     }
 }

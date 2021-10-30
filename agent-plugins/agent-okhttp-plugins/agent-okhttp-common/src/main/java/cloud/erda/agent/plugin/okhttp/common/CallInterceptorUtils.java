@@ -113,7 +113,7 @@ public class CallInterceptorUtils {
 
     static void injectRequestHeader(Request request, Span span) throws Throwable {
         Tracer tracer = TracerManager.tracer();
-        tracer.context().put(TransactionMetricContext.instance);
+        span.getContext().getBaggage().putAll(TransactionMetricContext.instance);
         Map<String, String> map = new HashMap<String, String>(16);
         TextMapCarrier carrier = new TextMapCarrier(map);
         tracer.inject(span.getContext(), carrier);

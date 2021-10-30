@@ -52,7 +52,7 @@ public class SpanNoop implements Span {
     }
 
     @Override
-    public void setOperationName(String operationName) {
+    public void updateName(String operationName) {
     }
 
     @Override

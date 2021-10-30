@@ -16,6 +16,7 @@
 
 package cloud.erda.agent.core.tracing.propagator;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -26,6 +27,10 @@ import java.util.Map;
 public class TextMapCarrier implements Carrier {
 
     private final Map<String, String> map;
+
+    public TextMapCarrier() {
+        this(new HashMap<>());
+    }
 
     public TextMapCarrier(Map<String, String> map) {
         this.map = map;

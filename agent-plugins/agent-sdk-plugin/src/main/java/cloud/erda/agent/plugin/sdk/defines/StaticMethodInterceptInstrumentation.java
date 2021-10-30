@@ -63,7 +63,7 @@ public class StaticMethodInterceptInstrumentation extends ClassStaticMethodsEnha
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return true;
+                    return false;
                 }
             };
         }

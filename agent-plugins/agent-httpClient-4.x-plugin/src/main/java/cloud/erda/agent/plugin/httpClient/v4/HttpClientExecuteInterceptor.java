@@ -76,12 +76,12 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
         span.tag(HTTP_PATH, url.getPath());
         span.tag(HTTP_METHOD, httpRequest.getRequestLine().getMethod());
 
-        tracer.context().put(TransactionMetricContext.instance);
-        Map<String, String> map = new HashMap<String, String>(16);
-        TextMapCarrier carrier = new TextMapCarrier(map);
+        span.getContext().getBaggage().putAll(TransactionMetricContext.instance);
+
+        TextMapCarrier carrier = new TextMapCarrier();
         tracer.inject(span.getContext(), carrier);
 
-        for (Map.Entry<String, String> entry : map.entrySet()) {
+        for (Map.Entry<String, String> entry : carrier) {
             if (Strings.isEmpty(entry.getKey())) {
                 continue;
             }
