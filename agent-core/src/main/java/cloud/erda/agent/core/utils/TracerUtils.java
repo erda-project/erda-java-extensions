@@ -42,7 +42,7 @@ public class TracerUtils {
     }
 
     public static void handleException(Throwable throwable) {
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         Scope scope = tracer.active();
         handleException(scope, throwable);
     }

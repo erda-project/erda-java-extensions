@@ -51,7 +51,7 @@ public class OnExceptionInterceptor implements InstanceMethodsAroundInterceptor 
             builder.tag(ERROR, ERROR_TRUE);
         }
 
-        Span span = TracerManager.tracer().attach(info.getTracerSnapshot()).span();
+        Span span = TracerManager.currentTracer().attach(info.getTracerSnapshot()).span();
         span.tag(ERROR, ERROR_TRUE);
         span.tag(ERROR_MESSAGE, ((Throwable) context.getArguments()[0]).getMessage());
     }
@@ -68,7 +68,7 @@ public class OnExceptionInterceptor implements InstanceMethodsAroundInterceptor 
             MetricReporter.report(builder);
         }
 
-        TracerManager.tracer().active().close();
+        TracerManager.currentTracer().active().close();
         return ret;
     }
 

@@ -54,7 +54,7 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
 
         HttpServletResponse response = getResponse(context);
         response.setHeader(Constants.Carriers.RESPONSE_TERMINUS_KEY, ConfigAccessor.Default.getConfig(AgentConfig.class).terminusKey());
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             response.setHeader("x-msp-trace-id", scope.span().getContext().getTraceId());
         }
@@ -91,7 +91,7 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
             return;
         }
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         TracerContext tracerContext = tracer.context();
         tracerContext.setAttachment(Constants.Keys.REQUEST_KEY_IN_RUNTIME_CONTEXT, request);
 

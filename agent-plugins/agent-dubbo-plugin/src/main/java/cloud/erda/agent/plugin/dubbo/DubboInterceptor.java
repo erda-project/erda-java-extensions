@@ -69,7 +69,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
         final String host = requestURL.getHost();
         final int port = requestURL.getPort();
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         Span span;
         if (isConsumer) {
             SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;

@@ -17,7 +17,6 @@
 package cloud.erda.agent.plugin.sdk.concurrent;
 
 import cloud.erda.agent.core.tracing.Scope;
-import cloud.erda.agent.core.tracing.SpanContext;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.tracing.TracerSnapshot;
 import cloud.erda.agent.core.utils.Constants;
@@ -39,7 +38,7 @@ public class FutureWrapper<T> implements Future<T> {
 
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
-        Scope scope = TracerManager.tracer().attach(tracerSnapshot);
+        Scope scope = TracerManager.currentTracer().attach(tracerSnapshot);
         scope.span().updateName("Future Cancel");
         try {
             return future.cancel(mayInterruptIfRunning);
@@ -63,7 +62,7 @@ public class FutureWrapper<T> implements Future<T> {
 
     @Override
     public T get() throws InterruptedException, ExecutionException {
-        Scope scope = TracerManager.tracer().attach(tracerSnapshot);
+        Scope scope = TracerManager.currentTracer().attach(tracerSnapshot);
         scope.span().updateName("Future Get");
         try {
             return future.get();
@@ -77,7 +76,7 @@ public class FutureWrapper<T> implements Future<T> {
 
     @Override
     public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        Scope scope = TracerManager.tracer().attach(tracerSnapshot);
+        Scope scope = TracerManager.currentTracer().attach(tracerSnapshot);
         scope.span().updateName("Future Get With Timeout");
         try {
             return future.get(timeout, unit);

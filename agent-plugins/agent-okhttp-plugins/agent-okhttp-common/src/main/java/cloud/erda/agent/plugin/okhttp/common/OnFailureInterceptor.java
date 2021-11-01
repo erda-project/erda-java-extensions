@@ -30,7 +30,7 @@ public class OnFailureInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        Span span = TracerManager.tracer().active().span();
+        Span span = TracerManager.currentTracer().active().span();
         span.tag(ERROR, ERROR_TRUE);
     }
 

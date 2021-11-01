@@ -44,7 +44,7 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         String peer = String.valueOf( ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField());
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         String operationName = "Lettuce/";
@@ -95,7 +95,7 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
         if (transactionMetricBuilder != null) {
             MetricReporter.report(transactionMetricBuilder);
         }
-        TracerManager.tracer().active().close();
+        TracerManager.currentTracer().active().close();
         return ret;
     }
 

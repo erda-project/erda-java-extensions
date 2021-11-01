@@ -35,7 +35,7 @@ public class SampledInterceptor implements StaticMethodsAroundInterceptor {
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         return scope != null && scope.span().getContext().getSampled();
     }
 

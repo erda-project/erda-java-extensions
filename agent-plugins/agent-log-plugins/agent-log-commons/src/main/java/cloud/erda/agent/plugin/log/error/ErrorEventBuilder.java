@@ -85,7 +85,7 @@ public class ErrorEventBuilder {
         event.setTimestamp(DateTime.currentTimeNano());
 
         // add trace info
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             event.setRequestId(scope.span().getContext().getTraceId());
             Boolean sampled = scope.span().getContext().getSampled();
@@ -149,7 +149,7 @@ public class ErrorEventBuilder {
     }
 
     public ErrorEventBuilder addRequestData() {
-        TracerContext context = TracerManager.tracer().context();
+        TracerContext context = TracerManager.currentTracer().context();
 
         Object requestObj = context.getAttachment(Constants.Keys.REQUEST_KEY_IN_RUNTIME_CONTEXT);
         if (requestObj instanceof HttpServletRequest) {

@@ -27,7 +27,7 @@ public class RequestIdPatternConverter extends ClassicConverter {
 
     @Override
     public String convert(ILoggingEvent event) {
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         return scope == null ? "" : scope.span().getContext().getTraceId();
     }
 }

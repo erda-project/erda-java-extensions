@@ -37,7 +37,7 @@ public class UserDefineStaticMethodPointsInterceptor implements StaticMethodsAro
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) {
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         SpanBuilder spanBuilder = tracer.buildSpan("Call/" + context.getOriginClass().getName() + "." + context.getMethod().getName());
         Span span = spanBuilder.childOf(spanContext).startActive().span();
@@ -50,7 +50,7 @@ public class UserDefineStaticMethodPointsInterceptor implements StaticMethodsAro
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) {
-        TracerManager.tracer().active().close();
+        TracerManager.currentTracer().active().close();
         return ret;
     }
 

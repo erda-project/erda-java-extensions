@@ -24,7 +24,7 @@ import cloud.erda.agent.core.tracing.TracerManager;
 public class SpanIdPatternConverter extends ClassicConverter {
     @Override
     public String convert(ILoggingEvent event) {
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             return scope.span().getContext().getSpanId();
         }

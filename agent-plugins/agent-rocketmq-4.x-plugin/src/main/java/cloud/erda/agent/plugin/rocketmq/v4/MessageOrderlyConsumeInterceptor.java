@@ -37,7 +37,7 @@ public class MessageOrderlyConsumeInterceptor extends AbstractMessageConsumeInte
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         Span span = scope.span();
         ConsumeOrderlyStatus status = (ConsumeOrderlyStatus) ret;
         span.tag(MESSAGE_BUS_STATUS, status.name());

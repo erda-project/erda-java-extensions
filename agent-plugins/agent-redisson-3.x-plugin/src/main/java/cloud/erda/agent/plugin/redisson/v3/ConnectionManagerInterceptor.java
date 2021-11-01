@@ -39,7 +39,6 @@ public class ConnectionManagerInterceptor implements InstanceMethodsAroundInterc
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-
     }
 
     @Override

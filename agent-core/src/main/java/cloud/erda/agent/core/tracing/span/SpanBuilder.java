@@ -54,7 +54,14 @@ public class SpanBuilder {
     }
 
     public Scope startActive() {
-        return tracer.activate(build());
+        return startActive(true);
+    }
+
+    public Scope startActive(boolean activate) {
+        if (activate) {
+            return tracer.activate(build());
+        }
+        return new Scope(tracer, build(), null);
     }
 
     private Span build() {

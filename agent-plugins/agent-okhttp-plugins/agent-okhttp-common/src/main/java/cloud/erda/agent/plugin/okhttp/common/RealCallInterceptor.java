@@ -59,7 +59,7 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
         Request request = (Request)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         Span span = tracer.buildSpan("HTTP " + request.method()).childOf(spanContext).startActive().span();
 
@@ -88,7 +88,7 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
             MetricReporter.report(transactionMetricBuilder);
         }
 
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         CallInterceptorUtils.wrapResponseSpan(scope.span(), response);
         scope.close();
         return ret;

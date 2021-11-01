@@ -45,7 +45,7 @@ public class UserDefineMethodPointsInterceptor implements StaticMethodsAroundInt
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
         StopWatch stopWatch = context.getAttachment(STOP_WATCH_KEY);
         stopWatch.stop();
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             scope.span().log(DateTime.currentTimeNano()).event(LogFields.Event, String.format("[%.3fms] %s:%s", stopWatch.elapsed() / 1000000f, context.getOriginClass().getName(), context.getMethod().getName()));
         }

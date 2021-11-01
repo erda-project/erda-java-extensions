@@ -61,7 +61,7 @@ public class AsyncCallInterceptor implements InstanceConstructorInterceptor, Ins
         EnhanceRequiredInfo enhanceRequiredInfo = (EnhanceRequiredInfo) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
         Request request = (Request) ((DynamicFieldEnhancedInstance) enhanceRequiredInfo.getRealCallEnhance()).getDynamicField();
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         TracerSnapshot snapshot = enhanceRequiredInfo.getTracerSnapshot();
         Span span = tracer.attach(snapshot).span();
 
@@ -76,12 +76,12 @@ public class AsyncCallInterceptor implements InstanceConstructorInterceptor, Ins
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        TransactionMetricBuilder builder = TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
+        TransactionMetricBuilder builder = TracerManager.currentTracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
         if (builder != null) {
             MetricReporter.report(builder);
         }
 
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             scope.close();
         }

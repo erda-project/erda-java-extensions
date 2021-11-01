@@ -37,7 +37,7 @@ public class MessageConcurrentlyConsumeInterceptor extends AbstractMessageConsum
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         Span span = scope.span();
         ConsumeConcurrentlyStatus status = (ConsumeConcurrentlyStatus) ret;
         span.tag(MESSAGE_BUS_STATUS, status.name());

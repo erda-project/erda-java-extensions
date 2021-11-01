@@ -37,7 +37,7 @@ public class UserDefineInstanceMethodPointsInterceptor implements InstanceMethod
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         SpanBuilder spanBuilder = tracer.buildSpan("Call/" + context.getOriginClass().getName() + "." + context.getMethod().getName());
         Span span = spanBuilder.childOf(spanContext).startActive().span();
@@ -50,7 +50,7 @@ public class UserDefineInstanceMethodPointsInterceptor implements InstanceMethod
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        TracerManager.tracer().active().close();
+        TracerManager.currentTracer().active().close();
         return ret;
     }
 

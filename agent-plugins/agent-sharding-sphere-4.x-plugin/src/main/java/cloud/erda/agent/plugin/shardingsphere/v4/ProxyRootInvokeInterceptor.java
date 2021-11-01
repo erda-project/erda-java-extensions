@@ -44,7 +44,7 @@ public class ProxyRootInvokeInterceptor implements InstanceMethodsAroundIntercep
         }
         String statement = (String) value;
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         Span span = tracer.buildSpan("/ShardingSphere/Proxy/" + statement).childOf(spanContext).startActive().span();
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_SHARDING_SPHERE);
@@ -52,7 +52,7 @@ public class ProxyRootInvokeInterceptor implements InstanceMethodsAroundIntercep
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_DB);
         span.tag(Constants.Tags.DB_STATEMENT, statement);
 
-        ShardingExecuteDataMap.getDataMap().put(Constant.TRACER_SNAPSHOT, TracerManager.tracer().capture());
+        ShardingExecuteDataMap.getDataMap().put(Constant.TRACER_SNAPSHOT, TracerManager.currentTracer().capture());
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ProxyRootInvokeInterceptor implements InstanceMethodsAroundIntercep
             return ret;
         }
 
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             scope.close(false);
         }

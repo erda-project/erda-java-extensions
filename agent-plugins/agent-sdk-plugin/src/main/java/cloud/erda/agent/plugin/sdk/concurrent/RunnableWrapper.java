@@ -37,7 +37,7 @@ public class RunnableWrapper implements Runnable {
 
     @Override
     public void run() {
-        Scope scope = TracerManager.tracer().attach(tracerSnapshot);
+        Scope scope = TracerManager.currentTracer().attach(tracerSnapshot);
         scope.span().updateName("Thread Runnable run");
         try {
             runnable.run();

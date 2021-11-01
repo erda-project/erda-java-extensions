@@ -47,7 +47,7 @@ public class ResponseCallBackInterceptor implements InstanceMethodsAroundInterce
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             scope.close(false);
         }

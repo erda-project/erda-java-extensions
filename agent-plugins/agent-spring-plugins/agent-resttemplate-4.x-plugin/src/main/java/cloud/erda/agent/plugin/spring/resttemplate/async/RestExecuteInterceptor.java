@@ -61,7 +61,7 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
         }
         String peerAddress = uri.getScheme() + "://" + peerHost;
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         Span span = tracer.buildSpan("Async " + path).childOf(spanContext).startActive().span();
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_REST_TEMPLATE);

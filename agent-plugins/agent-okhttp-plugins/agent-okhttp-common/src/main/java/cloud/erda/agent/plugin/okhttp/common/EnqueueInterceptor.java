@@ -52,7 +52,7 @@ public class EnqueueInterceptor implements InstanceMethodsAroundInterceptor,Inst
         DynamicFieldEnhancedInstance callbackInstance = (DynamicFieldEnhancedInstance) context.getArguments()[0];
         Request request = (Request)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         tracer.buildSpan("Async" + request.url().uri().getPath()).childOf(spanContext).startActive();
 
@@ -66,7 +66,7 @@ public class EnqueueInterceptor implements InstanceMethodsAroundInterceptor,Inst
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        TracerManager.tracer().active().close(false);
+        TracerManager.currentTracer().active().close(false);
         return ret;
     }
 

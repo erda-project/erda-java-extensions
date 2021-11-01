@@ -24,7 +24,7 @@ public class TracerManager {
 
     private final static ThreadLocal<Tracer> ctx = new SpotThreadLocal();
 
-    public static Tracer tracer() {
+    public static Tracer currentTracer() {
         return ctx.get();
     }
 

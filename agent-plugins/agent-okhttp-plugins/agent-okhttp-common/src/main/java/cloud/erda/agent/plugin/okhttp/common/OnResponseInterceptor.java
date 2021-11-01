@@ -41,14 +41,14 @@ public class OnResponseInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
         Response response = (Response) context.getArguments()[1];
-        Span span = TracerManager.tracer().active().span();
+        Span span = TracerManager.currentTracer().active().span();
         CallInterceptorUtils.wrapResponseSpan(span, response);
 
         TransactionMetricBuilder transactionMetricBuilder =
-                TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
+                TracerManager.currentTracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
         if (transactionMetricBuilder != null) {
             transactionMetricBuilder = CallInterceptorUtils.wrapResponseAppMetric(transactionMetricBuilder, response);
-            TracerManager.tracer().context().setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
+            TracerManager.currentTracer().context().setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
         }
     }
 

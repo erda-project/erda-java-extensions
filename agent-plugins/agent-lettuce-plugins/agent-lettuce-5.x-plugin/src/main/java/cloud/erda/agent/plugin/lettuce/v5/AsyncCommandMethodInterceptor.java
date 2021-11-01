@@ -40,14 +40,14 @@ public class AsyncCommandMethodInterceptor implements InstanceMethodsAroundInter
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
         AsyncCommand asyncCommand = (AsyncCommand) context.getInstance();
         String operationName = "Lettuce/" + asyncCommand.getType().name();
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         SpanBuilder spanBuilder = tracer.buildSpan(operationName + "/onComplete");
         Span span = spanBuilder.childOf(spanContext).startActive().span();
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_LETTUCE);
         span.tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_CACHE);
-        TracerSnapshot snapshot = TracerManager.tracer().capture();
+        TracerSnapshot snapshot = TracerManager.currentTracer().capture();
         if (context.getArguments()[0] instanceof Consumer) {
             context.getArguments()[0] = new SpotConsumer((Consumer) context.getArguments()[0], snapshot, operationName);
         } else {
@@ -57,7 +57,7 @@ public class AsyncCommandMethodInterceptor implements InstanceMethodsAroundInter
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        TracerManager.tracer().active().close();
+        TracerManager.currentTracer().active().close();
         return ret;
     }
 

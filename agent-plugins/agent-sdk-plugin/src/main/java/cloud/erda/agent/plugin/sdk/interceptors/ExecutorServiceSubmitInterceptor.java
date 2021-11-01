@@ -47,7 +47,7 @@ public class ExecutorServiceSubmitInterceptor implements InstanceMethodsAroundIn
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         Scope parent = tracer.active();
         SpanBuilder spanBuilder = tracer.buildSpan("ExecutorService Submit");
         if (parent != null) {
@@ -60,7 +60,7 @@ public class ExecutorServiceSubmitInterceptor implements InstanceMethodsAroundIn
             spanBuilder.tag("thread_pool_type", ((ExecutorServiceAccessor) context.getInstance()).getExecutorService().getClass().getName());
         }
         Scope scope = spanBuilder.startActive();
-        TracerSnapshot tracerSnapshot = TracerManager.tracer().capture(scope);
+        TracerSnapshot tracerSnapshot = TracerManager.currentTracer().capture(scope);
         Object task = context.getArguments()[0];
         if (task instanceof Callable<?>) {
             context.getArguments()[0] = new CallableWrapper<>((Callable<?>) task, tracerSnapshot);

@@ -39,7 +39,6 @@ import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import org.apache.http.*;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 import static cloud.erda.agent.core.utils.Constants.Tags.*;
@@ -63,7 +62,7 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
             hostname += ":" + httpHost.getPort();
         }
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         Span span = tracer.buildSpan("HTTP " + httpRequest.getRequestLine().getMethod() + " " + url.getPath()).childOf(spanContext).startActive().span();
         span.tag(COMPONENT, COMPONENT_HTTPCLIENT);
@@ -120,7 +119,7 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
             this.recordResponseAppMetric(transactionMetricBuilder, response);
         }
 
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             this.wrapResponseSpan(scope.span(), response);
             scope.close();

@@ -49,7 +49,7 @@ public class FutureGetInterceptor implements InstanceMethodsAroundInterceptor {
         }
         EnhanceCommonInfo info = (EnhanceCommonInfo) obj;
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         tracer.attach(info.getSnapshot());
     }
 
@@ -77,7 +77,7 @@ public class FutureGetInterceptor implements InstanceMethodsAroundInterceptor {
             MetricReporter.report(transactionMetricBuilder);
         }
 
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             TracerUtils.handleStatusCode(scope, response.getStatusCodeValue());
             scope.close();

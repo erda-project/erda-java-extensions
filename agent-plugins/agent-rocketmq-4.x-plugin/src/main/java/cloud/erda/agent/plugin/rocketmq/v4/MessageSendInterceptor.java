@@ -68,7 +68,7 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         String operationName = (IS_SYNC.get() ? SYNC_PRODUCER_PREFIX : ASYNC_PRODUCER_PREFIX) + message.getTopic();
         String nameServerAddress = String.valueOf( ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField());
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         Span span = tracer.buildSpan(operationName).childOf(spanContext).startActive().span();
         span.tag(COMPONENT, COMPONENT_ROCKETMQ);
@@ -120,7 +120,7 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
             MetricReporter.report(transactionMetricBuilder);
         }
 
-        TracerManager.tracer().active().close(IS_SYNC.get());
+        TracerManager.currentTracer().active().close(IS_SYNC.get());
         IS_SYNC.remove();
         return ret;
     }

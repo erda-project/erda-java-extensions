@@ -41,7 +41,7 @@ public class FailureCallbackInterceptor implements InstanceMethodsAroundIntercep
         }
         EnhanceCommonInfo info = (EnhanceCommonInfo) obj;
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         tracer.attach(info.getSnapshot());
     }
 
@@ -65,7 +65,7 @@ public class FailureCallbackInterceptor implements InstanceMethodsAroundIntercep
             MetricReporter.report(transactionMetricBuilder);
         }
 
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             TracerUtils.handleException(t);
             scope.close();

@@ -110,7 +110,7 @@ public class FutureCallbackWrapper<T> implements FutureCallback<T> {
         StatusLine status = response.getStatusLine();
 
         TransactionMetricBuilder transactionMetricBuilder =
-                TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
+                TracerManager.currentTracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
         if (transactionMetricBuilder != null) {
             if (equalsTerminusKey(response.getHeaders(Constants.Carriers.RESPONSE_TERMINUS_KEY))) {
                 transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_INTERNAL);
@@ -123,7 +123,7 @@ public class FutureCallbackWrapper<T> implements FutureCallback<T> {
             MetricReporter.report(transactionMetricBuilder);
         }
 
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             if (status != null) {
                 TracerUtils.handleStatusCode(scope, status.getStatusCode());
@@ -148,7 +148,7 @@ public class FutureCallbackWrapper<T> implements FutureCallback<T> {
     private void finallyFailed(Exception e) {
         ThreadTransferInfo.LOCAL.remove();
 
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             TracerUtils.handleException(scope, e);
             scope.close();
@@ -158,7 +158,7 @@ public class FutureCallbackWrapper<T> implements FutureCallback<T> {
     private void finallyCancelled() {
         ThreadTransferInfo.LOCAL.remove();
 
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null && scope.span() != null) {
             Span span = scope.span();
             span.tag(Constants.Tags.ERROR, Constants.Tags.ERROR_TRUE);

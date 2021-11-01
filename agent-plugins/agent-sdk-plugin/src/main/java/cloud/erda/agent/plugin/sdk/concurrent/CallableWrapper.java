@@ -39,7 +39,7 @@ public class CallableWrapper<V> implements Callable<V> {
 
     @Override
     public V call() throws Exception {
-        Scope scope = TracerManager.tracer().attach(tracerSnapshot);
+        Scope scope = TracerManager.currentTracer().attach(tracerSnapshot);
         scope.span().updateName("Thread Callable call");
         try {
             return callable.call();

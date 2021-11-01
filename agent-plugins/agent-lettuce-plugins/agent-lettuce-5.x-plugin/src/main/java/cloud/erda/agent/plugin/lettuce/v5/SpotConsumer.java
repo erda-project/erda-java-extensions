@@ -20,7 +20,6 @@ package cloud.erda.agent.plugin.lettuce.v5;
 
 import cloud.erda.agent.core.tracing.*;
 import cloud.erda.agent.core.utils.Constants;
-import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.tracing.span.SpanBuilder;
 import cloud.erda.agent.core.utils.TracerUtils;
 
@@ -40,7 +39,7 @@ public class SpotConsumer<T> implements Consumer<T> {
 
     @Override
     public void accept(T t) {
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         Scope snapshotScope = tracer.attach(snapshot);
         SpanBuilder spanBuilder = tracer.buildSpan(operationName + "/accept");
         Scope scope = spanBuilder.childOf(snapshotScope.span().getContext()).startActive();
