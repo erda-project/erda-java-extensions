@@ -44,7 +44,7 @@ public class ConnectionOpInterceptor implements InstanceMethodsAroundInterceptor
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
         Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
-        SpanBuilder spanBuilder = tracer.buildSpan("ConnectionManager Connection");
+        SpanBuilder spanBuilder = tracer.buildSpan("Redisson ConnectionManager Connection");
         Scope scope = spanBuilder.childOf(spanContext).startActive();
         Span span = scope.span();
         span.tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
