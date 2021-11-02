@@ -47,7 +47,11 @@ public class BaggageHeader extends Header {
     @Override
     public void extract(SpanContext.Builder builder, Carrier carrier) {
         Context<String> baggage = new Context<>();
-        baggage.putAll(carrier);
+        for (Map.Entry<String, String> entry : carrier) {
+            if (entry.getKey().startsWith(Request_Bg)) {
+                baggage.put(entry.getKey().substring(Request_Bg.length()), entry.getValue());
+            }
+        }
         builder.setBaggage(baggage);
     }
 }
