@@ -49,7 +49,7 @@ public class BaggageHeader extends Header {
         Context<String> baggage = new Context<>();
         for (Map.Entry<String, String> entry : carrier) {
             if (entry.getKey().startsWith(Request_Bg)) {
-                baggage.put(entry.getKey().replace(Request_Bg, ""), entry.getValue());
+                baggage.put(entry.getKey().substring(Request_Bg.length()), entry.getValue());
             }
         }
         builder.setBaggage(baggage);
