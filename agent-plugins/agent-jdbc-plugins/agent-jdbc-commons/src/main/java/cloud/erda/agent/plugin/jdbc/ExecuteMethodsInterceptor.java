@@ -52,7 +52,7 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
         if (connectInfo != null) {
             String statement = cacheObject.getSql().replace("\n", "");
 
-            Tracer tracer = TracerManager.tracer();
+            Tracer tracer = TracerManager.currentTracer();
             SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
             SpanBuilder spanBuilder = tracer.buildSpan(
                     buildOperationName(connectInfo, context.getMethod().getName(), cacheObject.getStatementName()));
@@ -95,7 +95,7 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
 
         StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
         if (cacheObject.getConnectionInfo() != null) {
-            TracerManager.tracer().active().close();
+            TracerManager.currentTracer().active().close();
         }
         return ret;
     }

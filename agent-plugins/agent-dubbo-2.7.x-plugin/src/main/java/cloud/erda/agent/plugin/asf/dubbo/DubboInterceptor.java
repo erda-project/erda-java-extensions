@@ -18,7 +18,6 @@
 
 package cloud.erda.agent.plugin.asf.dubbo;
 
-import cloud.erda.agent.core.utils.GsonUtils;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
@@ -75,7 +74,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
         final String host = requestURL.getHost();
         final int port = requestURL.getPort();
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         Span span;
         if (isConsumer) {
             SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;

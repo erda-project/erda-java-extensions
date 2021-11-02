@@ -35,7 +35,7 @@ public class RedisConnectionInstrumentation extends ClassInstanceMethodsEnhanceP
 
     private static final String ENHANCE_CLASS = "org.redisson.client.RedisConnection";
 
-    private static final String REDISSON_METHOD_INTERCEPTOR_CLASS = "cloud.erda.agent.plugin.redisson.v3.RedisConnectionMethodInterceptor";
+    private static final String REDISSON_METHOD_INTERCEPTOR_CLASS = "cloud.erda.agent.plugin.redisson.v3.RedisConnectionSendInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {

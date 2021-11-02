@@ -38,7 +38,7 @@ public class FlowAndFunctionExecuteInterceptor implements InstanceMethodsAroundI
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext parent = tracer.active() != null ? tracer.active().span().getContext() : null;
         SpanBuilder spanBuilder = getSpanBuilder(context, tracer);
         Scope scope = spanBuilder.childOf(parent).startActive();

@@ -50,7 +50,7 @@ public class RestResponseInterceptor implements InstanceMethodsAroundInterceptor
         ClientHttpResponse response = (ClientHttpResponse) allArguments[2];
 
         TransactionMetricBuilder transactionMetricBuilder =
-                TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
+                TracerManager.currentTracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
         if (transactionMetricBuilder != null) {
             if (equalsTerminusKey(response.getHeaders().get(Constants.Carriers.RESPONSE_TERMINUS_KEY))) {
                 transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_INTERNAL);
@@ -60,7 +60,7 @@ public class RestResponseInterceptor implements InstanceMethodsAroundInterceptor
             TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.getStatusCode().value());
         }
 
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         TracerUtils.handleStatusCode(scope, response.getStatusCode().value());
         return ret;
     }

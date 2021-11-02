@@ -54,7 +54,7 @@ public class ExecuteInterceptor implements InstanceMethodsAroundInterceptor {
         }
         TracerSnapshot snapshot = (TracerSnapshot) data;
 
-        Span span = TracerManager.tracer().attach(snapshot).span();
+        Span span = TracerManager.currentTracer().attach(snapshot).span();
         String statement = span.getTags().get(Constants.Tags.DB_STATEMENT);
 
         TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_DB, false);
@@ -71,7 +71,7 @@ public class ExecuteInterceptor implements InstanceMethodsAroundInterceptor {
             MetricReporter.report(transactionMetricBuilder);
         }
 
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             scope.close();
         }

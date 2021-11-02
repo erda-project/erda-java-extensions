@@ -28,6 +28,5 @@ public class RedisClientConstructorInterceptor implements InstanceConstructorInt
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-
     }
 }

@@ -50,7 +50,7 @@ public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
             return;
         }
 
-        Span span = TracerManager.tracer().attach(info.getTracerSnapshot()).span();
+        Span span = TracerManager.currentTracer().attach(info.getTracerSnapshot()).span();
         SendStatus sendStatus = ((SendResult) context.getArguments()[0]).getSendStatus();
         if (sendStatus != SendStatus.SEND_OK) {
             span.tag(ERROR, ERROR_TRUE);
@@ -68,7 +68,7 @@ public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
         if (builder != null) {
             MetricReporter.report(builder);
         }
-        TracerManager.tracer().active().close();
+        TracerManager.currentTracer().active().close();
         return ret;
     }
 

@@ -84,7 +84,7 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
             peerHost += ":" + port;
         }
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         Span span = tracer.buildSpan("HTTP " + request.method()).childOf(spanContext).startActive().span();
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_FEIGN);
@@ -165,7 +165,7 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
             MetricReporter.report(transactionMetricBuilder);
         }
 
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             TracerUtils.handleStatusCode(scope, response.status());
             scope.close();

@@ -56,7 +56,7 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         }
         String statement = (method.getName() + " " + key).replace("\n", "");
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         SpanBuilder spanBuilder = tracer.buildSpan("Jedis/" + method.getName());
         Span span = spanBuilder.childOf(spanContext).startActive().span();
@@ -89,7 +89,7 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         if (transactionMetricBuilder != null) {
             MetricReporter.report(transactionMetricBuilder);
         }
-        TracerManager.tracer().active().close();
+        TracerManager.currentTracer().active().close();
         return ret;
     }
 

@@ -38,7 +38,7 @@ public class TraceAnnotationInterceptor implements InstanceMethodsAroundIntercep
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) {
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         SpanBuilder spanBuilder = tracer.buildSpan(getOperationName(context));
         Scope scope = spanBuilder.childOf(spanContext).startActive();

@@ -66,11 +66,9 @@ public class ClassAnnotationMatch implements IndirectMatch {
     @Override
     public boolean isMatch(TypeDescription typeDescription) {
         AnnotationList declaredAnnotations = typeDescription.getDeclaredAnnotations();
-        logger.info("Entry isMatch: TypeDescription: {} annotations: {}", typeDescription.getActualName(), annotations.length);
         for (AnnotationDescription annotationDescription : declaredAnnotations) {
             for (String annotation : annotations) {
                 if (annotationDescription.getAnnotationType().getActualName().equals(annotation)) {
-                    logger.info("annotation match: {}  annotation: {}", annotationDescription.getAnnotationType().getActualName(), annotation);
                     return true;
                 }
             }

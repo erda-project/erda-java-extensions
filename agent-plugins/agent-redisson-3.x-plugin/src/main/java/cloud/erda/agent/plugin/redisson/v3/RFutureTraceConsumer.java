@@ -14,24 +14,30 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.core.tracing;
+package cloud.erda.agent.plugin.redisson.v3;
+
+import cloud.erda.agent.core.tracing.Scope;
+import cloud.erda.agent.core.utils.Constants;
+
+import java.util.function.BiConsumer;
 
 /**
  * @author liuhaoyang
- * @since 2019-01-04 17:27
- **/
-public class TracerManager {
+ * @date 2021/11/1 23:42
+ */
+public class RFutureTraceConsumer<T, E extends Throwable> implements BiConsumer<T, E> {
 
-    private final static ThreadLocal<Tracer> ctx = new SpotThreadLocal();
+    private final Scope scope;
 
-    public static Tracer currentTracer() {
-        return ctx.get();
+    public RFutureTraceConsumer(Scope scope) {
+        this.scope = scope;
     }
 
-    public static class SpotThreadLocal extends ThreadLocal<Tracer> {
-        @Override
-        protected Tracer initialValue() {
-            return new ScopeTracer();
+    @Override
+    public void accept(T t, E e) {
+        if (e != null) {
+            scope.span().tag(Constants.Tags.ERROR, Constants.Tags.ERROR_TRUE);
         }
+        scope.close();
     }
 }

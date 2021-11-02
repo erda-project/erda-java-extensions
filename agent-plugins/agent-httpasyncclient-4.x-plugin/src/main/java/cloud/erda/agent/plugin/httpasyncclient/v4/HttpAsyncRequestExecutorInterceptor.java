@@ -68,7 +68,7 @@ public class HttpAsyncRequestExecutorInterceptor implements InstanceMethodsAroun
             hostname += ":" + httpHost.getPort();
         }
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         tracer.attach(info.getSnapshot());
         SpanContext spanContext = tracer.active() != null && tracer.active().span() != null
                 ? tracer.active().span().getContext() : null;

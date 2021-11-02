@@ -18,6 +18,7 @@
 
 package cloud.erda.agent.plugin.redisson.v3;
 
+import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.SpanContext;
 import cloud.erda.agent.core.tracing.Tracer;
 import cloud.erda.agent.core.tracing.TracerManager;
@@ -25,12 +26,12 @@ import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.tracing.span.SpanBuilder;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.ReflectUtils;
-import cloud.erda.agent.core.utils.TracerUtils;
 import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
@@ -45,9 +46,11 @@ import java.net.InetSocketAddress;
 /**
  * Reference from https://github.com/apache/skywalking-java/blob/main/apm-sniffer/apm-sdk-plugin/redisson-3.x-plugin/src/main/java/org/apache/skywalking/apm/plugin/redisson/v3/RedisConnectionMethodInterceptor.java
  */
-public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundInterceptor, InstanceConstructorInterceptor {
+public class RedisConnectionSendInterceptor implements InstanceMethodsAroundInterceptor, InstanceConstructorInterceptor {
 
-    private static final ILog logger = LogManager.getLogger(RedisConnectionMethodInterceptor.class);
+    private static final String PEER_KEY = "peer-key";
+    private static final String STATEMENT_KEY = "statement-key";
+    private static final ILog logger = LogManager.getLogger(RedisConnectionSendInterceptor.class);
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
@@ -67,12 +70,12 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
                 logger.warn("RedisConnection create peer error: ", e);
             }
         }
-        ((DynamicFieldEnhancedInstance)objInst).setDynamicField(peer);
+        ((DynamicFieldEnhancedInstance) objInst).setDynamicField(peer);
     }
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        String peer = (String)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
+        String peer = (String) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
 
         RedisConnection connection = (RedisConnection) context.getInstance();
         Channel channel = connection.getChannel();
@@ -96,10 +99,12 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
             addCommandData(dbStatement, commandData);
         }
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         SpanBuilder spanBuilder = tracer.buildSpan(operationName);
-        Span span = spanBuilder.childOf(spanContext).startActive().span();
+        // only build span, and removes the span from the thread context
+        Scope scope = spanBuilder.childOf(spanContext).startActive(false);
+        Span span = scope.span();
         span.tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_REDISSON);
         span.tag(Constants.Tags.PEER_SERVICE, peer);
@@ -109,6 +114,7 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
         span.tag(Constants.Tags.DB_STATEMENT, dbStatement.toString());
         span.tag(Constants.Tags.PEER_ADDRESS, peer);
         span.tag(Constants.Tags.PEER_HOSTNAME, peer);
+        context.setAttachment(Constants.Keys.TRACE_SCOPE, scope);
 
         TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_CACHE, false);
         context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
@@ -133,17 +139,15 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
-        if (transactionMetricBuilder != null) {
-            MetricReporter.report(transactionMetricBuilder);
+        TransactionMetricBuilder metricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
+        Scope scope = context.getAttachment(Constants.Keys.TRACE_SCOPE);
+        if (ret instanceof ChannelFuture) {
+            ((ChannelFuture) ret).addListener(new ChannelFutureTraceListener(scope, metricBuilder));
         }
-        TracerManager.tracer().active().close();
         return ret;
     }
 
     @Override
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
-        TransactionMetricUtils.handleException(context);
-        TracerUtils.handleException(t);
     }
 }

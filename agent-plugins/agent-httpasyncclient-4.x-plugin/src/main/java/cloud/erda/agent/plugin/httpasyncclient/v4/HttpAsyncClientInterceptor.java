@@ -39,7 +39,7 @@ public class HttpAsyncClientInterceptor implements InstanceMethodsAroundIntercep
         allArguments[3] = new FutureCallbackWrapper(callback);
 
         HttpContext httpContext = (HttpContext) allArguments[2];
-        ThreadTransferInfo info = new ThreadTransferInfo(TracerManager.tracer().capture(), httpContext);
+        ThreadTransferInfo info = new ThreadTransferInfo(TracerManager.currentTracer().capture(), httpContext);
         ThreadTransferInfo.LOCAL.set(info);
     }
 

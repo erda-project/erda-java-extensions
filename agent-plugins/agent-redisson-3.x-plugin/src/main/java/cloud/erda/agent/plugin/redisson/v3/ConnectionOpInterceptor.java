@@ -14,48 +14,60 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.sdk.interceptors;
+package cloud.erda.agent.plugin.redisson.v3;
 
+import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.SpanContext;
 import cloud.erda.agent.core.tracing.Tracer;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.tracing.span.SpanBuilder;
 import cloud.erda.agent.core.utils.Constants;
-import cloud.erda.agent.core.utils.TracerUtils;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.redisson.connection.NodeSource;
+
+import java.lang.reflect.Method;
 
 /**
  * @author liuhaoyang
- * @date 2021/5/9 18:35
+ * @date 2021/11/1 21:44
  */
-public class UserDefineInstanceMethodPointsInterceptor implements InstanceMethodsAroundInterceptor {
+public class ConnectionOpInterceptor implements InstanceMethodsAroundInterceptor {
 
-    public final static String INTERCEPTOR_CLASS = "cloud.erda.agent.plugin.sdk.interceptors.UserDefineInstanceMethodPointsInterceptor";
+    private final static ILog logger = LogManager.getLogger(ConnectionOpInterceptor.class);
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
         Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
-        SpanBuilder spanBuilder = tracer.buildSpan("Call/" + context.getOriginClass().getName() + "." + context.getMethod().getName());
-        Span span = spanBuilder.childOf(spanContext).startActive().span();
-        span.tag(Constants.Tags.COMPONENT, Constants.Tags.INVOKE);
-        span.tag(Constants.Tags.CLASS, context.getOriginClass().getName());
-        span.tag(Constants.Tags.METHOD, context.getMethod().getName());
+        SpanBuilder spanBuilder = tracer.buildSpan("Redisson ConnectionManager Connection");
+        Scope scope = spanBuilder.childOf(spanContext).startActive();
+        Span span = scope.span();
+        span.tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
+        span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_REDISSON);
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_LOCAL);
-        span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
+        span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_LOCAL);
+        span.tag("connection_mode", context.getMethod().getName().equals("connectionReadOp") ? "ReadOnlyMode" : "ReadWriteMode");
+        context.setAttachment(Constants.Keys.TRACE_SCOPE, scope);
     }
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        TracerManager.currentTracer().active().close();
+        Method method = RFutureMethods.getRFMethod(ret.getClass());
+        Scope scope = context.getAttachment(Constants.Keys.TRACE_SCOPE);
+        if (method == null) {
+            scope.close();
+        } else {
+            method.invoke(ret, method.getName().equals("onComplete") ? new RFutureTraceConsumer<>(scope) : new RFutureTraceListener<>(scope));
+        }
         return ret;
     }
 
     @Override
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
-        TracerUtils.handleException(t);
     }
 }

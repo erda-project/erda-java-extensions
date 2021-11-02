@@ -24,15 +24,12 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.TracerManager;
-import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.TracerUtils;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import cloud.erda.agent.plugin.spring.EnhanceCommonInfo;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
 
 public class SuccessCallbackInterceptor implements InstanceMethodsAroundInterceptor {
 
@@ -44,7 +41,7 @@ public class SuccessCallbackInterceptor implements InstanceMethodsAroundIntercep
         }
         EnhanceCommonInfo info = (EnhanceCommonInfo) obj;
 
-        TracerManager.tracer().attach(info.getSnapshot());
+        TracerManager.currentTracer().attach(info.getSnapshot());
     }
 
     @Override
@@ -67,7 +64,7 @@ public class SuccessCallbackInterceptor implements InstanceMethodsAroundIntercep
             MetricReporter.report(transactionMetricBuilder);
         }
 
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             TracerUtils.handleStatusCode(scope, response.getStatusCodeValue());
             scope.close();

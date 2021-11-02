@@ -96,7 +96,7 @@ public class TransactionMetricBuilder implements MetricBuilder {
     }
 
     private void recordContextSourceTag() {
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             Context<String> baggage = scope.span().getContext().getBaggage();
             String sourceAddonType = baggage.get(Constants.Metrics.SOURCE_ADDON_TYPE_ATTACH);
@@ -166,7 +166,7 @@ public class TransactionMetricBuilder implements MetricBuilder {
     }
 
     private void recordRequestId() {
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             tags.put(REQUEST_ID, scope.span().getContext().getTraceId());
             tags.put(TRACE_SAMPLED, String.valueOf(scope.span().getContext().getSampled()));

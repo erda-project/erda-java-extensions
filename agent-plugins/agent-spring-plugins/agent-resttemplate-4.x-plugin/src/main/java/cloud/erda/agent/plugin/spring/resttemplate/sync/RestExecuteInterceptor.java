@@ -62,7 +62,7 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
         }
         String peerAddress = uri.getScheme() + "://" + peerHost;
 
-        Tracer tracer = TracerManager.tracer();
+        Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         Span span = tracer.buildSpan(path).childOf(spanContext).startActive().span();
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_REST_TEMPLATE);
@@ -97,12 +97,12 @@ public class RestExecuteInterceptor implements InstanceMethodsAroundInterceptor 
         }
 
         TransactionMetricBuilder transactionMetricBuilder =
-                TracerManager.tracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
+                TracerManager.currentTracer().context().getAttachment(Constants.Keys.METRIC_BUILDER);
         if (transactionMetricBuilder != null) {
             MetricReporter.report(transactionMetricBuilder);
         }
 
-        Scope scope = TracerManager.tracer().active();
+        Scope scope = TracerManager.currentTracer().active();
         if (scope != null) {
             scope.close();
         }
