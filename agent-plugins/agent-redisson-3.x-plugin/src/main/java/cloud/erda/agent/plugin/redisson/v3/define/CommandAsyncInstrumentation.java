@@ -18,60 +18,46 @@ package cloud.erda.agent.plugin.redisson.v3.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
+import org.redisson.api.RFuture;
 
 /**
  * @author liuhaoyang
- * @date 2021/8/31 00:14
+ * @date 2021/11/1 19:47
  */
-public class ConnectionManagerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class CommandAsyncInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "org.redisson.connection.MasterSlaveConnectionManager";
+    private static final String ENHANCE_CLASS = "org.redisson.command.CommandAsyncService";
 
-    private static final String CREATE_CLIENT_INTERCEPTOR = "cloud.erda.agent.plugin.redisson.v3.CreateClientInterceptor";
-
-    private static final String CONNECTION_OP_INTERCEPTOR = "cloud.erda.agent.plugin.redisson.v3.ConnectionOpInterceptor";
+    private static final String REDISSON_METHOD_INTERCEPTOR_CLASS = "cloud.erda.agent.plugin.redisson.v3.CommandAsyncInterceptor";
 
     @Override
-    public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
+    protected ClassMatch enhanceClass() {
+        return NameMatch.byName(ENHANCE_CLASS);
+    }
+
+    @Override
+    protected ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
         return new ConstructorInterceptPoint[0];
     }
 
     @Override
-    public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
+    protected InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
         return new InstanceMethodsInterceptPoint[]{
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("createClient");
+                        return ElementMatchers.isPublic().and(ElementMatchers.returns(ElementMatchers.named("org.redisson.api.RFuture")));
                     }
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return CREATE_CLIENT_INTERCEPTOR;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                },
-                new InstanceMethodsInterceptPoint() {
-
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("connectionReadOp").or(named("connectionWriteOp"));
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return CONNECTION_OP_INTERCEPTOR;
+                        return REDISSON_METHOD_INTERCEPTOR_CLASS;
                     }
 
                     @Override
@@ -80,10 +66,5 @@ public class ConnectionManagerInstrumentation extends ClassInstanceMethodsEnhanc
                     }
                 }
         };
-    }
-
-    @Override
-    public ClassMatch enhanceClass() {
-        return byName(ENHANCE_CLASS);
     }
 }

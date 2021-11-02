@@ -34,7 +34,7 @@ import java.util.Collection;
 /**
  * Reference from https://github.com/apache/skywalking-java/blob/main/apm-sniffer/apm-sdk-plugin/redisson-3.x-plugin/src/main/java/org/apache/skywalking/apm/plugin/redisson/v3/ConnectionManagerInterceptor.java
  */
-public class ConnectionManagerInterceptor implements InstanceMethodsAroundInterceptor {
+public class CreateClientInterceptor implements InstanceMethodsAroundInterceptor {
 
 
     @Override
