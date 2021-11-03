@@ -93,7 +93,7 @@ public class PluginFinder {
                 return nameMatchDefine.containsKey(target.getActualName());
             }
         };
-        judge = judge.and(not(isInterface())).and(not(isAccessibleTo(EnhancedInstance.class)));
+        judge = judge.and(not(isInterface()));
         for (AbstractClassEnhancePluginDefine define : signatureMatchDefine) {
             ClassMatch match = define.enhanceClass();
             if (match instanceof IndirectMatch) {
