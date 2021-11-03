@@ -19,22 +19,22 @@
 
 package org.apache.skywalking.apm.agent.core.plugin;
 
+import net.bytebuddy.description.NamedElement;
+import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.bytebuddy.AbstractJunction;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.IndirectMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.ProtectiveShieldMatcher;
-import net.bytebuddy.description.NamedElement;
-import net.bytebuddy.description.type.TypeDescription;
-import net.bytebuddy.matcher.ElementMatcher;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static net.bytebuddy.matcher.ElementMatchers.isInterface;
-import static net.bytebuddy.matcher.ElementMatchers.not;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 
 /**
  * The <code>PluginFinder</code> represents a finder , which assist to find the one
@@ -78,7 +78,7 @@ public class PluginFinder {
 
         for (AbstractClassEnhancePluginDefine pluginDefine : signatureMatchDefine) {
             IndirectMatch match = (IndirectMatch) pluginDefine.enhanceClass();
-            if (match.isMatch(typeDescription)) {
+            if (match.defaultMatch(typeDescription) && match.isMatch(typeDescription)) {
                 matchedPlugins.add(pluginDefine);
             }
         }
@@ -93,7 +93,7 @@ public class PluginFinder {
                 return nameMatchDefine.containsKey(target.getActualName());
             }
         };
-        judge = judge.and(not(isInterface()));
+        judge = judge.and(not(isInterface())).and(not(isAccessibleTo(EnhancedInstance.class)));
         for (AbstractClassEnhancePluginDefine define : signatureMatchDefine) {
             ClassMatch match = define.enhanceClass();
             if (match instanceof IndirectMatch) {

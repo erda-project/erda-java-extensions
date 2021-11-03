@@ -34,6 +34,7 @@ public class SpanImpl implements Span {
     private SpanContext spanContext;
     private Long startTime;
     private Long endTime;
+    private Long nano;
     private String operationName;
     private Map<String, String> tags;
     private Tracer tracer;
@@ -45,6 +46,7 @@ public class SpanImpl implements Span {
         this.spanContext = spanContext;
         this.tags = tags;
         this.startTime = DateTime.currentTimeNano();
+        this.nano = System.nanoTime();
         this.tracer = tracer;
         this.logs = new ArrayList<>();
         this.logInteger = new AtomicInteger();
@@ -106,7 +108,7 @@ public class SpanImpl implements Span {
     @Override
     public void finish() {
         if (endTime == null) {
-            endTime = DateTime.currentTimeNano();
+            endTime = startTime + (System.nanoTime() - nano);
             tracer.dispatch(this);
         }
     }
