@@ -32,27 +32,6 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
  */
 public class PackageMatch implements IndirectMatch {
 
-    private static final Map<String, Class> JAVA_CLASS = new HashMap<String, Class>();
-
-    static {
-        JAVA_CLASS.put("java.lang.Object", java.lang.Object.class);
-        JAVA_CLASS.put("boolean.class", boolean.class);
-        JAVA_CLASS.put("char.class", char.class);
-        JAVA_CLASS.put("byte.class", byte.class);
-        JAVA_CLASS.put("short.class", short.class);
-        JAVA_CLASS.put("int.class", int.class);
-        JAVA_CLASS.put("long.class", long.class);
-        JAVA_CLASS.put("float.class", float.class);
-        JAVA_CLASS.put("double.class", double.class);
-        JAVA_CLASS.put("java.util.List", java.util.List.class);
-        JAVA_CLASS.put("java.util.Map", java.util.Map.class);
-    }
-
-    public static boolean isJavaClass(String className) {
-        return JAVA_CLASS.containsKey(className);
-    }
-
-
     private final String[] matchPackageNames;
 
     private PackageMatch(String[] packages) {
