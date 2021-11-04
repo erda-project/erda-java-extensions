@@ -74,4 +74,9 @@ public class CallableInstrumentation extends ClassInstanceMethodsEnhancePluginDe
     protected ClassMatch enhanceClass() {
         return byMultiClassMatch(ENHANCE_CLASS, "com.mysql.jdbc.cj.CallableStatement");
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

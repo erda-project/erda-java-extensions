@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 
 public interface IMethodInterceptContext {
 
-    EnhancedInstance getInstance();
+    Object getInstance();
 
     Class<?> getOriginClass();
 

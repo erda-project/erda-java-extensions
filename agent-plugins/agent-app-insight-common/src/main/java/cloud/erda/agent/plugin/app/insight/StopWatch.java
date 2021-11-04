@@ -16,8 +16,6 @@
 
 package cloud.erda.agent.plugin.app.insight;
 
-import cloud.erda.agent.core.utils.DateTime;
-
 /**
  * @author liuhaoyang
  * @since 2019-01-21 17:42

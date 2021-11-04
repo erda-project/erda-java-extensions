@@ -30,7 +30,7 @@ public class PatternLayoutInterceptor implements InstanceMethodsAroundIntercepto
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        EnhancedInstance instance = context.getInstance();
+        Object instance = context.getInstance();
         if (!(instance instanceof PatternLayout.Builder)) {
             return;
         }

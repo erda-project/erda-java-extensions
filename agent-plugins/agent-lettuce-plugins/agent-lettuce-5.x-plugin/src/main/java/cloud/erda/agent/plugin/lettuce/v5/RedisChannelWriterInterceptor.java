@@ -37,7 +37,7 @@ import java.util.Collection;
 public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInterceptor, InstanceConstructorInterceptor {
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+    public void onConstruct(Object objInst, Object[] allArguments) {
         DynamicFieldEnhancedInstance optionsInst = (DynamicFieldEnhancedInstance) allArguments[0];
         ((DynamicFieldEnhancedInstance)objInst).setDynamicField(optionsInst.getDynamicField());
     }

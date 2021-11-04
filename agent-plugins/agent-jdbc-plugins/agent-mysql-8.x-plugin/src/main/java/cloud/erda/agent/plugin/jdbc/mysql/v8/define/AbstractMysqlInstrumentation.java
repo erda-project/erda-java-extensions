@@ -48,4 +48,9 @@ public abstract class AbstractMysqlInstrumentation extends ClassInstanceMethodsE
     protected String[] witnessClasses() {
         return new String[]{Constants.WITNESS_MYSQL_8X_CLASS};
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

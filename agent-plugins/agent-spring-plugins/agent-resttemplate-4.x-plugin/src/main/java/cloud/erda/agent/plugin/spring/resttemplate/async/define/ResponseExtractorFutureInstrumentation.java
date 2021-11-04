@@ -104,5 +104,10 @@ public class ResponseExtractorFutureInstrumentation extends ClassInstanceMethods
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }
 

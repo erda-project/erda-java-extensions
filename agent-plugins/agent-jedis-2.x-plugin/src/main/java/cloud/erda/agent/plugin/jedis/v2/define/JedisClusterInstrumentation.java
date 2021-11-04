@@ -94,4 +94,9 @@ public class JedisClusterInstrumentation extends ClassInstanceMethodsEnhancePlug
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

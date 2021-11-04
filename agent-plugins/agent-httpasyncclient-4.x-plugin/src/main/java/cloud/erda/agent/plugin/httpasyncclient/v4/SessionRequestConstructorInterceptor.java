@@ -28,7 +28,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
  */
 public class SessionRequestConstructorInterceptor implements InstanceConstructorInterceptor {
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+    public void onConstruct(Object objInst, Object[] allArguments) {
         ((DynamicFieldEnhancedInstance)objInst).setDynamicField(ThreadTransferInfo.LOCAL.get());
         ThreadTransferInfo.LOCAL.remove();
     }

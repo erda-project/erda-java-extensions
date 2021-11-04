@@ -28,7 +28,7 @@ public class ContextInitializerConstructorInterceptor implements InstanceConstru
     private static final ILog log = LogManager.getLogger(ContextInitializerConstructorInterceptor.class);
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+    public void onConstruct(Object objInst, Object[] allArguments) {
         LoggerContext lc = (LoggerContext) allArguments[0];
         ((DynamicFieldEnhancedInstance)objInst).setDynamicField(lc);
     }

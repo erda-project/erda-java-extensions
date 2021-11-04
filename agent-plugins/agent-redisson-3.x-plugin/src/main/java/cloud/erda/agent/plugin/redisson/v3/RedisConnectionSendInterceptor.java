@@ -53,7 +53,7 @@ public class RedisConnectionSendInterceptor implements InstanceMethodsAroundInte
     private static final ILog logger = LogManager.getLogger(RedisConnectionSendInterceptor.class);
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+    public void onConstruct(Object objInst, Object[] allArguments) {
         String peer = (String) ((DynamicFieldEnhancedInstance) allArguments[0]).getDynamicField();
         if (peer == null) {
             try {

@@ -27,7 +27,7 @@ import java.net.URI;
 public class JedisConstructorWithUriArgInterceptor implements InstanceConstructorInterceptor {
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+    public void onConstruct(Object objInst, Object[] allArguments) {
         URI uri = (URI) allArguments[0];
         ((DynamicFieldEnhancedInstance)objInst).setDynamicField(uri.getHost() + ":" + uri.getPort());
     }

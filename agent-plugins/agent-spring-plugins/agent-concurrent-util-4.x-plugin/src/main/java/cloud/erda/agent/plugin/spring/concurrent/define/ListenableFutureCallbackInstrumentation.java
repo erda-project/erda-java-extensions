@@ -85,5 +85,10 @@ public class ListenableFutureCallbackInstrumentation extends ClassInstanceMethod
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }
 

@@ -75,8 +75,8 @@ public class InstMethodsInter {
                             @SuperCall Callable<?> zuper,
                             @Origin Method method
     ) throws Throwable {
-        EnhancedInstance targetObject = (EnhancedInstance) obj;
-        IMethodInterceptContext context = new MethodInterceptContext(targetObject, clazz, method, allArguments, method.getParameterTypes());
+//        EnhancedInstance targetObject = (EnhancedInstance) obj;
+        IMethodInterceptContext context = new MethodInterceptContext(obj, clazz, method, allArguments, method.getParameterTypes());
         MethodInterceptResult result = new MethodInterceptResult();
 
         Object ret = null;

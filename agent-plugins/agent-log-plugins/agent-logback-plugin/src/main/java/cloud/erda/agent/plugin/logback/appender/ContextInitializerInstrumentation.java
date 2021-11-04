@@ -94,4 +94,9 @@ public class ContextInitializerInstrumentation extends ClassInstanceMethodsEnhan
     protected ClassMatch enhanceClass() {
         return NameMatch.byName(ENHANCE_CLASS);
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

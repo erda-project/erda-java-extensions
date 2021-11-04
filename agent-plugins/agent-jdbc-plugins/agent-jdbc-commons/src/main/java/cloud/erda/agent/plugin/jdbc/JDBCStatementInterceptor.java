@@ -45,7 +45,7 @@ public class JDBCStatementInterceptor implements InstanceMethodsAroundIntercepto
     @Override
     public Object afterMethod(IMethodInterceptContext context,
                               Object ret) throws Throwable {
-        EnhancedInstance objInst = context.getInstance();
+        Object objInst = context.getInstance();
         if (((DynamicFieldEnhancedInstance) objInst).getDynamicField() == null) {
             return ret;
         }

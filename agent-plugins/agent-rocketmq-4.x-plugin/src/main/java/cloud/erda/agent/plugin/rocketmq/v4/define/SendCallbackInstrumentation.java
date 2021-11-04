@@ -90,4 +90,9 @@ public class SendCallbackInstrumentation extends ClassInstanceMethodsEnhancePlug
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

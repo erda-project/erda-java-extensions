@@ -27,14 +27,14 @@ import java.util.Map;
 
 public class MethodInterceptContext implements IMethodInterceptContext {
     private Map<String, Object> attachments;
-    private EnhancedInstance instance;
+    private Object instance;
     private Class<?> originClass;
     private Method method;
     private Object[] arguments;
     private Class<?>[] argumentsTypes;
     private Throwable exception;
 
-    public MethodInterceptContext(EnhancedInstance objInst, Class<?> originClass, Method method, Object[] allArguments,
+    public MethodInterceptContext(Object objInst, Class<?> originClass, Method method, Object[] allArguments,
                                   Class<?>[] argumentsTypes) {
         this.instance = objInst;
         this.originClass = originClass;
@@ -44,7 +44,7 @@ public class MethodInterceptContext implements IMethodInterceptContext {
     }
 
     @Override
-    public EnhancedInstance getInstance() {
+    public Object getInstance() {
         return instance;
     }
 

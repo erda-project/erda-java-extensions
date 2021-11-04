@@ -107,7 +107,7 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         if (IS_SYNC.get()) {
             context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
         } else {
-            EnhancedInstance instance = (EnhancedInstance) allArguments[6];
+            Object instance = allArguments[6];
             MessageSendAsyncInfo info = new MessageSendAsyncInfo(tracer.capture(), transactionMetricBuilder);
             ((DynamicFieldEnhancedInstance)instance).setDynamicField(info);
         }

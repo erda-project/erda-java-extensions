@@ -72,4 +72,9 @@ public class HttpAsyncRequestExecutorInstrumentation extends ClassInstanceMethod
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

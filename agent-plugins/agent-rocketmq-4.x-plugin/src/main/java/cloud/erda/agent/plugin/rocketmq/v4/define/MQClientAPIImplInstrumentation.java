@@ -87,4 +87,9 @@ public class MQClientAPIImplInstrumentation extends ClassInstanceMethodsEnhanceP
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

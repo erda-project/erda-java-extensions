@@ -71,11 +71,6 @@ public class MethodInvokeAnnotationInstrumentation extends ClassEnhancePluginDef
     }
 
     @Override
-    protected boolean implementDynamicField() {
-        return false;
-    }
-
-    @Override
     protected StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
         return new StaticMethodsInterceptPoint[]{
                 new StaticMethodsInterceptPoint() {

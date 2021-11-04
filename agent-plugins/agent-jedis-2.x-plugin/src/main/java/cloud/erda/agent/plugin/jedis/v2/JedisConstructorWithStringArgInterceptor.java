@@ -25,7 +25,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
 public class JedisConstructorWithStringArgInterceptor implements InstanceConstructorInterceptor {
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+    public void onConstruct(Object objInst, Object[] allArguments) {
         String host = (String) allArguments[0];
         String port = "6379";
         if (allArguments.length > 1) {

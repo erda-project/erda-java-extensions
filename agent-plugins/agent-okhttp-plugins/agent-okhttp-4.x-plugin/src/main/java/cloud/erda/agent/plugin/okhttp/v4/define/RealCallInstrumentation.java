@@ -103,4 +103,9 @@ public class RealCallInstrumentation extends ClassInstanceMethodsEnhancePluginDe
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

@@ -42,7 +42,7 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
     private static ILog log = LogManager.getLogger(RealCallInterceptor.class);
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+    public void onConstruct(Object objInst, Object[] allArguments) {
         ((DynamicFieldEnhancedInstance)objInst).setDynamicField(allArguments[1]);
     }
 

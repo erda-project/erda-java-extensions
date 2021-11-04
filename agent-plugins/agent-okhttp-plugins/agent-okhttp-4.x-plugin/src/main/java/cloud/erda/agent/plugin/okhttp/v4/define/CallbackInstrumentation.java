@@ -89,4 +89,9 @@ public class CallbackInstrumentation extends AbstractOkhttpInstrumentation {
     protected ClassMatch enhanceClass() {
         return byHierarchyMatch(new String[] {ENHANCE_CLASS});
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

@@ -29,4 +29,9 @@ public abstract class AbstractOkhttpInstrumentation extends ClassInstanceMethods
     protected final String[] witnessClasses() {
         return new String[] {WITHNESS_CLASSES};
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

@@ -19,6 +19,7 @@
 
 package org.apache.skywalking.apm.agent.core.plugin;
 
+import net.bytebuddy.description.type.TypeDescription;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassEnhancePluginDefine;
 
 /**
@@ -36,6 +37,16 @@ public class EnhanceContext {
      * e.g. added the new field, or implemented the new interface
      */
     private boolean objectExtended = false;
+
+    private TypeDescription typeDescription;
+
+    public TypeDescription getTypeDescription() {
+        return typeDescription;
+    }
+
+    public void setTypeDescription(TypeDescription typeDescription) {
+        this.typeDescription = typeDescription;
+    }
 
     public boolean isEnhanced() {
         return isEnhanced;

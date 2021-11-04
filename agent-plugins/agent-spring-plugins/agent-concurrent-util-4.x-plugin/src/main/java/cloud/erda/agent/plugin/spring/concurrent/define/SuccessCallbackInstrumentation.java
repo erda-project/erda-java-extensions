@@ -72,4 +72,9 @@ public class SuccessCallbackInstrumentation extends ClassInstanceMethodsEnhanceP
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

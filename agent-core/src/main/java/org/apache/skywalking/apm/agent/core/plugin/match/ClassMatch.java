@@ -42,9 +42,9 @@ public interface ClassMatch {
         if (typeDescription.isInterface()) {
             return false;
         }
-        if (typeDescription.isAssignableTo(EnhancedInstance.class)) {
-            return false;
-        }
+//        if (typeDescription.isAssignableTo(EnhancedInstance.class)) {
+//            return false;
+//        }
         return true;
     }
 

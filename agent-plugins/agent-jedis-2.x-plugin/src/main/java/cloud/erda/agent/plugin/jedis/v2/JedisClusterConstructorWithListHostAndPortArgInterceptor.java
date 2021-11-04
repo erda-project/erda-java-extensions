@@ -28,7 +28,7 @@ import java.util.Set;
 public class JedisClusterConstructorWithListHostAndPortArgInterceptor implements InstanceConstructorInterceptor {
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+    public void onConstruct(Object objInst, Object[] allArguments) {
         StringBuilder redisConnInfo = new StringBuilder();
         Set<HostAndPort> hostAndPorts = (Set<HostAndPort>) allArguments[0];
         for (HostAndPort hostAndPort : hostAndPorts) {

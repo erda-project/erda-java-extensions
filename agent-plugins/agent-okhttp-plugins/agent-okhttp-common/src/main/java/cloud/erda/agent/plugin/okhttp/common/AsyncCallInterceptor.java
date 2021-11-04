@@ -45,7 +45,7 @@ public class AsyncCallInterceptor implements InstanceConstructorInterceptor, Ins
     private static ILog log = LogManager.getLogger(AsyncCallInterceptor.class);
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+    public void onConstruct(Object objInst, Object[] allArguments) {
         /*
          * The first argument of constructor is not the `real` parameter when the enhance class is an inner class. This
          * is the JDK compiler mechanism.
