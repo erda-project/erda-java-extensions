@@ -1,4 +1,4 @@
-msp-sdk=cloud.erda.agent.plugin.sdk.defines.TracerInstrumentation
-msp-sdk=cloud.erda.agent.plugin.sdk.defines.TraceAnnotationInstrumentation
-msp-sdk=cloud.erda.agent.plugin.sdk.defines.MethodInvokeAnnotationInstrumentation
-msp-sdk=cloud.erda.agent.plugin.sdk.defines.ExecutorServiceSubmitInstrumentation
+monitorsdk=cloud.erda.agent.plugin.sdk.defines.TracerInstrumentation
+monitorsdk=cloud.erda.agent.plugin.sdk.defines.TraceAnnotationInstrumentation
+monitorsdk=cloud.erda.agent.plugin.sdk.defines.MethodInvokeAnnotationInstrumentation
+monitorsdk=cloud.erda.agent.plugin.sdk.defines.ExecutorServiceSubmitInstrumentation

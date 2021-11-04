@@ -61,7 +61,7 @@ public class JavaAgent {
 
         final PluginFinder pluginFinder;
         try {
-            pluginFinder = new PluginFinder(new PluginBootstrap().loadPlugins());
+            pluginFinder = new PluginFinder(new PluginBootstrap().loadPlugins(config));
             ServiceManager.INSTANCE.boot();
         } catch (Exception e) {
             logger.error(e, "Java agent initialized failure. Shutting down.");
@@ -124,7 +124,7 @@ public class JavaAgent {
                     }
                 }
                 if (context.isEnhanced()) {
-                    logger.debug("Finish the prepare stage for {}.", typeDescription.getName());
+//                    logger.debug("Finish the prepare stage for {}.", typeDescription.getName());
                 }
 
                 return newBuilder;
@@ -145,7 +145,7 @@ public class JavaAgent {
         public void onTransformation(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module,
                                      boolean loaded, DynamicType dynamicType) {
             if (logger.isDebugEnable()) {
-                logger.debug("On Transformation class {}.", typeDescription.getName());
+                logger.debug("Enhance class {} completely.", typeDescription.getName());
             }
 
             InstrumentDebuggingClass.INSTANCE.log(typeDescription, dynamicType);

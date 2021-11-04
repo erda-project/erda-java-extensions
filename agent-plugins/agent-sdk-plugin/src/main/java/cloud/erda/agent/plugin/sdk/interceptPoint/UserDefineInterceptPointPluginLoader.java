@@ -24,11 +24,12 @@ import cloud.erda.agent.plugin.sdk.defines.StaticMethodInterceptInstrumentation;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.PluginGroup;
 import org.apache.skywalking.apm.agent.core.plugin.PluginLoader;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author liuhaoyang
@@ -39,23 +40,23 @@ public class UserDefineInterceptPointPluginLoader implements PluginLoader {
     private static final ILog logger = LogManager.getLogger(UserDefineInterceptPointPluginLoader.class);
 
     @Override
-    public List<AbstractClassEnhancePluginDefine> load() throws Exception {
-        List<AbstractClassEnhancePluginDefine> pluginDefines = new ArrayList<>();
+    public Collection<PluginGroup> load() throws Exception {
+        PluginGroup pluginGroup = PluginGroup.group("UserDefineIntercept");
         InterceptPointConfig interceptPointConfig = new ConfigAccessor(getClass().getClassLoader()).getConfig(InterceptPointConfig.class);
         for (String packageName : interceptPointConfig.getPackageInterceptPoints()) {
-            pluginDefines.add(new PackageInterceptInstrumentation(packageName));
+            pluginGroup.getPluginDefines().add(new PackageInterceptInstrumentation(packageName));
             logger.info("loading package[{}] interceptPoint.", packageName);
         }
         MethodInterceptPointResolver instanceMethodInterceptPointResolver = new MethodInterceptPointResolver(interceptPointConfig.getInstancePoints());
         for (InterceptPoint interceptPoint : instanceMethodInterceptPointResolver.resolve()) {
-            pluginDefines.add(new InstanceMethodInterceptInstrumentation(interceptPoint));
+            pluginGroup.getPluginDefines().add(new InstanceMethodInterceptInstrumentation(interceptPoint));
             logger.info("loading instance interceptPoint. class {} methods {}", interceptPoint.getClassName(), Arrays.stream(interceptPoint.getMethodNames()).reduce((x, y) -> x + "," + y));
         }
         MethodInterceptPointResolver staticMethodInterceptPointResolver = new MethodInterceptPointResolver(interceptPointConfig.getStaticPoints());
         for (InterceptPoint interceptPoint : staticMethodInterceptPointResolver.resolve()) {
-            pluginDefines.add(new StaticMethodInterceptInstrumentation(interceptPoint));
+            pluginGroup.getPluginDefines().add(new StaticMethodInterceptInstrumentation(interceptPoint));
             logger.info("loading static interceptPoint. class {} methods {}", interceptPoint.getClassName(), Arrays.stream(interceptPoint.getMethodNames()).reduce((x, y) -> x + "," + y));
         }
-        return pluginDefines;
+        return Collections.singletonList(pluginGroup);
     }
 }

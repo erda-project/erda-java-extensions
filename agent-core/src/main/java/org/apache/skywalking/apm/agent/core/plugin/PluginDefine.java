@@ -53,6 +53,10 @@ public class PluginDefine {
         return new PluginDefine(pluginName, defineClass);
     }
 
+    public String getName() {
+        return name;
+    }
+
     public String getDefineClass() {
         return defineClass;
     }

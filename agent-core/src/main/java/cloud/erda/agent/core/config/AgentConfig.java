@@ -18,8 +18,11 @@ package cloud.erda.agent.core.config;
 
 import cloud.erda.agent.core.config.loader.Config;
 import cloud.erda.agent.core.config.loader.Configuration;
+import cloud.erda.agent.core.config.loader.MapConfiguration;
 import org.apache.skywalking.apm.agent.core.logging.core.LogLevel;
 import org.apache.skywalking.apm.agent.core.util.Strings;
+
+import java.util.Map;
 
 public class AgentConfig implements Config {
     @Configuration(name = "TERMINUS_KEY", defaultValue = "")
@@ -52,8 +55,12 @@ public class AgentConfig implements Config {
     @Configuration(name = "MSP_ENV_ID", defaultValue = "")
     private String _mspEnvId;
 
+
     @Configuration(name = "MSP_ENV_TOKEN", defaultValue = "")
     private String _mspEnvToken;
+
+    @MapConfiguration(pattern = "MSP_PLUGIN_.*._ENABLED", valueType = Boolean.class)
+    private Map<String, Boolean> _pluginEnabled;
 
     public String terminusKey() {
         if (!Strings.isEmpty(_terminusKey)) {
@@ -96,5 +103,9 @@ public class AgentConfig implements Config {
 
     public String agentOsInfo() {
         return this._agentOsInfo;
+    }
+
+    public Map<String, Boolean> pluginEnabled() {
+        return _pluginEnabled;
     }
 }

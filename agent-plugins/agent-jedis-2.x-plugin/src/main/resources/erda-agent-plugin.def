@@ -14,5 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-jedis-2.x=cloud.erda.agent.plugin.jedis.v2.define.JedisClusterInstrumentation
-jedis-2.x=cloud.erda.agent.plugin.jedis.v2.define.JedisInstrumentation
+jedis=cloud.erda.agent.plugin.jedis.v2.define.JedisClusterInstrumentation
+jedis=cloud.erda.agent.plugin.jedis.v2.define.JedisInstrumentation

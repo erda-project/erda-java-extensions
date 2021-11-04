@@ -19,12 +19,14 @@
 
 package org.apache.skywalking.apm.agent.core.plugin;
 
+import cloud.erda.agent.core.config.AgentConfig;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.loader.AgentClassLoader;
 import org.apache.skywalking.apm.agent.core.util.AgentPackageNotFoundException;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.ServiceLoader;
 
@@ -43,13 +45,26 @@ public class PluginBootstrap {
      *
      * @return plugin definition list.
      */
-    public List<AbstractClassEnhancePluginDefine> loadPlugins() throws AgentPackageNotFoundException {
+    public List<AbstractClassEnhancePluginDefine> loadPlugins(AgentConfig agentConfig) throws AgentPackageNotFoundException {
         AgentClassLoader.initDefaultLoader();
         List<AbstractClassEnhancePluginDefine> plugins = new ArrayList<AbstractClassEnhancePluginDefine>();
         ServiceLoader<PluginLoader> serviceLoader = ServiceLoader.load(PluginLoader.class, AgentClassLoader.getDefault());
         for (PluginLoader pluginLoader : serviceLoader) {
             try {
-                plugins.addAll(pluginLoader.load());
+                Collection<PluginGroup> pluginGroups = pluginLoader.load();
+                for (PluginGroup pluginGroup : pluginGroups) {
+                    if (pluginGroup.empty()) {
+                        logger.info("plugin {} skipped has {} instrumentation", pluginGroup.getName(), pluginGroup.getPluginDefines().size());
+                        continue;
+                    }
+                    Boolean pluginEnabled = agentConfig.pluginEnabled().get("MSP_PLUGIN_" + pluginGroup.getName().replace("-", "_").toUpperCase() + "_ENABLED");
+                    if (pluginEnabled == null || pluginEnabled) {
+                        plugins.addAll(pluginGroup.getPluginDefines());
+                        logger.info("plugin {} enabled with instrumentations \n\t\t\t\t\t\t - {}", pluginGroup.getName(), pluginGroup.getPluginDefines().stream().map(x -> x.getClass().getName()).reduce((x, y) -> x + "\n\t\t\t\t\t\t - " + y).get());
+                    } else {
+                        logger.info("plugin {} disabled with instrumentations \n\t\t\t\t\t\t - {}", pluginGroup.getName(), pluginGroup.getPluginDefines().stream().map(x -> x.getClass().getName()).reduce((x, y) -> x + "\n\t\t\t\t\t\t - " + y).get());
+                    }
+                }
             } catch (Exception exception) {
                 logger.error(exception, "{} load error", pluginLoader.getClass());
             }
@@ -57,4 +72,3 @@ public class PluginBootstrap {
         return plugins;
     }
 }
-

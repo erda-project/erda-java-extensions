@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-sharding-sphere-4.x=cloud.erda.agent.plugin.shardingsphere.v4.define.ProxyRootInvokeInstrumentation
-sharding-sphere-4.x=cloud.erda.agent.plugin.shardingsphere.v4.define.JDBCRootInvokeInstrumentation
-sharding-sphere-4.x=cloud.erda.agent.plugin.shardingsphere.v4.define.ParseInstrumentation
-sharding-sphere-4.x=cloud.erda.agent.plugin.shardingsphere.v4.define.ExecuteInstrumentation
+shardingSphere=cloud.erda.agent.plugin.shardingsphere.v4.define.ProxyRootInvokeInstrumentation
+shardingSphere=cloud.erda.agent.plugin.shardingsphere.v4.define.JDBCRootInvokeInstrumentation
+shardingSphere=cloud.erda.agent.plugin.shardingsphere.v4.define.ParseInstrumentation
+shardingSphere=cloud.erda.agent.plugin.shardingsphere.v4.define.ExecuteInstrumentation
