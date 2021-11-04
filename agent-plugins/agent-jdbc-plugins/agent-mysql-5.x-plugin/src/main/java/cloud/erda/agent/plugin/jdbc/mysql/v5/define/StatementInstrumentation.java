@@ -104,4 +104,9 @@ public class StatementInstrumentation extends ClassInstanceMethodsEnhancePluginD
     protected ClassMatch enhanceClass() {
         return byMultiClassMatch(STATEMENT_CLASS_NAME, MYSQL6_STATEMENT_CLASS_NAME);
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

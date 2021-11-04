@@ -40,7 +40,7 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        EnhancedInstance objInst = context.getInstance();
+        Object objInst = context.getInstance();
         Method method = context.getMethod();
         Object[] allArguments = context.getArguments();
 

@@ -53,7 +53,7 @@ public abstract class AbstractClassEnhancePluginDefine {
             return null;
         }
 
-        logger.debug("prepare to enhance class {} by {}.", transformClassName, interceptorDefineClassName);
+//        logger.debug("prepare to enhance class {} by {}.", transformClassName, interceptorDefineClassName);
 
         /**
          * find witness classes for enhance class
@@ -75,7 +75,7 @@ public abstract class AbstractClassEnhancePluginDefine {
         DynamicType.Builder<?> newClassBuilder = this.enhance(transformClassName, builder, classLoader, context);
 
         context.initializationStageCompleted();
-        logger.debug("enhance class {} by {} completely.", transformClassName, interceptorDefineClassName);
+        logger.debug("prepare to enhance class {} by {}.", transformClassName, interceptorDefineClassName);
 
         return newClassBuilder;
     }

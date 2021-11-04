@@ -1,1 +1,1 @@
-error.logback.spring.boot=cloud.erda.agent.plugin.logback.spring.boot.LogbackLoggingSystemInstrumentation
+logback=cloud.erda.agent.plugin.logback.spring.boot.LogbackLoggingSystemInstrumentation

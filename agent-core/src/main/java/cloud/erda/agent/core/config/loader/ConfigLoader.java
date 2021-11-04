@@ -48,17 +48,31 @@ public abstract class ConfigLoader {
                 String name = configuration.name();
                 String value = properties.get(name);
                 loadValue(name, value, instance, field);
-
+            }
+            MapConfiguration mapConfiguration = field.getAnnotation(MapConfiguration.class);
+            if (mapConfiguration != null) {
+                Map map = new HashMap<>();
+                loadMapValue(mapConfiguration.pattern(), map, instance, field);
+                for (Map.Entry<String, String> item : properties.entrySet()) {
+                    if (!validateValue(item.getKey(), item.getValue(), field)) {
+                        continue;
+                    }
+                    if (item.getKey().matches(mapConfiguration.pattern())) {
+                        Object value = ReflectionUtils.castValue(item.getValue(), mapConfiguration.valueType());
+                        map.put(item.getKey(), value);
+                        log.info("Load {} map config {} item {}={} from {}", instance.getClass().getSimpleName(), mapConfiguration.pattern(), item.getKey(), value, getClass().getSimpleName());
+                    }
+                }
             }
         }
     }
 
-    protected boolean validateValue(String name, String value, Object instance, Field field) {
+    protected boolean validateValue(String name, String value, Field field) {
         return value != null && value.length() > 0;
     }
 
     private void loadValue(String name, String value, Object instance, Field field) {
-        if (validateValue(name, value, instance, field)) {
+        if (validateValue(name, value, field)) {
             try {
                 field.setAccessible(true);
                 Object fieldValue = ReflectionUtils.castValue(value, field.getType());
@@ -67,6 +81,16 @@ public abstract class ConfigLoader {
             } catch (IllegalAccessException e) {
                 log.info("!Error. Load {} config {}={} from {}", instance.getClass().getSimpleName(), name, value, getClass().getSimpleName());
             }
+        }
+    }
+
+    private void loadMapValue(String name, Map map, Object instance, Field field) {
+        try {
+            field.setAccessible(true);
+            field.set(instance, map);
+            log.info("Load {} map config {} from {}", instance.getClass().getSimpleName(), name, getClass().getSimpleName());
+        } catch (IllegalAccessException e) {
+            log.info("!Error. Load {} config {} from {}", instance.getClass().getSimpleName(), name, getClass().getSimpleName());
         }
     }
 }

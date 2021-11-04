@@ -69,4 +69,9 @@ public class ConsumeMessageConcurrentlyInstrumentation extends ClassInstanceMeth
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

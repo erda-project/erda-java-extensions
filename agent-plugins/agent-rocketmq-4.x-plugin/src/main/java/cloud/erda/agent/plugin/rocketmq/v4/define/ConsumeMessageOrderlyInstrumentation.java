@@ -68,4 +68,9 @@ public class ConsumeMessageOrderlyInstrumentation extends ClassInstanceMethodsEn
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

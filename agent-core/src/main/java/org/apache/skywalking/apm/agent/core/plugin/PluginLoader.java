@@ -18,7 +18,7 @@
 
 package org.apache.skywalking.apm.agent.core.plugin;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author liuhaoyang
@@ -26,5 +26,5 @@ import java.util.List;
  */
 public interface PluginLoader {
 
-    List<AbstractClassEnhancePluginDefine> load() throws Exception;
+    Collection<PluginGroup> load() throws Exception;
 }

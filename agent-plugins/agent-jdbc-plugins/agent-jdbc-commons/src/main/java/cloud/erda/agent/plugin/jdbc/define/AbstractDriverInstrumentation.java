@@ -54,4 +54,9 @@ public abstract class AbstractDriverInstrumentation extends ClassInstanceMethods
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

@@ -41,7 +41,7 @@ public class DefaultValueConfigLoader extends ConfigLoader {
     }
 
     @Override
-    protected boolean validateValue(String name, String value, Object instance, Field field) {
+    protected boolean validateValue(String name, String value,  Field field) {
         return true;
     }
 }

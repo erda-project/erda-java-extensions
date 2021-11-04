@@ -14,4 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-feign-http-9.x=cloud.erda.agent.plugin.http.v9.define.DefaultHttpClientInstrumentation
+feign=cloud.erda.agent.plugin.http.v9.define.DefaultHttpClientInstrumentation

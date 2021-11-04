@@ -81,4 +81,9 @@ public class PreparedStatementInstrumentation extends ClassInstanceMethodsEnhanc
     protected ClassMatch enhanceClass() {
         return byMultiClassMatch(PREPARED_STATEMENT_CLASS_NAME, MYSQL6_PREPARED_STATEMENT_CLASS_NAME);
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

@@ -111,4 +111,9 @@ public class SessionRequestInstrumentation extends ClassInstanceMethodsEnhancePl
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

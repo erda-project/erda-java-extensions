@@ -66,4 +66,9 @@ public class AbstractRedisClientInstrumentation extends ClassInstanceMethodsEnha
     public ClassMatch enhanceClass() {
         return byName(ENHANCE_CLASS);
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.okhttp.v4.define;
+package cloud.erda.agent.core.config.loader;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author liuhaoyang
- * @date 2021/8/30 17:22
+ * @date 2021/11/4 13:40
  */
-public abstract class AbstractOkhttpInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-    public static final String WITHNESS_CLASSES = "okhttp3.internal.connection.RealCall";
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MapConfiguration {
 
-    @Override
-    protected final String[] witnessClasses() {
-        return new String[] {WITHNESS_CLASSES};
-    }
+    String pattern();
 
-    @Override
-    protected boolean implementDynamicField() {
-        return true;
-    }
+    Class valueType();
 }

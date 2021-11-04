@@ -119,4 +119,9 @@ public class RestTemplateInstrumentation extends ClassInstanceMethodsEnhancePlug
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

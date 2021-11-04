@@ -66,4 +66,9 @@ public class FailureCallbackInstrumentation extends ClassInstanceMethodsEnhanceP
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

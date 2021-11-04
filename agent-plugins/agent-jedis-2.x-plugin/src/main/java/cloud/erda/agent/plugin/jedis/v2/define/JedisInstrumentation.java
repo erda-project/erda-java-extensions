@@ -106,4 +106,9 @@ public class JedisInstrumentation extends ClassInstanceMethodsEnhancePluginDefin
                 }
         };
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

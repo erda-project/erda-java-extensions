@@ -20,14 +20,13 @@
 package cloud.erda.agent.plugin.jedis.v2;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import redis.clients.jedis.HostAndPort;
 
 public class JedisClusterConstructorWithHostAndPortArgInterceptor implements InstanceConstructorInterceptor {
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+    public void onConstruct(Object objInst, Object[] allArguments) {
         HostAndPort hostAndPort = (HostAndPort) allArguments[0];
         ((DynamicFieldEnhancedInstance)objInst).setDynamicField(hostAndPort.getHost() + ":" + hostAndPort.getPort());
     }

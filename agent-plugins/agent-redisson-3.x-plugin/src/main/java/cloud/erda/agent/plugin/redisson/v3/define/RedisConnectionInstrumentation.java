@@ -80,5 +80,10 @@ public class RedisConnectionInstrumentation extends ClassInstanceMethodsEnhanceP
     public ClassMatch enhanceClass() {
         return byName(ENHANCE_CLASS);
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }
 

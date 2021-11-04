@@ -38,9 +38,4 @@ public abstract class ClassInstanceMethodsEnhancePluginDefine extends ClassEnhan
     protected StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
         return null;
     }
-
-    @Override
-    protected boolean implementDynamicField() {
-        return true;
-    }
 }

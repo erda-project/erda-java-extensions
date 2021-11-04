@@ -26,7 +26,7 @@ import redis.clients.jedis.JedisShardInfo;
 public class JedisConstructorWithShardInfoArgInterceptor implements InstanceConstructorInterceptor {
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+    public void onConstruct(Object objInst, Object[] allArguments) {
         String redisConnInfo;
         JedisShardInfo shardInfo = (JedisShardInfo) allArguments[0];
         redisConnInfo = shardInfo.getHost() + ":" + shardInfo.getPort();

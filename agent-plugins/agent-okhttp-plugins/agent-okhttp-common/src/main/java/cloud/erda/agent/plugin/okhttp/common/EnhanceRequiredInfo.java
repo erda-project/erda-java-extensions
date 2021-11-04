@@ -27,9 +27,9 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
  */
 public class EnhanceRequiredInfo {
     private TracerSnapshot tracerSnapshot;
-    private EnhancedInstance realCallEnhance;
+    private Object realCallEnhance;
 
-    public EnhanceRequiredInfo(EnhancedInstance realCallEnhance, TracerSnapshot tracerSnapshot) {
+    public EnhanceRequiredInfo(Object realCallEnhance, TracerSnapshot tracerSnapshot) {
         this.tracerSnapshot = tracerSnapshot;
         this.realCallEnhance = realCallEnhance;
     }
@@ -38,7 +38,7 @@ public class EnhanceRequiredInfo {
         return tracerSnapshot;
     }
 
-    public EnhancedInstance getRealCallEnhance() {
+    public Object getRealCallEnhance() {
         return realCallEnhance;
     }
 }

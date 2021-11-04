@@ -27,7 +27,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
 public class RedisClientConstructorInterceptor implements InstanceConstructorInterceptor {
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+    public void onConstruct(Object objInst, Object[] allArguments) {
         RedisURI redisURI = (RedisURI) allArguments[1];
         RedisClient redisClient = (RedisClient) objInst;
         DynamicFieldEnhancedInstance optionsInst = (DynamicFieldEnhancedInstance) redisClient.getOptions();

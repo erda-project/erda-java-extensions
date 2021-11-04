@@ -30,5 +30,5 @@ public interface InstanceConstructorInterceptor {
     /**
      * Called before the origin constructor invocation.
      */
-    void onConstruct(EnhancedInstance objInst, Object[] allArguments);
+    void onConstruct(Object objInst, Object[] allArguments);
 }

@@ -139,4 +139,9 @@ public abstract class ConnectionInstrumentation extends ClassInstanceMethodsEnha
 
     @Override
     protected abstract ClassMatch enhanceClass();
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

@@ -24,8 +24,7 @@ import org.apache.skywalking.apm.agent.core.plugin.loader.AgentClassLoader;
 import org.apache.skywalking.apm.agent.core.util.AgentPackageNotFoundException;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author liuhaoyang
@@ -36,14 +35,14 @@ public class ResourcesPluginLoader implements PluginLoader {
     private static final ILog logger = LogManager.getLogger(ResourcesPluginLoader.class);
 
     @Override
-    public List<AbstractClassEnhancePluginDefine> load() throws AgentPackageNotFoundException {
+    public Collection<PluginGroup> load() throws AgentPackageNotFoundException {
 
         PluginResourcesResolver resolver = new PluginResourcesResolver();
         List<URL> resources = resolver.getResources();
 
         if (resources == null || resources.size() == 0) {
             logger.info("no plugin files (erda-agent-plugin.def)) found, continue to start application.");
-            return new ArrayList<AbstractClassEnhancePluginDefine>();
+            return Collections.emptyList();
         }
 
         for (URL pluginUrl : resources) {
@@ -56,21 +55,22 @@ public class ResourcesPluginLoader implements PluginLoader {
 
         List<PluginDefine> pluginClassList = PluginCfg.INSTANCE.getPluginClassList();
 
-        List<AbstractClassEnhancePluginDefine> plugins = new ArrayList<AbstractClassEnhancePluginDefine>();
+        Map<String, PluginGroup> plugins = new HashMap<>();
         for (PluginDefine pluginDefine : pluginClassList) {
             try {
-                logger.info("loading plugin class {}.", pluginDefine.getDefineClass());
+//                logger.info("loading plugin class {}.", pluginDefine.getDefineClass());
                 AbstractClassEnhancePluginDefine plugin =
-                        (AbstractClassEnhancePluginDefine)Class.forName(pluginDefine.getDefineClass(),
-                                true,
-                                AgentClassLoader.getDefault())
+                        (AbstractClassEnhancePluginDefine) Class.forName(pluginDefine.getDefineClass(),
+                                        true,
+                                        AgentClassLoader.getDefault())
                                 .newInstance();
-                plugins.add(plugin);
+                PluginGroup pluginGroup = plugins.computeIfAbsent(pluginDefine.getName(), PluginGroup::group);
+                pluginGroup.getPluginDefines().add(plugin);
             } catch (Throwable t) {
                 logger.error(t, "load plugin [{}] failure.", pluginDefine.getDefineClass());
             }
         }
 
-        return plugins;
+        return plugins.values();
     }
 }

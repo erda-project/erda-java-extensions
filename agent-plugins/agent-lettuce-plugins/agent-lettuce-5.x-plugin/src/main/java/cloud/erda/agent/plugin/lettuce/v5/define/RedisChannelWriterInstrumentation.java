@@ -81,4 +81,9 @@ public class RedisChannelWriterInstrumentation extends ClassInstanceMethodsEnhan
     public ClassMatch enhanceClass() {
         return byName(ENHANCE_CLASS);
     }
+
+    @Override
+    protected boolean implementDynamicField() {
+        return true;
+    }
 }

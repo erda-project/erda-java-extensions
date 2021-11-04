@@ -47,7 +47,7 @@ public class PluginResourcesResolver {
             while (urls.hasMoreElements()) {
                 URL pluginUrl = urls.nextElement();
                 cfgUrlPaths.add(pluginUrl);
-                logger.info("find erda-agent plugin define in {}", pluginUrl);
+//                logger.info("find erda-agent plugin define in {}", pluginUrl);
             }
 
             return cfgUrlPaths;

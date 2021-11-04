@@ -76,7 +76,7 @@ public class EnqueueInterceptor implements InstanceMethodsAroundInterceptor,Inst
     }
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+    public void onConstruct(Object objInst, Object[] allArguments) {
         ((DynamicFieldEnhancedInstance)objInst).setDynamicField(allArguments[1]);
     }
 }

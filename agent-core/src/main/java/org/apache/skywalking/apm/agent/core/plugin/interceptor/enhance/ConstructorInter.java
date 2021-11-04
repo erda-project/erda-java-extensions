@@ -64,9 +64,9 @@ public class ConstructorInter {
     public void intercept(@This Object obj,
                           @AllArguments Object[] allArguments) {
         try {
-            EnhancedInstance targetObject = (EnhancedInstance) obj;
+//            EnhancedInstance targetObject = (EnhancedInstance) obj;
 
-            interceptor.onConstruct(targetObject, allArguments);
+            interceptor.onConstruct(obj, allArguments);
         } catch (Throwable t) {
             logger.error("ConstructorInter failure.", t);
         }
