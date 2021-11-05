@@ -41,7 +41,7 @@ public class OnExceptionInterceptor implements InstanceMethodsAroundInterceptor 
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        MessageSendAsyncInfo info = (MessageSendAsyncInfo)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
+        MessageSendAsyncInfo info = (MessageSendAsyncInfo) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
         if (info == null) {
             return;
         }
@@ -52,13 +52,16 @@ public class OnExceptionInterceptor implements InstanceMethodsAroundInterceptor 
         }
 
         Span span = TracerManager.currentTracer().attach(info.getTracerSnapshot()).span();
+        span.updateName("RocketMQ/OnException");
+        span.tag(COMPONENT, COMPONENT_ROCKETMQ);
+        span.tag(SPAN_LAYER, SPAN_LAYER_MQ);
         span.tag(ERROR, ERROR_TRUE);
         span.tag(ERROR_MESSAGE, ((Throwable) context.getArguments()[0]).getMessage());
     }
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        MessageSendAsyncInfo info = (MessageSendAsyncInfo)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
+        MessageSendAsyncInfo info = (MessageSendAsyncInfo) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
         if (info == null) {
             return ret;
         }
@@ -74,7 +77,7 @@ public class OnExceptionInterceptor implements InstanceMethodsAroundInterceptor 
 
     @Override
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
-        MessageSendAsyncInfo info = (MessageSendAsyncInfo)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
+        MessageSendAsyncInfo info = (MessageSendAsyncInfo) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
         if (info == null) {
             return;
         }

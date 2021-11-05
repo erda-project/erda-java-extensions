@@ -16,18 +16,10 @@
 
 package cloud.erda.agent.core.metrics;
 
-import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import cloud.erda.agent.core.metrics.reporter.TelegrafSender;
-import org.apache.skywalking.apm.agent.core.logging.api.ILog;
-import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.boot.BootService;
-import cloud.erda.agent.core.config.TelegrafProxyConfig;
 import org.apache.skywalking.apm.commons.datacarrier.DataCarrier;
 import org.apache.skywalking.apm.commons.datacarrier.buffer.BufferStrategy;
-
-import java.net.DatagramSocket;
-import java.net.InetSocketAddress;
-import java.net.SocketException;
 
 public class MetricDispatcher implements BootService {
 
@@ -56,6 +48,5 @@ public class MetricDispatcher implements BootService {
         for (Metric metric : metrics) {
             dataCarrier.produce(metric);
         }
-
     }
 }

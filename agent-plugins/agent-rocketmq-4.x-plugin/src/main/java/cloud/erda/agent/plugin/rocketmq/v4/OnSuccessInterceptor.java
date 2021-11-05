@@ -18,20 +18,19 @@
 
 package cloud.erda.agent.plugin.rocketmq.v4;
 
+import cloud.erda.agent.core.tracing.TracerManager;
+import cloud.erda.agent.core.tracing.span.Span;
+import cloud.erda.agent.core.utils.TracerUtils;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
+import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.client.producer.SendStatus;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import cloud.erda.agent.core.tracing.TracerManager;
-import cloud.erda.agent.core.tracing.span.Span;
-import cloud.erda.agent.core.utils.TracerUtils;
-import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.MetricReporter;
-import org.apache.rocketmq.client.producer.SendResult;
-import org.apache.rocketmq.client.producer.SendStatus;
 
-import static cloud.erda.agent.core.utils.Constants.Tags.ERROR;
-import static cloud.erda.agent.core.utils.Constants.Tags.ERROR_TRUE;
+import static cloud.erda.agent.core.utils.Constants.Tags.*;
 
 
 /**
@@ -45,12 +44,16 @@ public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        MessageSendAsyncInfo info = (MessageSendAsyncInfo)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
+        MessageSendAsyncInfo info = (MessageSendAsyncInfo) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
         if (info == null) {
             return;
         }
 
         Span span = TracerManager.currentTracer().attach(info.getTracerSnapshot()).span();
+        span.updateName("RocketMQ/OnSuccess");
+        span.tag(COMPONENT, COMPONENT_ROCKETMQ);
+        span.tag(SPAN_LAYER, SPAN_LAYER_MQ);
+
         SendStatus sendStatus = ((SendResult) context.getArguments()[0]).getSendStatus();
         if (sendStatus != SendStatus.SEND_OK) {
             span.tag(ERROR, ERROR_TRUE);
@@ -59,7 +62,7 @@ public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        MessageSendAsyncInfo info = (MessageSendAsyncInfo)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
+        MessageSendAsyncInfo info = (MessageSendAsyncInfo) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
         if (info == null) {
             return ret;
         }
@@ -74,7 +77,7 @@ public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
-        MessageSendAsyncInfo info = (MessageSendAsyncInfo)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
+        MessageSendAsyncInfo info = (MessageSendAsyncInfo) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
         if (info == null) {
             return;
         }

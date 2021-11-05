@@ -18,11 +18,6 @@
 
 package cloud.erda.agent.plugin.rocketmq.v4;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import cloud.erda.agent.core.tracing.SpanContext;
 import cloud.erda.agent.core.tracing.Tracer;
 import cloud.erda.agent.core.tracing.TracerManager;
@@ -30,13 +25,17 @@ import cloud.erda.agent.core.tracing.propagator.TextMapCarrier;
 import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.TracerUtils;
+import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricContext;
-import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageDecoder;
 import org.apache.rocketmq.common.protocol.header.SendMessageRequestHeader;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +65,7 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         Message message = (Message) allArguments[2];
         IS_SYNC.set(allArguments[6] == null);
         String operationName = (IS_SYNC.get() ? SYNC_PRODUCER_PREFIX : ASYNC_PRODUCER_PREFIX) + message.getTopic();
-        String nameServerAddress = String.valueOf( ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField());
+        String nameServerAddress = String.valueOf(((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField());
 
         Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
@@ -109,7 +108,7 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         } else {
             Object instance = allArguments[6];
             MessageSendAsyncInfo info = new MessageSendAsyncInfo(tracer.capture(), transactionMetricBuilder);
-            ((DynamicFieldEnhancedInstance)instance).setDynamicField(info);
+            ((DynamicFieldEnhancedInstance) instance).setDynamicField(info);
         }
     }
 
@@ -120,7 +119,7 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
             MetricReporter.report(transactionMetricBuilder);
         }
 
-        TracerManager.currentTracer().active().close(IS_SYNC.get());
+        TracerManager.currentTracer().active().close(true);
         IS_SYNC.remove();
         return ret;
     }
