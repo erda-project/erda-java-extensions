@@ -31,10 +31,10 @@ public class AgentConfig implements Config {
     @Configuration(name = "TERMINUS_SPOT_SAMPLING_RATE", defaultValue = "50")
     private int _samplingRate;
 
-    @Configuration(name = "TERMINUS_SPOT_SAMPLING_LIMIT", defaultValue = "100")
+    @Configuration(name = "TERMINUS_SPOT_SAMPLING_LIMIT", defaultValue = "1000")
     private int _samplingLimit;
 
-    @Configuration(name = "TERMINUS_AGENT_ENABLE", defaultValue = "false")
+    @Configuration(name = "TERMINUS_AGENT_ENABLE", defaultValue = "true")
     private boolean _agentEnable;
 
     @Configuration(name = "TERMINUS_AGENT_LOGLEVEL", defaultValue = "OFF")
@@ -54,7 +54,6 @@ public class AgentConfig implements Config {
 
     @Configuration(name = "MSP_ENV_ID", defaultValue = "")
     private String _mspEnvId;
-
 
     @Configuration(name = "MSP_ENV_TOKEN", defaultValue = "")
     private String _mspEnvToken;

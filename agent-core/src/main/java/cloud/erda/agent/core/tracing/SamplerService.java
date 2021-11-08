@@ -35,14 +35,17 @@ public class SamplerService extends ScheduledService implements Sampler {
     private final AtomicInteger index = new AtomicInteger(0);
 
     public boolean shouldSample() {
+        if (limit == -1 || rate == -1) {
+            return true;
+        }
         if (index.get() > limit) {
             return false;
         }
         if (rate < 0 || rate > 100) {
             return false;
         }
-        int v = random.nextInt(100);
-        if (v > rate) {
+        int v = random.nextInt(1000);
+        if (v > (rate * 10)) {
             return false;
         }
         index.getAndIncrement();
