@@ -74,9 +74,9 @@ public interface ClassMatch {
         private static final Set<String> Packages = new HashSet<>();
 
         static {
-            Packages.add("org.apache.skywalking.*");
-            Packages.add("cloud.erda.*");
-            Packages.add("org.springframework.*");
+            Packages.add("org.apache.skywalking.apm.agent.*");
+            Packages.add("cloud.erda.agent.*");
+//            Packages.add("org.springframework.*");
         }
 
         public static boolean isIgnore(String className) {

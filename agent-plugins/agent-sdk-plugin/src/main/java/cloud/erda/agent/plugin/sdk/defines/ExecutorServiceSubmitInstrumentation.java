@@ -56,7 +56,7 @@ public class ExecutorServiceSubmitInstrumentation extends ClassInstanceMethodsEn
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return ElementMatchers.named("submit").and(ElementMatchers.takesArguments(1)).and(ElementMatchers.takesArguments(Callable.class));
+                        return ElementMatchers.named("submit");
                     }
 
                     @Override

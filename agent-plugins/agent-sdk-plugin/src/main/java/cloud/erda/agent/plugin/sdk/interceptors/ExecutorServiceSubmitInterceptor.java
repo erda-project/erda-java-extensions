@@ -74,9 +74,10 @@ public class ExecutorServiceSubmitInterceptor implements InstanceMethodsAroundIn
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
         Scope scope = context.getAttachment(SCOPE_KEY);
-        TracerSnapshot tracerSnapshot = context.getAttachment(SNAPSHOT_KEY);
+//        TracerSnapshot tracerSnapshot = context.getAttachment(SNAPSHOT_KEY);
         try {
-            return new FutureWrapper<>((Future<?>) ret, tracerSnapshot);
+            return ret;
+//            return new FutureWrapper<>((Future<?>) ret, tracerSnapshot);
         } finally {
             scope.close();
         }
