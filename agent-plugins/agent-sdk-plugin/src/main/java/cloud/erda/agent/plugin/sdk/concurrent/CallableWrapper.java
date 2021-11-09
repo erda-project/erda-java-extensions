@@ -42,7 +42,7 @@ public class CallableWrapper<V> implements Callable<V> {
     public V call() throws Exception {
         Scope scope = TracerManager.currentTracer().attach(tracerSnapshot);
         Span span = scope.span();
-        span.updateName("Thread Callable call");
+        span.updateName("Cross Thread Callable");
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_LOCAL);
         span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_LOCAL);
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_THREAD_POOL);

@@ -40,7 +40,7 @@ public class RunnableWrapper implements Runnable {
     public void run() {
         Scope scope = TracerManager.currentTracer().attach(tracerSnapshot);
         Span span = scope.span();
-        span.updateName("Thread Runnable run");
+        span.updateName("Cross Thread Runnable");
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_LOCAL);
         span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_LOCAL);
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_THREAD_POOL);
