@@ -19,6 +19,7 @@ package cloud.erda.agent.plugin.sdk.concurrent;
 import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.tracing.TracerSnapshot;
+import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 
 import java.util.concurrent.Callable;
@@ -40,7 +41,11 @@ public class CallableWrapper<V> implements Callable<V> {
     @Override
     public V call() throws Exception {
         Scope scope = TracerManager.currentTracer().attach(tracerSnapshot);
-        scope.span().updateName("Thread Callable call");
+        Span span = scope.span();
+        span.updateName("Thread Callable call");
+        span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_LOCAL);
+        span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_LOCAL);
+        span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_THREAD_POOL);
         try {
             return callable.call();
         } catch (Exception exception) {

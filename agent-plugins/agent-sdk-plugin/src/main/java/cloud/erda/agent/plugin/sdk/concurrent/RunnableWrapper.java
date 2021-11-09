@@ -19,6 +19,7 @@ package cloud.erda.agent.plugin.sdk.concurrent;
 import cloud.erda.agent.core.tracing.Scope;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.tracing.TracerSnapshot;
+import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.utils.Constants;
 
 /**
@@ -38,7 +39,11 @@ public class RunnableWrapper implements Runnable {
     @Override
     public void run() {
         Scope scope = TracerManager.currentTracer().attach(tracerSnapshot);
-        scope.span().updateName("Thread Runnable run");
+        Span span = scope.span();
+        span.updateName("Thread Runnable run");
+        span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_LOCAL);
+        span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_LOCAL);
+        span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_THREAD_POOL);
         try {
             runnable.run();
         } catch (Exception exception) {
