@@ -39,6 +39,9 @@ import java.util.Properties;
  */
 public class TelegrafSender implements IConsumer<Metric> {
 
+    private static final int DEFAULT_BUCKET = 10;
+    private static final int UDP_DATA_LIMIT = 1024 * 64;
+
     private static final ILog log = LogManager.getLogger(MetricDispatcher.class);
 
     private final InetSocketAddress socketAddress;
@@ -64,7 +67,7 @@ public class TelegrafSender implements IConsumer<Metric> {
 
     @Override
     public void consume(List<Metric> data) {
-        this.send(data.toArray(new Metric[0]));
+        this.send(data.toArray(new Metric[0]), DEFAULT_BUCKET);
     }
 
     @Override
@@ -77,7 +80,7 @@ public class TelegrafSender implements IConsumer<Metric> {
         socket.close();
     }
 
-    public void send(Metric... metrics) {
+    public void send(Metric[] metrics, int bucket) {
         if (!init) {
             return;
         }
@@ -85,10 +88,10 @@ public class TelegrafSender implements IConsumer<Metric> {
             return;
         }
 
-        if (metrics.length <= 10) {
+        if (metrics.length <= bucket) {
             doSend(metrics);
         } else {
-            MetricBuckets metricBuckets = new MetricBuckets(metrics);
+            MetricBuckets metricBuckets = new MetricBuckets(metrics, bucket);
             for (Metric[] buckets : metricBuckets) {
                 doSend(buckets);
             }
@@ -97,6 +100,10 @@ public class TelegrafSender implements IConsumer<Metric> {
 
     private void doSend(Metric[] buckets) {
         byte[] data = GsonUtils.toBytes(buckets);
+        if (buckets.length >= UDP_DATA_LIMIT) {
+            send(buckets, Math.max(buckets.length / 2, 1));
+            return;
+        }
         try {
             socket.send(new DatagramPacket(data, 0, data.length, socketAddress));
             if (log.isDebugEnable()) {
@@ -104,7 +111,7 @@ public class TelegrafSender implements IConsumer<Metric> {
             }
         } catch (IOException e) {
             if (log.isErrorEnable()) {
-                log.error(e, "Sen {}({}KB)d data fail.", buckets.length, data.length / (float) 1024);
+                log.error(e, "Send {}({}KB) data fail.", buckets.length, data.length / (float) 1024);
             }
         }
     }
