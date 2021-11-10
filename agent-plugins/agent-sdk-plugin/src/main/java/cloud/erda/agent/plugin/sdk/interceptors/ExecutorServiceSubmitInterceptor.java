@@ -47,44 +47,21 @@ public class ExecutorServiceSubmitInterceptor implements InstanceMethodsAroundIn
 
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        Tracer tracer = TracerManager.currentTracer();
-        Scope parent = tracer.active();
-        SpanBuilder spanBuilder = tracer.buildSpan("ExecutorService Submit");
-        if (parent != null) {
-            spanBuilder.childOf(parent.span().getContext());
-        }
-        spanBuilder.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_LOCAL);
-        spanBuilder.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_LOCAL);
-        spanBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_THREAD_POOL);
-        if (context.getInstance() instanceof ExecutorServiceAccessor) {
-            spanBuilder.tag("thread_pool_type", ((ExecutorServiceAccessor) context.getInstance()).getExecutorService().getClass().getName());
-        }
-        Scope scope = spanBuilder.startActive();
-        TracerSnapshot tracerSnapshot = TracerManager.currentTracer().capture(scope);
+        TracerSnapshot tracerSnapshot = TracerManager.currentTracer().capture();
         Object task = context.getArguments()[0];
         if (task instanceof Callable<?>) {
             context.getArguments()[0] = new CallableWrapper<>((Callable<?>) task, tracerSnapshot);
         } else if (task instanceof Runnable) {
             context.getArguments()[0] = new RunnableWrapper((Runnable) task, tracerSnapshot);
         }
-        context.setAttachment(SCOPE_KEY, scope);
-        context.setAttachment(SNAPSHOT_KEY, tracerSnapshot);
     }
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        Scope scope = context.getAttachment(SCOPE_KEY);
-        TracerSnapshot tracerSnapshot = context.getAttachment(SNAPSHOT_KEY);
-        try {
-            return new FutureWrapper<>((Future<?>) ret, tracerSnapshot);
-        } finally {
-            scope.close();
-        }
+        return ret;
     }
 
     @Override
     public void handleMethodException(IMethodInterceptContext context, Throwable t) {
-        Scope scope = context.getAttachment(SCOPE_KEY);
-        scope.span().tag(Constants.Tags.ERROR, Constants.Tags.ERROR_TRUE);
     }
 }
