@@ -39,7 +39,7 @@ import java.util.Properties;
  */
 public class TelegrafSender implements IConsumer<Metric> {
 
-    private static final int DEFAULT_BUCKET = 10;
+    private static final int DEFAULT_BUCKET = 1;
     private static final int UDP_DATA_LIMIT = 1024 * 64 - 1;
 
     private static final ILog log = LogManager.getLogger(MetricDispatcher.class);
@@ -100,10 +100,6 @@ public class TelegrafSender implements IConsumer<Metric> {
 
     private void doSend(Metric[] buckets) {
         byte[] data = GsonUtils.toBytes(buckets);
-        if (data.length >= UDP_DATA_LIMIT) {
-            send(buckets, Math.max(buckets.length / 2, 1));
-            return;
-        }
         try {
             socket.send(new DatagramPacket(data, 0, data.length, socketAddress));
             if (log.isDebugEnable()) {
