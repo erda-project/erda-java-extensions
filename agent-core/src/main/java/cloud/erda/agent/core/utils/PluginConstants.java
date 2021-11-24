@@ -14,27 +14,19 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.jvm;
+package cloud.erda.agent.core.utils;
 
-import cloud.erda.agent.core.utils.PluginConstants;
-import org.apache.skywalking.apm.agent.core.boot.ScheduledService;
+/**
+ * @author liuhaoyang
+ * @date 2021/11/24 16:26
+ */
+public class PluginConstants {
 
-public class JVMStatsService extends ScheduledService {
+    public static final String METRIC_PLUGIN = "metric";
 
-    private final JVMStatsCollector collector = new JVMStatsCollector();
+    public static final String TRACE_PLUGIN = "trace";
 
-    @Override
-    protected void executing() {
-        collector.collect();
-    }
+    public static final String JVM_PLUGIN = "trace";
 
-    @Override
-    protected long initialDelay() {
-        return 20;
-    }
-
-    @Override
-    public String pluginName() {
-        return PluginConstants.JVM_PLUGIN;
-    }
+    public static final String REPORTER_PLUGIN = "trace";
 }

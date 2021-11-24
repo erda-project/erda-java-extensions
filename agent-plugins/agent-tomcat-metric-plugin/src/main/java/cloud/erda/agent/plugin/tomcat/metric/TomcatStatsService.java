@@ -43,6 +43,16 @@ public class TomcatStatsService extends ScheduledService {
     }
 
     @Override
+    public String pluginName() {
+        return "tomcat-metric";
+    }
+
+    @Override
+    public boolean defaultEnable() {
+        return false;
+    }
+
+    @Override
     protected void executing() {
         this.tomcatStatsCollector.collect();
     }

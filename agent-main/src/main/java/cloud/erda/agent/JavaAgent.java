@@ -62,7 +62,7 @@ public class JavaAgent {
         final PluginFinder pluginFinder;
         try {
             pluginFinder = new PluginFinder(new PluginBootstrap().loadPlugins(config));
-            ServiceManager.INSTANCE.boot();
+            ServiceManager.INSTANCE.boot(config);
         } catch (Exception e) {
             logger.error(e, "Java agent initialized failure. Shutting down.");
             return;

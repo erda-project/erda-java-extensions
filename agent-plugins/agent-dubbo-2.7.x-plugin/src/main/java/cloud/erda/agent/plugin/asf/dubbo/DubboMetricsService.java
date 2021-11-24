@@ -79,6 +79,16 @@ public class DubboMetricsService extends ScheduledService {
     }
 
     @Override
+    public String pluginName() {
+        return "dubbo";
+    }
+
+    @Override
+    public boolean defaultEnable() {
+        return false;
+    }
+
+    @Override
     protected void executing() {
         if (!DUBBO_PROVIDER) {
             logger.info("not in apache-dubbo environment.");

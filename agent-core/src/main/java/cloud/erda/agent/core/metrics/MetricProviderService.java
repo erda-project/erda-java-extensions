@@ -20,6 +20,7 @@ import cloud.erda.agent.core.config.AgentConfig;
 import cloud.erda.agent.core.config.ServiceConfig;
 import cloud.erda.agent.core.config.loader.ConfigAccessor;
 import cloud.erda.agent.core.utils.Constants;
+import cloud.erda.agent.core.utils.PluginConstants;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.sdk.common.Clock;
@@ -105,5 +106,10 @@ public class MetricProviderService implements BootService {
         if (meterProvider != null) {
             meterProvider.shutdown();
         }
+    }
+
+    @Override
+    public String pluginName() {
+        return PluginConstants.METRIC_PLUGIN;
     }
 }

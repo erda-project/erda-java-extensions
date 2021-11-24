@@ -57,7 +57,7 @@ public class PluginBootstrap {
                         logger.info("plugin {} skipped has {} instrumentation", pluginGroup.getName(), pluginGroup.getPluginDefines().size());
                         continue;
                     }
-                    Boolean pluginEnabled = agentConfig.pluginEnabled().get("MSP_PLUGIN_" + pluginGroup.getName().replace("-", "_").toUpperCase() + "_ENABLED");
+                    Boolean pluginEnabled = agentConfig.isPluginEnabled(pluginGroup.getName());
                     if (pluginEnabled == null || pluginEnabled) {
                         plugins.addAll(pluginGroup.getPluginDefines());
                         logger.info("plugin {} enabled with instrumentations \n\t\t\t\t\t\t - {}", pluginGroup.getName(), pluginGroup.getPluginDefines().stream().map(x -> x.getClass().getName()).reduce((x, y) -> x + "\n\t\t\t\t\t\t - " + y).get());

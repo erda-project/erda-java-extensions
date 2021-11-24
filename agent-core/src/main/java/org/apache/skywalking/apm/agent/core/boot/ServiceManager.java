@@ -19,6 +19,7 @@
 
 package org.apache.skywalking.apm.agent.core.boot;
 
+import cloud.erda.agent.core.config.AgentConfig;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.loader.AgentClassLoader;
@@ -37,11 +38,14 @@ public enum ServiceManager {
     private static final ILog logger = LogManager.getLogger(ServiceManager.class);
     private Map<Class, BootService> bootedServices = Collections.emptyMap();
 
-    public void boot() {
+    public void boot(AgentConfig agentConfig) {
         bootedServices = loadAllServices();
 
         for (Map.Entry<Class, BootService> entry : bootedServices.entrySet()) {
             BootService service = entry.getValue();
+            if (!serviceEnabled(service, agentConfig)) {
+                logger.info("ServiceManager plugin [{}] disabled", service.getClass().getName());
+            }
             try {
                 service.prepare();
                 logger.info("ServiceManager prepare [{}]", service.getClass().getName());
@@ -148,5 +152,13 @@ public enum ServiceManager {
 
     ServiceLoader<BootService> load() {
         return ServiceLoader.load(BootService.class, AgentClassLoader.getDefault());
+    }
+
+    private boolean serviceEnabled(BootService service, AgentConfig agentConfig) {
+        Boolean enabled = agentConfig.isPluginEnabled(service.pluginName());
+        if (enabled == null) {
+            return service.defaultEnable();
+        }
+        return enabled;
     }
 }

@@ -51,4 +51,14 @@ public class MicroServiceScheduledService extends ScheduledService {
     protected TimeUnit timeUnit() {
         return TimeUnit.MINUTES;
     }
+
+    @Override
+    public String pluginName() {
+        return "microservice";
+    }
+
+    @Override
+    public boolean defaultEnable() {
+        return false;
+    }
 }
