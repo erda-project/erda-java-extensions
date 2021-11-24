@@ -34,4 +34,10 @@ public interface BootService {
     void complete() throws Throwable;
 
     void shutdown() throws Throwable;
+
+    String pluginName();
+
+    default boolean defaultEnable() {
+        return true;
+    }
 }

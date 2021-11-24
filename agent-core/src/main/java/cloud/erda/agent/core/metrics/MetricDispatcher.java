@@ -17,6 +17,7 @@
 package cloud.erda.agent.core.metrics;
 
 import cloud.erda.agent.core.metrics.reporter.TelegrafSender;
+import cloud.erda.agent.core.utils.PluginConstants;
 import org.apache.skywalking.apm.agent.core.boot.BootService;
 import org.apache.skywalking.apm.commons.datacarrier.DataCarrier;
 import org.apache.skywalking.apm.commons.datacarrier.buffer.BufferStrategy;
@@ -42,6 +43,11 @@ public class MetricDispatcher implements BootService {
     @Override
     public void shutdown() throws Throwable {
         dataCarrier.shutdownConsumers();
+    }
+
+    @Override
+    public String pluginName() {
+        return PluginConstants.METRIC_PLUGIN;
     }
 
     public void dispatch(Metric... metrics) {

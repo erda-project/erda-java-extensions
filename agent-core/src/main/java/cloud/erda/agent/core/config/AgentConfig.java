@@ -104,7 +104,14 @@ public class AgentConfig implements Config {
         return this._agentOsInfo;
     }
 
-    public Map<String, Boolean> pluginEnabled() {
+    public Map<String, Boolean> isPluginEnabled() {
         return _pluginEnabled;
+    }
+
+    public Boolean isPluginEnabled(String pluginName) {
+        if (pluginName == null) {
+            return false;
+        }
+        return this.isPluginEnabled().get("MSP_PLUGIN_" + pluginName.replace("-", "_").toUpperCase() + "_ENABLED");
     }
 }

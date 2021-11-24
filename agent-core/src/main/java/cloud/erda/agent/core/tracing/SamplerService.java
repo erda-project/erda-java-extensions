@@ -17,6 +17,7 @@
 package cloud.erda.agent.core.tracing;
 
 import cloud.erda.agent.core.config.AgentConfig;
+import cloud.erda.agent.core.utils.PluginConstants;
 import org.apache.skywalking.apm.agent.core.boot.ScheduledService;
 import cloud.erda.agent.core.config.loader.ConfigAccessor;
 
@@ -65,5 +66,10 @@ public class SamplerService extends ScheduledService implements Sampler {
     @Override
     protected long period() {
         return 60;
+    }
+
+    @Override
+    public String pluginName() {
+        return PluginConstants.TRACE_PLUGIN;
     }
 }
