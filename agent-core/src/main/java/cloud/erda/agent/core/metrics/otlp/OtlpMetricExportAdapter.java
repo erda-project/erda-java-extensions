@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.core.metrics;
+package cloud.erda.agent.core.metrics.otlp;
 
+import cloud.erda.agent.core.metrics.Metric;
+import cloud.erda.agent.core.metrics.MetricDispatcher;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.Numbers;
 import io.opentelemetry.api.common.AttributeKey;
@@ -34,14 +36,14 @@ import java.util.stream.Stream;
  * @author liuhaoyang
  * @date 2021/10/12 14:00
  */
-public class TelegrafMetricExporter implements MetricExporter {
+public class OtlpMetricExportAdapter implements MetricExporter {
 
-    private final MetricDispatcher reporter;
+    private final MetricDispatcher dispatcher;
     private final ILog logger;
 
-    public TelegrafMetricExporter(MetricDispatcher reporter) {
-        this.reporter = reporter;
-        this.logger = LogManager.getLogger(TelegrafMetricExporter.class);
+    public OtlpMetricExportAdapter(MetricDispatcher dispatcher) {
+        this.dispatcher = dispatcher;
+        this.logger = LogManager.getLogger(OtlpMetricExportAdapter.class);
     }
 
     @Override
@@ -49,7 +51,7 @@ public class TelegrafMetricExporter implements MetricExporter {
 
         Metric[] metrics = collection.stream().flatMap(this::toMetrics).toArray(Metric[]::new);
         logger.info("[{}] execute export {} metrics.", this.getClass().getClassLoader(), metrics.length);
-        return new CompletableResultCode().whenComplete(() -> reporter.dispatch(metrics)).succeed();
+        return new CompletableResultCode().whenComplete(() -> dispatcher.dispatch(metrics)).succeed();
     }
 
     private Stream<Metric> toMetrics(MetricData metricData) {

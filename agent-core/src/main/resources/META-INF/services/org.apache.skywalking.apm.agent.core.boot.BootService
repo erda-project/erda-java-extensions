@@ -1,3 +1,4 @@
-cloud.erda.agent.core.metrics.MetricDispatcher
-cloud.erda.agent.core.metrics.MetricProviderService
 cloud.erda.agent.core.tracing.SamplerService
+cloud.erda.agent.core.metrics.MetricDispatcher
+cloud.erda.agent.core.metrics.MetricExporterService
+cloud.erda.agent.core.metrics.otlp.OtlpMetricProviderService

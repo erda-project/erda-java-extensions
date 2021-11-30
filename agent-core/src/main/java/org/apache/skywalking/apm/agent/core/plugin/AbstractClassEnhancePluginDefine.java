@@ -75,7 +75,9 @@ public abstract class AbstractClassEnhancePluginDefine {
         DynamicType.Builder<?> newClassBuilder = this.enhance(transformClassName, builder, classLoader, context);
 
         context.initializationStageCompleted();
-        logger.debug("prepare to enhance class {} by {}.", transformClassName, interceptorDefineClassName);
+        if (logger.isDebugEnable()) {
+            logger.debug("prepare to enhance class {} by {}.", transformClassName, interceptorDefineClassName);
+        }
 
         return newClassBuilder;
     }

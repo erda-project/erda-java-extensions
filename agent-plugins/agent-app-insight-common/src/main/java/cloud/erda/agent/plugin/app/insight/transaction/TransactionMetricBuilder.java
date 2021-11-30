@@ -91,7 +91,7 @@ public class TransactionMetricBuilder implements MetricBuilder {
         return metric;
     }
 
-    private void recordElapsed(long elapsed) {
+    private void recordElapsed(float elapsed) {
         fields.put(Constants.Metrics.ELAPSED, elapsed);
     }
 

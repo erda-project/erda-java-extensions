@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.core.metrics;
+package cloud.erda.agent.core.metrics.otlp;
 
 import cloud.erda.agent.core.config.AgentConfig;
 import cloud.erda.agent.core.config.ServiceConfig;
 import cloud.erda.agent.core.config.loader.ConfigAccessor;
+import cloud.erda.agent.core.metrics.MetricDispatcher;
+import cloud.erda.agent.core.metrics.otlp.OtlpMetricExportAdapter;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.PluginConstants;
 import io.opentelemetry.api.common.Attributes;
@@ -41,12 +43,12 @@ import java.util.Properties;
  * @date 2021/10/12 19:23
  */
 @DependsOn({MetricDispatcher.class})
-public class MetricProviderService implements BootService {
+public class OtlpMetricProviderService implements BootService {
 
     private Properties properties;
     private SdkMeterProvider meterProvider;
     private Meter meter;
-    private MetricDispatcher reporter;
+    private MetricDispatcher dispatcher;
 
     public Meter getMeter() {
         return meter;
@@ -78,17 +80,17 @@ public class MetricProviderService implements BootService {
                 build();
         Resource resource = Resource.create(attributes);
 
-        TelegrafMetricExporter telegrafMetricExporter = new TelegrafMetricExporter(this.reporter);
+        OtlpMetricExportAdapter otlpMetricExportAdapter = new OtlpMetricExportAdapter(this.dispatcher);
         meterProvider = SdkMeterProvider.builder()
                 .setResource(resource)
                 .setClock(Clock.getDefault())
-                .registerMetricReader(PeriodicMetricReader.create(telegrafMetricExporter, Duration.ofSeconds(30))).build();
+                .registerMetricReader(PeriodicMetricReader.create(otlpMetricExportAdapter, Duration.ofSeconds(30))).build();
         meter = meterProvider.get(properties.getProperty("erda.agent.name"), properties.getProperty("erda.agent.version"), "");
     }
 
     @Override
     public void prepare() throws Throwable {
-        reporter = ServiceManager.INSTANCE.findService(MetricDispatcher.class);
+        dispatcher = ServiceManager.INSTANCE.findService(MetricDispatcher.class);
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("java-agent.properties");
         properties = new Properties();
         try {

@@ -45,6 +45,7 @@ public enum ServiceManager {
             BootService service = entry.getValue();
             if (!serviceEnabled(service, agentConfig)) {
                 logger.info("ServiceManager plugin [{}] disabled", service.getClass().getName());
+                continue;
             }
             try {
                 service.prepare();

@@ -16,20 +16,18 @@
 
 package cloud.erda.agent.plugin.tomcat.metric;
 
-import cloud.erda.agent.core.metrics.MetricProviderService;
-import cloud.erda.agent.core.metrics.TelegrafMetricExporter;
+import cloud.erda.agent.core.metrics.otlp.OtlpMetricProviderService;
 import org.apache.skywalking.apm.agent.core.boot.DependsOn;
 import org.apache.skywalking.apm.agent.core.boot.ScheduledService;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
-import org.apache.skywalking.apm.agent.core.plugin.loader.AgentClassLoader;
 
 /**
  * @author liuhaoyang
  * @date 2021/10/13 15:36
  */
-@DependsOn(MetricProviderService.class)
+@DependsOn(OtlpMetricProviderService.class)
 public class TomcatStatsService extends ScheduledService {
 
     private final ILog logger = LogManager.getLogger(TomcatStatsService.class);
@@ -38,8 +36,8 @@ public class TomcatStatsService extends ScheduledService {
 
     @Override
     public void prepare() throws Throwable {
-        MetricProviderService metricProviderService = ServiceManager.INSTANCE.findService(MetricProviderService.class);
-        tomcatStatsCollector = new TomcatStatsCollector(metricProviderService.getMeter());
+        OtlpMetricProviderService otlpMetricProviderService = ServiceManager.INSTANCE.findService(OtlpMetricProviderService.class);
+        tomcatStatsCollector = new TomcatStatsCollector(otlpMetricProviderService.getMeter());
     }
 
     @Override

@@ -12,6 +12,7 @@
         <module>agent-plugins</module>
         <module>msp-integrations</module>
         <module>agent-pack</module>
+        <module>agent-tests</module>
     </modules>
     <packaging>pom</packaging>
 

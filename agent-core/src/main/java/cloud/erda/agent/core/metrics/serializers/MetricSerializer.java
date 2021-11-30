@@ -14,31 +14,17 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.app.insight;
+package cloud.erda.agent.core.metrics.serializers;
+
+import cloud.erda.agent.core.metrics.Metric;
 
 /**
  * @author liuhaoyang
- * @since 2019-01-21 17:42
- **/
-public class StopWatch {
-    private Long start;
+ * @date 2021/11/29 11:57
+ */
+public interface MetricSerializer {
 
-    private Long end;
+    byte[] serializeBytes(Metric[] metrics);
 
-    public StopWatch() {
-        this.start = System.nanoTime();
-    }
-
-    public void stop() {
-        if (end == null) {
-            end = System.nanoTime();
-        }
-    }
-
-    public float elapsed() {
-        if (end == null) {
-            return System.nanoTime() - start;
-        }
-        return Math.abs(end - start);
-    }
+    String serialize(Metric[] metrics);
 }

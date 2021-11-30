@@ -14,31 +14,28 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.app.insight;
+package cloud.erda.agent.core.config;
+
+import cloud.erda.agent.core.config.loader.Config;
+import cloud.erda.agent.core.config.loader.Configuration;
 
 /**
  * @author liuhaoyang
- * @since 2019-01-21 17:42
- **/
-public class StopWatch {
-    private Long start;
+ * @date 2021/11/29 17:45
+ */
+public class ExporterConfig implements Config {
 
-    private Long end;
+    @Configuration(name = "MSP_EXPORTER", defaultValue = "UDP")
+    private String exporter;
 
-    public StopWatch() {
-        this.start = System.nanoTime();
+    @Configuration(name = "MSP_METRIC_EXPORTER_PARALLELISM", defaultValue = "2")
+    private Integer exporterParallelism;
+
+    public String getMetricExporter() {
+        return exporter;
     }
 
-    public void stop() {
-        if (end == null) {
-            end = System.nanoTime();
-        }
-    }
-
-    public float elapsed() {
-        if (end == null) {
-            return System.nanoTime() - start;
-        }
-        return Math.abs(end - start);
+    public Integer getExporterParallelism() {
+        return exporterParallelism;
     }
 }

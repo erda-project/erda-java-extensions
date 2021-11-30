@@ -16,24 +16,41 @@
 
 package cloud.erda.agent.core.metrics;
 
-import cloud.erda.agent.core.metrics.reporter.TelegrafSender;
+import cloud.erda.agent.core.config.ExporterConfig;
+import cloud.erda.agent.core.config.loader.ConfigAccessor;
+import cloud.erda.agent.core.metrics.exporters.MetricExporter;
 import cloud.erda.agent.core.utils.PluginConstants;
 import org.apache.skywalking.apm.agent.core.boot.BootService;
+import org.apache.skywalking.apm.agent.core.boot.DependsOn;
+import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.commons.datacarrier.DataCarrier;
 import org.apache.skywalking.apm.commons.datacarrier.buffer.BufferStrategy;
 
+@DependsOn({MetricExporterService.class})
 public class MetricDispatcher implements BootService {
+
+    private static final ILog LOGGER = LogManager.getLogger(MetricDispatcher.class);
 
     private DataCarrier<Metric> dataCarrier;
 
     @Override
     public void prepare() throws Throwable {
-        dataCarrier = new DataCarrier<Metric>("MSP_METRIC", "MSP_METRIC", 5, 10000, BufferStrategy.IF_POSSIBLE);
+        dataCarrier = new DataCarrier<>("MSP_METRIC", "MSP_METRIC", 5, 10000, BufferStrategy.IF_POSSIBLE);
     }
 
     @Override
     public void boot() throws Throwable {
-        dataCarrier.consume(new TelegrafSender(),1);
+        MetricExporterService metricExporterService = ServiceManager.INSTANCE.findService(MetricExporterService.class);
+        ExporterConfig exporterConfig = ConfigAccessor.Default.getConfig(ExporterConfig.class);
+        MetricExporter metricExporter = metricExporterService.create(exporterConfig);
+        if (metricExporter == null) {
+            LOGGER.error("Failed to create metric exporter. The metrics will not be sent to any backend. ");
+        } else {
+            dataCarrier.consume(metricExporter, exporterConfig.getExporterParallelism());
+            LOGGER.info("Success to create {} exporter with {} parallelism.", metricExporter, exporterConfig.getExporterParallelism());
+        }
     }
 
     @Override

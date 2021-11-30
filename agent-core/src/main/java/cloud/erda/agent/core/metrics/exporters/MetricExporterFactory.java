@@ -14,31 +14,20 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.app.insight;
+package cloud.erda.agent.core.metrics.exporters;
+
+import cloud.erda.agent.core.config.loader.Config;
 
 /**
  * @author liuhaoyang
- * @since 2019-01-21 17:42
- **/
-public class StopWatch {
-    private Long start;
+ * @date 2021/11/29 16:42
+ */
+public abstract class MetricExporterFactory<TExporter extends MetricExporter, TConfig extends Config> {
 
-    private Long end;
-
-    public StopWatch() {
-        this.start = System.nanoTime();
+    protected MetricExporterFactory() {
     }
 
-    public void stop() {
-        if (end == null) {
-            end = System.nanoTime();
-        }
-    }
+    public abstract TExporter create(TConfig config);
 
-    public float elapsed() {
-        if (end == null) {
-            return System.nanoTime() - start;
-        }
-        return Math.abs(end - start);
-    }
+    public abstract void shutdown(TExporter metricExporter);
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.core.config;
+package cloud.erda.agent.core.metrics.exporters.udp;
 
 import cloud.erda.agent.core.config.loader.Config;
 import cloud.erda.agent.core.config.loader.Configuration;
@@ -24,7 +24,7 @@ import org.apache.skywalking.apm.agent.core.util.Strings;
  * @author liuhaoyang
  * @since 2020-02-19 14:34
  **/
-public class TelegrafProxyConfig implements Config {
+public class UdpExportConfig implements Config {
     @Configuration(name = "HOST")
     private String host;
 
@@ -40,10 +40,10 @@ public class TelegrafProxyConfig implements Config {
     @Configuration(name = "HOST_PORT", defaultValue = "7082")
     private Integer hostPort;
 
-    @Configuration(name = "MSP_PROXY_HOST")
+    @Configuration(name = "MSP_UDP_EXPORTER_HOST")
     private String mspProxyHost;
 
-    @Configuration(name = "MSP_PROXY_PORT")
+    @Configuration(name = "MSP_UDP_EXPORTER_PORT")
     private Integer mspProxyPort;
 
     public int getHostPort() {
