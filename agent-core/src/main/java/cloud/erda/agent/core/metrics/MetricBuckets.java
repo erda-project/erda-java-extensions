@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.core.metrics.reporter;
+package cloud.erda.agent.core.metrics;
 
 import cloud.erda.agent.core.metrics.Metric;
 

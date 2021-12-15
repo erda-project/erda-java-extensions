@@ -14,31 +14,14 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.app.insight;
+package cloud.erda.agent.core.metrics.exporters;
+
+import cloud.erda.agent.core.metrics.Metric;
+import org.apache.skywalking.apm.commons.datacarrier.consumer.IConsumer;
 
 /**
  * @author liuhaoyang
- * @since 2019-01-21 17:42
- **/
-public class StopWatch {
-    private Long start;
-
-    private Long end;
-
-    public StopWatch() {
-        this.start = System.nanoTime();
-    }
-
-    public void stop() {
-        if (end == null) {
-            end = System.nanoTime();
-        }
-    }
-
-    public float elapsed() {
-        if (end == null) {
-            return System.nanoTime() - start;
-        }
-        return Math.abs(end - start);
-    }
+ * @date 2021/11/29 13:51
+ */
+public interface MetricExporter extends IConsumer<Metric> {
 }

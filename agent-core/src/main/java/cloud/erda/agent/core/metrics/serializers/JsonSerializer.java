@@ -14,31 +14,26 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.app.insight;
+package cloud.erda.agent.core.metrics.serializers;
+
+import cloud.erda.agent.core.metrics.Metric;
+import cloud.erda.agent.core.utils.GsonUtils;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author liuhaoyang
- * @since 2019-01-21 17:42
- **/
-public class StopWatch {
-    private Long start;
+ * @date 2021/11/29 12:02
+ */
+public class JsonSerializer implements MetricSerializer {
 
-    private Long end;
-
-    public StopWatch() {
-        this.start = System.nanoTime();
+    @Override
+    public byte[] serializeBytes(Metric[] metrics) {
+        return serialize(metrics).getBytes(StandardCharsets.UTF_8);
     }
 
-    public void stop() {
-        if (end == null) {
-            end = System.nanoTime();
-        }
-    }
-
-    public float elapsed() {
-        if (end == null) {
-            return System.nanoTime() - start;
-        }
-        return Math.abs(end - start);
+    @Override
+    public String serialize(Metric[] metrics) {
+        return GsonUtils.toJson(metrics);
     }
 }

@@ -23,3 +23,6 @@ fc/
 depends.tar.gz
 
 settings.json
+
+/output/
+*.log

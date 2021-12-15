@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Metric {
+
     private String name;
     private long timestamp;
     private Map<String, Object> fields;

@@ -14,31 +14,20 @@
  * limitations under the License.
  */
 
-package cloud.erda.agent.plugin.app.insight;
+package cloud.erda.agent.core.metrics.exporters;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author liuhaoyang
- * @since 2019-01-21 17:42
- **/
-public class StopWatch {
-    private Long start;
+ * @date 2021/11/29 16:42
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Exporter {
 
-    private Long end;
-
-    public StopWatch() {
-        this.start = System.nanoTime();
-    }
-
-    public void stop() {
-        if (end == null) {
-            end = System.nanoTime();
-        }
-    }
-
-    public float elapsed() {
-        if (end == null) {
-            return System.nanoTime() - start;
-        }
-        return Math.abs(end - start);
-    }
+    String value();
 }

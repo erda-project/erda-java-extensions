@@ -16,7 +16,7 @@
 
 package cloud.erda.agent.plugin.asf.dubbo;
 
-import cloud.erda.agent.core.metrics.MetricProviderService;
+import cloud.erda.agent.core.metrics.otlp.OtlpMetricProviderService;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.ReflectUtils;
 import io.opentelemetry.api.common.AttributeKey;
@@ -44,7 +44,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author liuhaoyang
  * @date 2021/10/15 15:59
  */
-@DependsOn(MetricProviderService.class)
+@DependsOn(OtlpMetricProviderService.class)
 public class DubboMetricsService extends ScheduledService {
     private static final String EXECUTOR_SERVICE_COMPONENT_KEY = ExecutorService.class.getName();
     private static boolean V2_7_5;
@@ -73,7 +73,7 @@ public class DubboMetricsService extends ScheduledService {
     @Override
     public void prepare() throws Throwable {
         this.logger = LogManager.getLogger(DubboMetricsService.class);
-        this.meter = ServiceManager.INSTANCE.findService(MetricProviderService.class).getMeter();
+        this.meter = ServiceManager.INSTANCE.findService(OtlpMetricProviderService.class).getMeter();
         this.listeners = initListeners();
         this.attributes = Attributes.of(AttributeKey.stringKey(Constants.Tags.COMPONENT), Constants.Tags.COMPONENT_DUBBO, AttributeKey.stringKey("type"), "ThreadPool", AttributeKey.stringKey("_metric_index"), "apm_component_dubbo");
     }

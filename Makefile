@@ -63,3 +63,8 @@ pack-compatible: build
 	@cp -f ${DIST_PATH}/spot-agent/erda-agent.jar ${DIST_PATH}/spot-agent/spot-agent.jar
 	@rm -f ${DIST_PATH}/spot-agent/erda-agent.jar
 	@cd ${DIST_PATH} && tar -zcvf spot-agent.tar.gz spot-agent
+
+.POINT: benchmark
+benchmark:
+	mvn clean package -DskipTests -pl agent-tests/agent-benchmarks -am
+	java -jar agent-tests/agent-benchmarks/target/agent-benchmarks-1.0.0.jar

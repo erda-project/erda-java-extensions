@@ -19,10 +19,11 @@ package cloud.erda.agent.core.utils;
 import com.google.gson.Gson;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class GsonUtils {
     private static final Gson gson = new Gson();
-    private static final Charset charset = Charset.forName("UTF-8");
+    private static final Charset charset = StandardCharsets.UTF_8;
 
     public static String toJson(Object src) {
         return gson.toJson(src);
