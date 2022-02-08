@@ -106,7 +106,7 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
         context.setAttachment(Constants.Keys.TRACE_SCOPE, scope);
         Span span = scope.span();
         span.tag(Constants.Tags.HTTP_PATH, request.getRequestURI());
-        span.tag(Constants.Tags.HOST, host);
+        span.tag(Constants.Tags.DB_HOST, host);
         span.tag(Constants.Tags.HTTP_METHOD, request.getMethod());
         span.tag(Constants.Tags.HTTP_URL, request.getRequestURL().toString());
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_HTTP);
@@ -120,7 +120,7 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
         context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
         transactionMetricBuilder.tag(Constants.Tags.COMPONENT, getComponent())
                 .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_SERVER)
-                .tag(Constants.Tags.HOST, host)
+                .tag(Constants.Tags.DB_HOST, host)
                 .tag(Constants.Tags.PEER_ADDRESS, host)
                 .tag(Constants.Tags.HTTP_URL, request.getRequestURL().toString())
                 .tag(Constants.Tags.HTTP_PATH, request.getRequestURI())

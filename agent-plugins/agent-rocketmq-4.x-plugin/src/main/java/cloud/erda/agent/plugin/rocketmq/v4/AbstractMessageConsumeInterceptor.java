@@ -78,7 +78,7 @@ public abstract class AbstractMessageConsumeInterceptor implements InstanceMetho
         span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CONSUMER);
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_MQ);
         span.tag(Constants.Tags.PEER_ADDRESS, nameServerAddress);
-        span.tag(Constants.Tags.HOST, nameServerAddress);
+        span.tag(Constants.Tags.DB_HOST, nameServerAddress);
         span.tag(Constants.Tags.MESSAGE_BUS_DESTINATION, topic);
 
         TransactionMetricBuilder transactionMetricBuilder = new TransactionMetricBuilder(Constants.Metrics.APPLICATION_MQ, true);
@@ -86,7 +86,7 @@ public abstract class AbstractMessageConsumeInterceptor implements InstanceMetho
         transactionMetricBuilder.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_ROCKETMQ)
                 .tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CONSUMER)
                 .tag(Constants.Tags.PEER_ADDRESS, nameServerAddress)
-                .tag(Constants.Tags.HOST, nameServerAddress)
+                .tag(Constants.Tags.DB_HOST, nameServerAddress)
                 .tag(Constants.Tags.MESSAGE_BUS_DESTINATION, topic);
     }
 

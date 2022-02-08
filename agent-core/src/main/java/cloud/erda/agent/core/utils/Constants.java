@@ -98,7 +98,7 @@ public class Constants {
 
         public static final String SPAN_LAYER_MQ = "mq";
 
-        public static final String HOST = "host";
+        public static final String DB_HOST = "db_host";
 
         public static final String DUBBO_SERVICE = "dubbo_service";
 

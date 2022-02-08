@@ -64,7 +64,7 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
             span.tag(Constants.Tags.DB_SYSTEM, connectInfo.getDBType());
             span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_DB);
             span.tag(Constants.Tags.COMPONENT, connectInfo.getComponent());
-            span.tag(Constants.Tags.HOST, connectInfo.getDatabasePeer());
+            span.tag(Constants.Tags.DB_HOST, connectInfo.getDatabasePeer());
             span.tag(Constants.Tags.PEER_ADDRESS, connectInfo.getDatabasePeer());
             span.tag(Constants.Tags.PEER_SERVICE, connectInfo.getDatabasePeer());
             if (Strings.isEmpty(statement)) {
@@ -77,7 +77,7 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
                     .tag(Constants.Tags.PEER_HOSTNAME, connectInfo.getDatabasePeer())
                     .tag(Constants.Tags.PEER_ADDRESS, connectInfo.getDatabasePeer())
                     .tag(Constants.Tags.PEER_SERVICE, connectInfo.getDatabasePeer())
-                    .tag(Constants.Tags.HOST, connectInfo.getDatabasePeer())
+                    .tag(Constants.Tags.DB_HOST, connectInfo.getDatabasePeer())
                     .tag(Constants.Tags.DB_INSTANCE, connectInfo.getDatabaseName())
                     .tag(Constants.Tags.DB_STATEMENT, statement)
                     .tag(Constants.Tags.DB_SYSTEM, connectInfo.getDBType());

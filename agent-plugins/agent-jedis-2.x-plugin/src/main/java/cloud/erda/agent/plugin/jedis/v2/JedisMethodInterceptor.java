@@ -64,7 +64,7 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         span.tag(Constants.Tags.PEER_SERVICE, peer);
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_CACHE);
         span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
-        span.tag(Constants.Tags.HOST, peer);
+        span.tag(Constants.Tags.DB_HOST, peer);
         span.tag(Constants.Tags.DB_STATEMENT, statement);
         span.tag(Constants.Tags.PEER_ADDRESS, peer);
         span.tag(Constants.Tags.PEER_HOSTNAME, peer);
@@ -77,7 +77,7 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
                 .tag(Constants.Tags.PEER_SERVICE, peer)
                 .tag(Constants.Tags.PEER_ADDRESS, peer)
                 .tag(Constants.Tags.PEER_HOSTNAME, peer)
-                .tag(Constants.Tags.HOST, peer)
+                .tag(Constants.Tags.DB_HOST, peer)
                 .tag(Constants.Tags.DB_STATEMENT, statement)
                 .tag(Constants.Tags.DB_SYSTEM, Constants.Tags.DB_TYPE_REDIS);
     }
