@@ -45,7 +45,7 @@ public class AsyncCommandMethodInterceptor implements InstanceMethodsAroundInter
         SpanBuilder spanBuilder = tracer.buildSpan(operationName + "/onComplete");
         Span span = spanBuilder.childOf(spanContext).startActive().span();
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_LETTUCE);
-        span.tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
+        span.tag(Constants.Tags.DB_SYSTEM, Constants.Tags.DB_TYPE_REDIS);
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_CACHE);
         TracerSnapshot snapshot = TracerManager.currentTracer().capture();
         if (context.getArguments()[0] instanceof Consumer) {

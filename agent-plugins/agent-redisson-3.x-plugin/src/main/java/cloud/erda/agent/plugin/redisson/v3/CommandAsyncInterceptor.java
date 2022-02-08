@@ -28,7 +28,6 @@ import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.redisson.api.RFuture;
 
 import java.lang.reflect.Method;
 
@@ -47,7 +46,7 @@ public class CommandAsyncInterceptor implements InstanceMethodsAroundInterceptor
         SpanBuilder spanBuilder = tracer.buildSpan("Redisson CommandExecutor:" + context.getMethod().getName());
         Scope scope = spanBuilder.childOf(spanContext).startActive();
         Span span = scope.span();
-        span.tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
+        span.tag(Constants.Tags.DB_SYSTEM, Constants.Tags.DB_TYPE_REDIS);
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_REDISSON);
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_LOCAL);
         span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_LOCAL);

@@ -30,7 +30,6 @@ import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DynamicFieldEnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 
@@ -60,7 +59,7 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         SpanBuilder spanBuilder = tracer.buildSpan("Jedis/" + method.getName());
         Span span = spanBuilder.childOf(spanContext).startActive().span();
-        span.tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
+        span.tag(Constants.Tags.DB_SYSTEM, Constants.Tags.DB_TYPE_REDIS);
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_JEDIS);
         span.tag(Constants.Tags.PEER_SERVICE, peer);
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_CACHE);
@@ -80,7 +79,7 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
                 .tag(Constants.Tags.PEER_HOSTNAME, peer)
                 .tag(Constants.Tags.HOST, peer)
                 .tag(Constants.Tags.DB_STATEMENT, statement)
-                .tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
+                .tag(Constants.Tags.DB_SYSTEM, Constants.Tags.DB_TYPE_REDIS);
     }
 
     @Override

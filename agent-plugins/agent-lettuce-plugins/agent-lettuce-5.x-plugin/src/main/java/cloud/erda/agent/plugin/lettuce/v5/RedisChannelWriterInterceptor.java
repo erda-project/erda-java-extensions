@@ -65,7 +65,7 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
 
         SpanBuilder spanBuilder = tracer.buildSpan(operationName + "/" + context.getMethod().getName());
         Span span = spanBuilder.childOf(spanContext).startActive().span();
-        span.tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
+        span.tag(Constants.Tags.DB_SYSTEM, Constants.Tags.DB_TYPE_REDIS);
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_LETTUCE);
         span.tag(Constants.Tags.PEER_SERVICE, peer);
         span.tag(Constants.Tags.PEER_ADDRESS, peer);
@@ -86,7 +86,7 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
                 .tag(Constants.Tags.PEER_SERVICE, peer)
                 .tag(Constants.Tags.HOST, peer)
                 .tag(Constants.Tags.DB_STATEMENT, dbStatement.toString())
-                .tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
+                .tag(Constants.Tags.DB_SYSTEM, Constants.Tags.DB_TYPE_REDIS);
     }
 
     @Override

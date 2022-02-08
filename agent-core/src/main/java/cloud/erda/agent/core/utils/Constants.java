@@ -104,7 +104,7 @@ public class Constants {
 
         public static final String DUBBO_METHOD = "dubbo_method";
 
-        public static final String DB_TYPE = "db_type";
+        public static final String DB_SYSTEM = "db_system";
 
         public static final String DB_TYPE_REDIS = "Redis";
 

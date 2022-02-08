@@ -26,9 +26,7 @@ import cloud.erda.agent.core.tracing.span.Span;
 import cloud.erda.agent.core.tracing.span.SpanBuilder;
 import cloud.erda.agent.core.utils.Constants;
 import cloud.erda.agent.core.utils.ReflectUtils;
-import cloud.erda.agent.plugin.app.insight.MetricReporter;
 import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricBuilder;
-import cloud.erda.agent.plugin.app.insight.transaction.TransactionMetricUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -105,7 +103,7 @@ public class RedisConnectionSendInterceptor implements InstanceMethodsAroundInte
         // only build span, and removes the span from the thread context
         Scope scope = spanBuilder.childOf(spanContext).startActive(false);
         Span span = scope.span();
-        span.tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
+        span.tag(Constants.Tags.DB_SYSTEM, Constants.Tags.DB_TYPE_REDIS);
         span.tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_REDISSON);
         span.tag(Constants.Tags.PEER_SERVICE, peer);
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_CACHE);
@@ -125,7 +123,7 @@ public class RedisConnectionSendInterceptor implements InstanceMethodsAroundInte
                 .tag(Constants.Tags.PEER_HOSTNAME, peer)
                 .tag(Constants.Tags.HOST, peer)
                 .tag(Constants.Tags.DB_STATEMENT, dbStatement.toString())
-                .tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
+                .tag(Constants.Tags.DB_SYSTEM, Constants.Tags.DB_TYPE_REDIS);
     }
 
     private void addCommandData(StringBuilder dbStatement, CommandData commandData) {
