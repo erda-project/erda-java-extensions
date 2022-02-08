@@ -98,13 +98,13 @@ public class Constants {
 
         public static final String SPAN_LAYER_MQ = "mq";
 
-        public static final String HOST = "host";
+        public static final String DB_HOST = "db_host";
 
         public static final String DUBBO_SERVICE = "dubbo_service";
 
         public static final String DUBBO_METHOD = "dubbo_method";
 
-        public static final String DB_TYPE = "db_type";
+        public static final String DB_SYSTEM = "db_system";
 
         public static final String DB_TYPE_REDIS = "Redis";
 

@@ -44,7 +44,7 @@ public class SpotBiConsumer<T, U> implements BiConsumer<T, U> {
         SpanBuilder spanBuilder = tracer.buildSpan(operationName + "/accept");
         Scope scope = spanBuilder.childOf(snapshotScope.span().getContext()).startActive();
         scope.span().tag(Constants.Tags.COMPONENT, Constants.Tags.COMPONENT_LETTUCE);
-        scope.span().tag(Constants.Tags.DB_TYPE, Constants.Tags.DB_TYPE_REDIS);
+        scope.span().tag(Constants.Tags.DB_SYSTEM, Constants.Tags.DB_TYPE_REDIS);
         scope.span().tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_CACHE);
         scope.span().tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT);
         try {
