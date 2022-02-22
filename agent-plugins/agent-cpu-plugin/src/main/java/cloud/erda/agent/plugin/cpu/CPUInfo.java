@@ -24,15 +24,15 @@ public class CPUInfo {
     }
 
     public double getUserUsage() {
-        return Double.parseDouble(DF.format(this.user * 1.0 / this.total));
+        return Double.parseDouble(DF.format((this.user * 1.0 / this.total) * 100));
     }
 
     public double getSystemUsage() {
-        return Double.parseDouble(DF.format(this.system * 1.0 / this.total));
+        return Double.parseDouble(DF.format((this.system * 1.0 / this.total) * 100));
     }
 
     public double getIdleUsage() {
-        return Double.parseDouble(DF.format(this.idle * 1.0 / this.total));
+        return Double.parseDouble(DF.format((this.idle * 1.0 / this.total) * 100));
     }
 
     public float getTotal() {
