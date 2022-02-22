@@ -28,5 +28,7 @@ public class PluginConstants {
 
     public static final String JVM_PLUGIN = "trace";
 
+    public static final String CPU_PLUGIN = "cpu";
+
     public static final String REPORTER_PLUGIN = "trace";
 }

@@ -20,6 +20,7 @@
         <module>agent-jedis-2.x-plugin</module>
         <module>agent-log-plugins</module>
         <module>agent-jvm-plugin</module>
+        <module>agent-cpu-plugin</module>
         <module>agent-httpasyncclient-4.x-plugin</module>
         <module>agent-servlet-plugins</module>
         <module>agent-rocketmq-4.x-plugin</module>
