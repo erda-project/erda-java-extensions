@@ -36,7 +36,7 @@ public class ProcessCPUUsageProvider implements CPUDefaultProvider {
 
     public Metric get() {
         Metric metric = Metric.New(METRIC_NAME, DateTime.currentTimeNano()).
-                addField("process_cpu_usage", this.calculateProcessCpuUsage());
+                addField("cpu_usage", this.calculateProcessCpuUsage());
         this.addDefaultTags(metric);
         return metric;
     }
