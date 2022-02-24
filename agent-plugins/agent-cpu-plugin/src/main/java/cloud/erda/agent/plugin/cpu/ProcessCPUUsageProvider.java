@@ -69,6 +69,9 @@ public class ProcessCPUUsageProvider implements CPUDefaultProvider {
         preUsedNanoTime = processUsedTotalNanoTime;
 
         double cpuUsage = ((double) usedNanoTime) / totalPassedNanoTime * 100;
+        if (cpuUsage < 0) {
+            return 0;
+        }
         return (double) Math.round(cpuUsage * 100) / 100;
     }
 }
