@@ -24,7 +24,7 @@ import java.lang.management.ThreadMXBean;
 
 public class ProcessCPUUsageProvider implements CPUDefaultProvider {
 
-    private static final String METRIC_NAME = "process_cpu_usage";
+    private static final String METRIC_NAME = "jvm_process_cpu_usage";
     private final ThreadMXBean threadBean;
     boolean isFirst = true;
     private long preNanoTime = System.nanoTime();
