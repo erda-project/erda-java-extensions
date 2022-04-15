@@ -27,8 +27,12 @@ GIT_BRANCH := $(shell git symbolic-ref --short -q HEAD)
 all: build
 
 .PHONY: ci-build
-ci-build: print-info clean set-maven
+ci-build: print-info clean
 	./mvnw --batch-mode clean package -Dmaven.test.skip=$(SKIP_TEST)
+
+.PHONY: ci-build-local
+ci-build-local: print-info clean set-maven
+	mvn --batch-mode clean package -Dmaven.test.skip=$(SKIP_TEST)
 
 .PHONY: build
 build: print-info clean
