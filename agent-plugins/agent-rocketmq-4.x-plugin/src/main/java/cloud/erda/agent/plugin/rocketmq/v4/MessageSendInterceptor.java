@@ -84,7 +84,12 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         tracer.inject(span.getContext(), carrier);
 
         SendMessageRequestHeader requestHeader = (SendMessageRequestHeader) context.getArguments()[3];
-        StringBuilder properties = new StringBuilder(requestHeader.getProperties());
+        StringBuilder properties = new StringBuilder();
+        String originalProperties = requestHeader.getProperties();
+        if(originalProperties != null && !originalProperties.isEmpty()) {
+            properties.append(originalProperties);
+            properties.append(MessageDecoder.PROPERTY_SEPARATOR);
+        }
         for (Map.Entry<String, String> entry : map.entrySet()) {
             if (entry.getValue() == null) {
                 continue;
