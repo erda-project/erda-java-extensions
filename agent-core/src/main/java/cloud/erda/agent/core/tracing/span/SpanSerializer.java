@@ -55,6 +55,9 @@ public class SpanSerializer {
         metric.addTag("runtime_id", serviceConfig.getRuntimeId());
         metric.addTag("org_id", serviceConfig.getOrgId());
         metric.addTag("org_name", serviceConfig.getOrgName());
+        metric.addTag("pod_ip", serviceConfig.getPodIP());
+        metric.addTag("pod_name", serviceConfig.getPodName());
+        metric.addTag("pod_namespace", serviceConfig.getPodNameSpace());
         metric.addTag("project_name", serviceConfig.getProjectName());
         metric.addTag("application_name", serviceConfig.getApplicationName());
         metric.addTag("workspace", serviceConfig.getWorkspace());

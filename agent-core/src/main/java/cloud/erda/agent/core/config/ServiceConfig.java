@@ -68,6 +68,12 @@ public class ServiceConfig implements Config {
     @Configuration(name = "POD_IP")
     private String podIp;
 
+    @Configuration(name = "POD_NAME")
+    private String podName;
+
+    @Configuration(name = "DICE_NAMESPACE")
+    private String podNameSpace;
+
     @Configuration(name = "MONITOR_JVM_PROFILER_ID")
     private String jvmProfilerId;
 
@@ -89,6 +95,18 @@ public class ServiceConfig implements Config {
     public String getOrgName() {
         return orgName;
     }
+
+    public String getPodIP() {
+        return podIp;
+    }
+
+    public String getPodName() {
+        return podName;
+    }
+    
+    public String getPodNameSpace() {
+        return podNameSpace;
+    }   
 
     public String getProjectId() {
         return projectId;
