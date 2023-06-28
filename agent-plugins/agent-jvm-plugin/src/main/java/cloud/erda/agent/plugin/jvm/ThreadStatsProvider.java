@@ -31,7 +31,26 @@ public class ThreadStatsProvider implements StatsProvider {
     public List<Metric> get() {
         List<Metric> metrics = new ArrayList<Metric>();
         metrics.add(Metric.New("jvm_thread", DateTime.currentTimeNano()).addTag("name", "count").addField("count", threads.getThreadCount()));
-        metrics.add(Metric.New("jvm_thread", DateTime.currentTimeNano()).addTag("name", "daemon_count").addField("state", threads.getDaemonThreadCount()));
+        ThreadGroup group = Thread.currentThread().getThreadGroup();
+
+        // 循环遍历获取Group中所有Thread信息
+        while (group.getParent() != null) {
+            group = group.getParent(); // 获取上一级线程组
+        }
+
+        int daemonCount = 0;
+        int totalCount = group.activeCount();
+        Thread[] daemonThreads = new Thread[totalCount];
+        group.enumerate(daemonThreads, true);
+
+        // 计算daemon线程数
+        for (int i = 0; i < totalCount; i++) {
+            if (daemonThreads[i].isDaemon()) {
+                daemonCount ++;
+            }
+        }
+
+        metrics.add(Metric.New("jvm_thread", DateTime.currentTimeNano()).addTag("name", "daemon_count").addField("state", daemonCount));
         long[] deadThreads = threads.findDeadlockedThreads();
         metrics.add(Metric.New("jvm_thread", DateTime.currentTimeNano()).addTag("name", "dead_locked_count").addField("state", deadThreads == null ? 0 : deadThreads.length));
         java.lang.management.ThreadInfo[] threadInfo = threads.getThreadInfo(threads.getAllThreadIds(), 0);
