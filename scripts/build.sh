@@ -29,4 +29,5 @@ cat > "dist/erda-java-agent/build" <<EOF
 ${BUILD_VERSION}
 EOF
 
+# in darwin os, use this command choose jdk 8 version JAVA_HOME=`/usr/libexec/java_home -v 1.8.0_371`
 mvn clean package -Dmaven.test.skip=true

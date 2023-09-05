@@ -80,6 +80,8 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
                     .tag(Constants.Tags.DB_HOST, connectInfo.getDatabasePeer())
                     .tag(Constants.Tags.DB_INSTANCE, connectInfo.getDatabaseName())
                     .tag(Constants.Tags.DB_STATEMENT, statement)
+                    .tag(Constants.Metrics.ORG_ID, System.getenv("DICE_ORG_ID"))
+                    .tag(Constants.Metrics.ORG_NAME, System.getenv("DICE_ORG_NAME"))
                     .tag(Constants.Tags.DB_SYSTEM, connectInfo.getDBType());
         }
     }
