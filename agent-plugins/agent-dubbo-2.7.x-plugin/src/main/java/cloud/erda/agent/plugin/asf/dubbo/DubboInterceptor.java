@@ -104,6 +104,8 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
                     .tag(Constants.Tags.PEER_SERVICE, invoker.getInterface().getName() + "." + invocation.getMethodName())
                     .tag(Constants.Tags.DB_HOST, rpcContext.getLocalAddressString())
                     .tag(Constants.Tags.DUBBO_SERVICE, invoker.getInterface().getName())
+                    .tag(Constants.Metrics.ORG_ID, System.getenv("DICE_ORG_ID"))
+                    .tag(Constants.Metrics.ORG_NAME, System.getenv("DICE_ORG_NAME"))
                     .tag(Constants.Tags.DUBBO_METHOD, invocation.getMethodName());
         }
 

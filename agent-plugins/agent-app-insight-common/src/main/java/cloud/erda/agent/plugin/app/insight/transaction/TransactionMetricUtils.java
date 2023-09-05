@@ -32,6 +32,8 @@ public class TransactionMetricUtils {
     public static TransactionMetricBuilder createMiroServiceMetric(String addonType) {
         return (TransactionMetricBuilder)new TransactionMetricBuilder(Constants.Metrics.APPLICATION_MICRO_SERVICE, false)
                 .tag(Constants.Metrics.TARGET_ADDON_TYPE, addonType)
+                .tag(Constants.Metrics.ORG_ID, System.getenv("DICE_ORG_ID"))
+                .tag(Constants.Metrics.ORG_NAME, System.getenv("DICE_ORG_NAME"))
                 .tag(Constants.Metrics.TARGET_ADDON_ID, addonType);
     }
 

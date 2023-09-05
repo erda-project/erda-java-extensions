@@ -79,6 +79,8 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
                 .tag(Constants.Tags.PEER_HOSTNAME, peer)
                 .tag(Constants.Tags.DB_HOST, peer)
                 .tag(Constants.Tags.DB_STATEMENT, statement)
+                .tag(Constants.Metrics.ORG_ID, System.getenv("DICE_ORG_ID"))
+                .tag(Constants.Metrics.ORG_NAME, System.getenv("DICE_ORG_NAME"))
                 .tag(Constants.Tags.DB_SYSTEM, Constants.Tags.DB_TYPE_REDIS);
     }
 
