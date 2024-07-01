@@ -47,6 +47,7 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
         if (context.getInstance() == null) return;
 
         StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
+        if(cacheObject == null) return;
         ConnectionInfo connectInfo = cacheObject.getConnectionInfo();
 
         if (connectInfo != null) {
