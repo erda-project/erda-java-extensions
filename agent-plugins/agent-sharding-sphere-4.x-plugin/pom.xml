@@ -33,19 +33,16 @@
             <groupId>org.apache.shardingsphere</groupId>
             <artifactId>sharding-core-execute</artifactId>
             <version>${shardingsphere.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere</groupId>
             <artifactId>sharding-jdbc-core</artifactId>
             <version>${shardingsphere.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere</groupId>
             <artifactId>sharding-proxy-frontend-core</artifactId>
             <version>${shardingsphere.version}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
