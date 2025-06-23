@@ -17,8 +17,8 @@
 package cloud.erda.agent.plugin.servlet;
 
 import cloud.erda.agent.core.tracing.propagator.Carrier;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
