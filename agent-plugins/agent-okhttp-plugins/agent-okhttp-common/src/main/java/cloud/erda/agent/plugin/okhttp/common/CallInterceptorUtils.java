@@ -68,6 +68,10 @@ public class CallInterceptorUtils {
     }
 
     static TransactionMetricBuilder wrapResponseAppMetric(TransactionMetricBuilder transactionMetricBuilder, Response response) {
+        if (transactionMetricBuilder == null) {
+            return null;
+        }
+
         if (response == null) {
             return transactionMetricBuilder;
         }
