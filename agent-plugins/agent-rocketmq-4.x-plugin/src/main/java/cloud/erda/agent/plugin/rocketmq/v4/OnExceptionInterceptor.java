@@ -71,7 +71,11 @@ public class OnExceptionInterceptor implements InstanceMethodsAroundInterceptor 
             MetricReporter.report(builder);
         }
 
-        TracerManager.currentTracer().active().close();
+        // 添加null检查，防止active()返回null导致空指针异常
+        cloud.erda.agent.core.tracing.Tracer tracer = TracerManager.currentTracer();
+        if (tracer != null && tracer.active() != null) {
+            tracer.active().close();
+        }
         return ret;
     }
 

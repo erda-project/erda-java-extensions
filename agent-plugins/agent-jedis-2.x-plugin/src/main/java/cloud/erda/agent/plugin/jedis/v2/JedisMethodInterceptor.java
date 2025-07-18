@@ -46,12 +46,15 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         String peer = String.valueOf(((DynamicFieldEnhancedInstance)objInst).getDynamicField());
 
         String key = "";
-        if (allArguments[0] instanceof String) {
-            key = (String) allArguments[0];
-        } else if (allArguments[0] instanceof byte[]) {
-            key = new String((byte[]) allArguments[0]);
-        } else if (allArguments[0] instanceof Integer) {
-            key = String.valueOf(allArguments[0]);
+        // 添加参数检查，防止空指针异常
+        if (allArguments != null && allArguments.length > 0 && allArguments[0] != null) {
+            if (allArguments[0] instanceof String) {
+                key = (String) allArguments[0];
+            } else if (allArguments[0] instanceof byte[]) {
+                key = new String((byte[]) allArguments[0]);
+            } else if (allArguments[0] instanceof Integer) {
+                key = String.valueOf(allArguments[0]);
+            }
         }
         String statement = (method.getName() + " " + key).replace("\n", "");
 
@@ -88,7 +91,11 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         if (transactionMetricBuilder != null) {
             MetricReporter.report(transactionMetricBuilder);
         }
-        TracerManager.currentTracer().active().close();
+        // 添加null检查，防止active()返回null导致空指针异常
+        Tracer tracer = TracerManager.currentTracer();
+        if (tracer != null && tracer.active() != null) {
+            tracer.active().close();
+        }
         return ret;
     }
 

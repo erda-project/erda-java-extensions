@@ -21,6 +21,8 @@
         <shade.net.bytebuddy.target>${shade.package}.${shade.net.bytebuddy.source}</shade.net.bytebuddy.target>
         <shade.io.opentelemetry.source>io.opentelemetry</shade.io.opentelemetry.source>
         <shade.io.opentelemetry.target>${shade.package}.${shade.io.opentelemetry.source}</shade.io.opentelemetry.target>
+        <shade.org.apache.skywalking.apm.agent.core.source>org.apache.skywalking.apm.agent.core</shade.org.apache.skywalking.apm.agent.core.source>
+        <shade.org.apache.skywalking.apm.agent.core.target>${shade.package}.${shade.org.apache.skywalking.apm.agent.core.source}</shade.org.apache.skywalking.apm.agent.core.target>
         <agent.package.dest.dir>${project.basedir}/../dist/erda-java-agent</agent.package.dest.dir>
     </properties>
 
@@ -80,6 +82,10 @@
                                     <pattern>${shade.io.opentelemetry.source}</pattern>
                                     <shadedPattern>${shade.io.opentelemetry.target}</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>${shade.org.apache.skywalking.apm.agent.core.source}</pattern>
+                                    <shadedPattern>${shade.org.apache.skywalking.apm.agent.core.target}</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -88,6 +94,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -95,7 +102,7 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <delete dir="${agent.package.dest.dir}/plugins" />
                                 <delete dir="${agent.package.dest.dir}/integrations" />
                                 <mkdir dir="${agent.package.dest.dir}" />
@@ -105,7 +112,7 @@
                                 <copy file="${project.basedir}/../LICENSE-apache-skywalking.txt" tofile="${agent.package.dest.dir}/licenses/LICENSE-apache-skywalking.txt" overwrite="true" />
                                 <copy file="${project.basedir}/../NOTICE-apache-skywalking.txt" tofile="${agent.package.dest.dir}/licenses/NOTICE-apache-skywalking.txt" overwrite="true" />
                                 <copy file="${project.build.directory}/erda-agent.jar" tofile="${agent.package.dest.dir}/erda-agent.jar" overwrite="true" />
-                            </tasks>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>

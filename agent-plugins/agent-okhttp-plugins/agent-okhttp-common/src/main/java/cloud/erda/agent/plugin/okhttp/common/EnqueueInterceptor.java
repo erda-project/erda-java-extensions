@@ -66,7 +66,11 @@ public class EnqueueInterceptor implements InstanceMethodsAroundInterceptor,Inst
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        TracerManager.currentTracer().active().close(false);
+        // 添加null检查，防止active()返回null导致空指针异常
+        Tracer tracer = TracerManager.currentTracer();
+        if (tracer != null && tracer.active() != null) {
+            tracer.active().close(false);
+        }
         return ret;
     }
 
