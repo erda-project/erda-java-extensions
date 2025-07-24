@@ -115,30 +115,25 @@ public class CallInterceptorUtils {
         span.tag(Constants.Tags.HTTP_STATUS, String.valueOf(statusCode));
     }
 
-    static void injectRequestHeader(Request request, Span span) throws Throwable {
+    static Request injectRequestHeader(Request request, Span span) throws Throwable {
         Tracer tracer = TracerManager.currentTracer();
         span.getContext().getBaggage().putAll(TransactionMetricContext.instance);
-        Map<String, String> map = new HashMap<String, String>(16);
+        Map<String, String> map = new HashMap<>(16);
         TextMapCarrier carrier = new TextMapCarrier(map);
         tracer.inject(span.getContext(), carrier);
 
-        Field headersField = Request.class.getDeclaredField("headers");
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(headersField, headersField.getModifiers() & ~Modifier.FINAL);
-
-        headersField.setAccessible(true);
         Headers.Builder headerBuilder = request.headers().newBuilder();
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            if (Strings.isEmpty(entry.getKey())) {
-                continue;
-            }
+            if (Strings.isEmpty(entry.getKey())) continue;
             if (Strings.isEmpty(entry.getValue())) {
                 headerBuilder.removeAll(entry.getKey());
-                continue;
+            } else {
+                headerBuilder.add(entry.getKey(), entry.getValue());
             }
-            headerBuilder.add(entry.getKey(), entry.getValue());
         }
-        headersField.set(request, headerBuilder.build());
+
+        return request.newBuilder().headers(headerBuilder.build()).build();
     }
+
+
 }

@@ -57,18 +57,25 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
      */
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
-        Request request = (Request)  ((DynamicFieldEnhancedInstance)context.getInstance()).getDynamicField();
+        Request request = (Request) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
 
         Tracer tracer = TracerManager.currentTracer();
         SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
         Span span = tracer.buildSpan("HTTP " + request.method()).childOf(spanContext).startActive().span();
 
         CallInterceptorUtils.wrapRequestSpan(span, request);
-        CallInterceptorUtils.injectRequestHeader(request, span);
 
-        TransactionMetricBuilder transactionMetricBuilder = CallInterceptorUtils.createRequestAppMetric(request);
+        // 修改：获取新的带 header 的 request
+        Request newRequest = CallInterceptorUtils.injectRequestHeader(request, span);
+
+        // 替换原始 request（必须设置回 context 实例的 dynamic field，否则后续仍旧使用旧 request）
+        ((DynamicFieldEnhancedInstance) context.getInstance()).setDynamicField(newRequest);
+
+        // Metric 构建
+        TransactionMetricBuilder transactionMetricBuilder = CallInterceptorUtils.createRequestAppMetric(newRequest);
         context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
     }
+
 
     /**
      * Get the status code from {@link Response}, when status code greater than 400, it means there was some errors in
@@ -82,9 +89,10 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
         Response response = (Response) ret;
+
         TransactionMetricBuilder transactionMetricBuilder = context.getAttachment(Constants.Keys.METRIC_BUILDER);
-        transactionMetricBuilder = CallInterceptorUtils.wrapResponseAppMetric(transactionMetricBuilder, response);
         if (transactionMetricBuilder != null) {
+            transactionMetricBuilder = CallInterceptorUtils.wrapResponseAppMetric(transactionMetricBuilder, response);
             MetricReporter.report(transactionMetricBuilder);
         }
 
