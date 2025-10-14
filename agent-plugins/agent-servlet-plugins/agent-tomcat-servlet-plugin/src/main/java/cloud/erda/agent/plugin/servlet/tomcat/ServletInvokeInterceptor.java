@@ -17,11 +17,11 @@
 package cloud.erda.agent.plugin.servlet.tomcat;
 
 import cloud.erda.agent.core.utils.Constants;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import cloud.erda.agent.plugin.servlet.BaseServletInvokeInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author randomnil

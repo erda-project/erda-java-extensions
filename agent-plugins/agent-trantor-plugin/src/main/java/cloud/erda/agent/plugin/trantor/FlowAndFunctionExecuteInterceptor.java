@@ -22,8 +22,8 @@ import cloud.erda.agent.core.tracing.Tracer;
 import cloud.erda.agent.core.tracing.TracerManager;
 import cloud.erda.agent.core.tracing.span.SpanBuilder;
 import cloud.erda.agent.core.utils.Constants;
-import io.terminus.trantorframework.api.annotation.FlowImpl;
-import io.terminus.trantorframework.api.annotation.FunctionImpl;
+//import io.terminus.trantorframework.api.annotation.FlowImpl;
+//import io.terminus.trantorframework.api.annotation.FunctionImpl;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.context.IMethodInterceptContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -49,16 +49,16 @@ public class FlowAndFunctionExecuteInterceptor implements InstanceMethodsAroundI
         String invokeType = "";
         String invokeName = "";
         for (Annotation annotation : context.getOriginClass().getDeclaredAnnotations()) {
-            if (annotation instanceof FlowImpl) {
-                invokeType = "Flow";
-                invokeName = ((FlowImpl) annotation).name();
-                continue;
-            }
-            if (annotation instanceof FunctionImpl) {
-                invokeType = "Function";
-                invokeName = ((FunctionImpl) annotation).name();
-                continue;
-            }
+//            if (annotation instanceof FlowImpl) {
+//                invokeType = "Flow";
+//                invokeName = ((FlowImpl) annotation).name();
+//                continue;
+//            }
+//            if (annotation instanceof FunctionImpl) {
+//                invokeType = "Function";
+//                invokeName = ((FunctionImpl) annotation).name();
+//                continue;
+//            }
         }
         SpanBuilder builder = tracer.buildSpan("Trantor " + invokeType);
         builder.tag(Constants.Tags.COMPONENT, Constants.Tags.TRANTOR);

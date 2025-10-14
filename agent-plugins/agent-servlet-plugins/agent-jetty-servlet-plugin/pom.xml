@@ -14,7 +14,7 @@
     <name>agent-jetty-servlet-plugin</name>
 
     <properties>
-        <jetty.version>9.3.20.v20170531</jetty.version>
+        <jetty.version>11.0.25</jetty.version>
     </properties>
 
     <dependencies>

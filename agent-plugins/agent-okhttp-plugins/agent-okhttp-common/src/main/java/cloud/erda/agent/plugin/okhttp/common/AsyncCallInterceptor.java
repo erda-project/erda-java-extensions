@@ -59,20 +59,26 @@ public class AsyncCallInterceptor implements InstanceConstructorInterceptor, Ins
     @Override
     public void beforeMethod(IMethodInterceptContext context, MethodInterceptResult result) throws Throwable {
         EnhanceRequiredInfo enhanceRequiredInfo = (EnhanceRequiredInfo) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
-        Request request = (Request) ((DynamicFieldEnhancedInstance) enhanceRequiredInfo.getRealCallEnhance()).getDynamicField();
+        DynamicFieldEnhancedInstance realCallInstance = (DynamicFieldEnhancedInstance) enhanceRequiredInfo.getRealCallEnhance();
+        Request request = (Request) realCallInstance.getDynamicField();
 
         Tracer tracer = TracerManager.currentTracer();
         TracerSnapshot snapshot = enhanceRequiredInfo.getTracerSnapshot();
         Span span = tracer.attach(snapshot).span();
 
         CallInterceptorUtils.wrapRequestSpan(span, request);
-        CallInterceptorUtils.injectRequestHeader(request, span);
 
-        TransactionMetricBuilder transactionMetricBuilder = CallInterceptorUtils.createRequestAppMetric(request);
+        // 构造新 request 注入 header
+        Request newRequest = CallInterceptorUtils.injectRequestHeader(request, span);
+        realCallInstance.setDynamicField(newRequest);  // 重新设置到 dynamicField
+
+        // 创建 MetricBuilder 并挂载上下文
+        TransactionMetricBuilder transactionMetricBuilder = CallInterceptorUtils.createRequestAppMetric(newRequest);
         if (transactionMetricBuilder != null) {
             tracer.context().setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
         }
     }
+
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {

@@ -32,8 +32,8 @@
         <module>micrometer-registry</module>
     </modules>
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <sdk.plugin.related.dir/>
         <agent.package.dest.dir>
             ${project.build.directory}${sdk.plugin.related.dir}/../../../dist/erda-java-agent/

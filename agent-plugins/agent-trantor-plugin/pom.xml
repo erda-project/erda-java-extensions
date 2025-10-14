@@ -28,16 +28,16 @@
     <artifactId>agent-trantor-plugin</artifactId>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>io.terminus.trantor</groupId>
-            <artifactId>trantor-api</artifactId>
-            <version>0.16.2.RELEASE</version>
-            <scope>provided</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.terminus.trantor</groupId>-->
+<!--            <artifactId>trantor-api</artifactId>-->
+<!--            <version>0.16.2.RELEASE</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
     </dependencies>
 </project>

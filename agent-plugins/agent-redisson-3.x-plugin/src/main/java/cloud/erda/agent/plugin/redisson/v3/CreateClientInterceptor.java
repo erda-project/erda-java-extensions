@@ -43,47 +43,54 @@ public class CreateClientInterceptor implements InstanceMethodsAroundInterceptor
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) throws Throwable {
-        ConnectionManager connectionManager = (ConnectionManager) context.getInstance();
-        Config config = connectionManager.getCfg();
+        try {
+            ConnectionManager connectionManager = (ConnectionManager) context.getInstance();
+            Config config = (Config) ReflectUtils.getObjectField(connectionManager, "config");
+            if (config == null) {
+                return ret;
+            }
 
-        Object singleServerConfig = ReflectUtils.getObjectField(config, "singleServerConfig");
-        Object sentinelServersConfig = ReflectUtils.getObjectField(config, "sentinelServersConfig");
-        Object masterSlaveServersConfig = ReflectUtils.getObjectField(config, "masterSlaveServersConfig");
-        Object clusterServersConfig = ReflectUtils.getObjectField(config, "clusterServersConfig");
-        Object replicatedServersConfig = ReflectUtils.getObjectField(config, "replicatedServersConfig");
+            Object singleServerConfig = ReflectUtils.getObjectField(config, "singleServerConfig");
+            Object sentinelServersConfig = ReflectUtils.getObjectField(config, "sentinelServersConfig");
+            Object masterSlaveServersConfig = ReflectUtils.getObjectField(config, "masterSlaveServersConfig");
+            Object clusterServersConfig = ReflectUtils.getObjectField(config, "clusterServersConfig");
+            Object replicatedServersConfig = ReflectUtils.getObjectField(config, "replicatedServersConfig");
 
-        StringBuilder peer = new StringBuilder();
-        DynamicFieldEnhancedInstance retInst = (DynamicFieldEnhancedInstance) ret;
+            StringBuilder peer = new StringBuilder();
+            DynamicFieldEnhancedInstance retInst = (DynamicFieldEnhancedInstance) ret;
 
-        if (singleServerConfig != null) {
-            Object singleAddress = ReflectUtils.getObjectField(singleServerConfig, "address");
-            peer.append(getPeer(singleAddress));
-            retInst.setDynamicField(peer.toString());
+            if (singleServerConfig != null) {
+                Object singleAddress = ReflectUtils.getObjectField(singleServerConfig, "address");
+                peer.append(getPeer(singleAddress));
+                retInst.setDynamicField(peer.toString());
+                return ret;
+            }
+            if (sentinelServersConfig != null) {
+                appendAddresses(peer, (Collection) ReflectUtils.getObjectField(sentinelServersConfig, "sentinelAddresses"));
+                retInst.setDynamicField(peer.toString());
+                return ret;
+            }
+            if (masterSlaveServersConfig != null) {
+                Object masterAddress = ReflectUtils.getObjectField(masterSlaveServersConfig, "masterAddress");
+                peer.append(getPeer(masterAddress));
+                appendAddresses(peer, (Collection) ReflectUtils.getObjectField(masterSlaveServersConfig, "slaveAddresses"));
+                retInst.setDynamicField(peer.toString());
+                return ret;
+            }
+            if (clusterServersConfig != null) {
+                appendAddresses(peer, (Collection) ReflectUtils.getObjectField(clusterServersConfig, "nodeAddresses"));
+                retInst.setDynamicField(peer.toString());
+                return ret;
+            }
+            if (replicatedServersConfig != null) {
+                appendAddresses(peer, (Collection) ReflectUtils.getObjectField(replicatedServersConfig, "nodeAddresses"));
+                retInst.setDynamicField(peer.toString());
+                return ret;
+            }
+        } catch (Exception e) {
+            // 如果获取配置失败，记录错误并返回原始对象
             return ret;
         }
-        if (sentinelServersConfig != null) {
-            appendAddresses(peer, (Collection) ReflectUtils.getObjectField(sentinelServersConfig, "sentinelAddresses"));
-            retInst.setDynamicField(peer.toString());
-            return ret;
-        }
-        if (masterSlaveServersConfig != null) {
-            Object masterAddress = ReflectUtils.getObjectField(masterSlaveServersConfig, "masterAddress");
-            peer.append(getPeer(masterAddress));
-            appendAddresses(peer, (Collection) ReflectUtils.getObjectField(masterSlaveServersConfig, "slaveAddresses"));
-            retInst.setDynamicField(peer.toString());
-            return ret;
-        }
-        if (clusterServersConfig != null) {
-            appendAddresses(peer, (Collection) ReflectUtils.getObjectField(clusterServersConfig, "nodeAddresses"));
-            retInst.setDynamicField(peer.toString());
-            return ret;
-        }
-        if (replicatedServersConfig != null) {
-            appendAddresses(peer, (Collection) ReflectUtils.getObjectField(replicatedServersConfig, "nodeAddresses"));
-            retInst.setDynamicField(peer.toString());
-            return ret;
-        }
-
         return ret;
     }
 

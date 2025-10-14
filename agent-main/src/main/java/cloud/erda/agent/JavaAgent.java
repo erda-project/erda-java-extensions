@@ -111,7 +111,8 @@ public class JavaAgent {
         }
 
         @Override
-        public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription, ClassLoader classLoader, JavaModule module) {
+        public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription, 
+                ClassLoader classLoader, JavaModule module, ProtectionDomain protectionDomain) {
             List<AbstractClassEnhancePluginDefine> pluginDefines = pluginFinder.find(typeDescription, classLoader);
             if (pluginDefines.size() > 0) {
                 DynamicType.Builder<?> newBuilder = builder;
