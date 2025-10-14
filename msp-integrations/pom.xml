@@ -53,7 +53,7 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <taskdef resource="net/sf/antcontrib/antcontrib.properties"
                                          classpathref="maven.runtime.classpath"/>
                                 <if>
@@ -66,7 +66,7 @@
                                               tofile="${integrations.dest.dir}/${project.artifactId}.pom" overwrite="true"/>
                                     </then>
                                 </if>
-                            </tasks>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
