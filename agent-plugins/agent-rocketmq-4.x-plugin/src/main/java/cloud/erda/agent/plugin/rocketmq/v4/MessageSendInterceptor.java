@@ -107,6 +107,8 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
                 .tag(SPAN_KIND, SPAN_KIND_PRODUCER)
                 .tag(PEER_ADDRESS, nameServerAddress)
                 .tag(DB_HOST, nameServerAddress)
+                .tag(Constants.Metrics.ORG_ID, System.getenv("DICE_ORG_ID"))
+                .tag(Constants.Metrics.ORG_NAME, System.getenv("DICE_ORG_NAME"))
                 .tag(MESSAGE_BUS_DESTINATION, message.getTopic());
         if (IS_SYNC.get()) {
             context.setAttachment(Constants.Keys.METRIC_BUILDER, transactionMetricBuilder);
