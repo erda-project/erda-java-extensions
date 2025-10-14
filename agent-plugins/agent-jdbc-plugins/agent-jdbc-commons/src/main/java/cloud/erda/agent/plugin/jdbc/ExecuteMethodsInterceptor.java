@@ -51,7 +51,20 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
         ConnectionInfo connectInfo = cacheObject.getConnectionInfo();
 
         if (connectInfo != null) {
-            String statement = cacheObject.getSql().replace("\n", "");
+            // 获取SQL，如果StatementEnhanceInfos中的SQL为空，则从方法参数中获取
+            String statement = cacheObject.getSql();
+            if (statement == null || statement.isEmpty()) {
+                // 对于Statement.executeQuery(String sql)等方法，SQL作为第一个参数传入
+                if (context.getArguments() != null && context.getArguments().length > 0 && context.getArguments()[0] instanceof String) {
+                    statement = (String) context.getArguments()[0];
+                } else {
+                    statement = "";
+                }
+            }
+            
+            if (statement != null) {
+                statement = statement.replace("\n", "");
+            }
 
             Tracer tracer = TracerManager.currentTracer();
             SpanContext spanContext = tracer.active() != null ? tracer.active().span().getContext() : null;
@@ -95,8 +108,12 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
         }
 
         StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
-        if (cacheObject.getConnectionInfo() != null) {
-            TracerManager.currentTracer().active().close();
+        if (cacheObject != null && cacheObject.getConnectionInfo() != null) {
+            // 添加null检查，防止active()返回null导致空指针异常
+            Tracer tracer = TracerManager.currentTracer();
+            if (tracer != null && tracer.active() != null) {
+                tracer.active().close();
+            }
         }
         return ret;
     }
@@ -106,9 +123,14 @@ public class ExecuteMethodsInterceptor implements InstanceMethodsAroundIntercept
         if (context.getInstance() == null) return;
 
         StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) ((DynamicFieldEnhancedInstance) context.getInstance()).getDynamicField();
-        if (cacheObject.getConnectionInfo() != null) {
+        if (cacheObject != null && cacheObject.getConnectionInfo() != null) {
             TransactionMetricUtils.handleException(context);
             TracerUtils.handleException(t);
+            // 添加null检查，防止active()返回null导致空指针异常
+            Tracer tracer = TracerManager.currentTracer();
+            if (tracer != null && tracer.active() != null) {
+                tracer.active().close();
+            }
         }
     }
 

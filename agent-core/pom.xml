@@ -177,6 +177,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
                 <executions>
                     <execution>
                         <phase>prepare-package</phase>
@@ -184,12 +185,12 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <delete dir="${project.basedir}/packages"/>
                                 <mkdir dir="${agent.package.dest.dir}"/>
                                 <copy file="${project.build.directory}/classes/java-agent.properties"
                                       tofile="${agent.package.dest.dir}/java-agent.properties" overwrite="true"/>
-                            </tasks>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>

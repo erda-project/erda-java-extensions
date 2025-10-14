@@ -50,7 +50,11 @@ public class UserDefineStaticMethodPointsInterceptor implements StaticMethodsAro
 
     @Override
     public Object afterMethod(IMethodInterceptContext context, Object ret) {
-        TracerManager.currentTracer().active().close();
+        // 添加null检查，防止active()返回null导致空指针异常
+        Tracer tracer = TracerManager.currentTracer();
+        if (tracer != null && tracer.active() != null) {
+            tracer.active().close();
+        }
         return ret;
     }
 
