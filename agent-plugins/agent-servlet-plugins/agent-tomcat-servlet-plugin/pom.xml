@@ -14,7 +14,7 @@
     <name>agent-tomcat-servlet-plugin</name>
 
     <properties>
-        <tomcat.version>10.1.33</tomcat.version>
+        <tomcat.version>10.1.44</tomcat.version>
     </properties>
 
     <dependencies>
