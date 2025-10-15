@@ -57,11 +57,11 @@ public class RestResponseInterceptor implements InstanceMethodsAroundInterceptor
             } else {
                 transactionMetricBuilder.tag(PEER_SERVICE_SCOPE, PEER_SERVICE_EXTERNAL);
             }
-            TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.getStatusCode().value());
+            TransactionMetricUtils.handleStatusCode(transactionMetricBuilder, response.getRawStatusCode());
         }
 
         Scope scope = TracerManager.currentTracer().active();
-        TracerUtils.handleStatusCode(scope, response.getStatusCode().value());
+        TracerUtils.handleStatusCode(scope, response.getRawStatusCode());
         return ret;
     }
 
