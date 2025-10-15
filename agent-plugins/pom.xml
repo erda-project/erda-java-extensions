@@ -84,10 +84,10 @@
                                     <pattern>${shade.io.opentelemetry.source}</pattern>
                                     <shadedPattern>${shade.io.opentelemetry.target}</shadedPattern>
                                 </relocation>
-                                <relocation>
+                                <!-- <relocation>
                                     <pattern>${shade.org.apache.skywalking.apm.agent.core.source}</pattern>
                                     <shadedPattern>${shade.org.apache.skywalking.apm.agent.core.target}</shadedPattern>
-                                </relocation>
+                                </relocation> -->
                             </relocations>
                         </configuration>
                     </execution>
