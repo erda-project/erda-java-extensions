@@ -43,8 +43,6 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.util.Strings;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.*;
 
@@ -103,12 +101,7 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
 
         tracer.inject(span.getContext(), carrier);
 
-        Field headersField = Request.class.getDeclaredField("headers");
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(headersField, headersField.getModifiers() & ~Modifier.FINAL);
-        headersField.setAccessible(true);
-        Map<String, Collection<String>> headers = new LinkedHashMap<String, Collection<String>>(request.headers());
+        Map<String, Collection<String>> headers = new LinkedHashMap<>(request.headers());
         for (Map.Entry<String, String> entry : carrier) {
             if (Strings.isEmpty(entry.getKey())) {
                 continue;
@@ -121,7 +114,15 @@ public class DefaultHttpClientInterceptor implements InstanceMethodsAroundInterc
             contextCollection.add(entry.getValue());
             headers.put(entry.getKey(), contextCollection);
         }
-        headersField.set(request, Collections.unmodifiableMap(headers));
+        
+        Request newRequest = Request.create(
+                request.method(),
+                request.url(),
+                headers,
+                request.body(),
+                request.charset()
+        );
+        allArguments[0] = newRequest;
 
         TransactionMetricBuilder transactionMetricBuilder = TransactionMetricUtils.createHttpMetric(peerHost);
         transactionMetricBuilder.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_CLIENT)
