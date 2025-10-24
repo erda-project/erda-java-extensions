@@ -112,6 +112,8 @@ public abstract class BaseServletInvokeInterceptor implements InstanceMethodsAro
         span.tag(Constants.Tags.SPAN_LAYER, Constants.Tags.SPAN_LAYER_HTTP);
         span.tag(Constants.Tags.SPAN_KIND, Constants.Tags.SPAN_KIND_SERVER);
         span.tag(Constants.Tags.COMPONENT, getComponent());
+        span.tag(Constants.Metrics.ORG_NAME, System.getenv("DICE_ORG_NAME"));
+        span.tag(Constants.Metrics.ORG_ID, System.getenv("DICE_ORG_ID"));
         span.log(DateTime.currentTimeNano()).event(LogFields.Event, "server received");
         if (Strings.isEmpty(request.getRequestURI())) {
             return;

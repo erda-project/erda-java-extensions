@@ -113,6 +113,7 @@ public class TransactionMetricBuilder implements MetricBuilder {
             String sourceInstanceId = baggage.get(Constants.Metrics.SOURCE_INSTANCE_ID);
             String sourceTerminusKey = baggage.get(Constants.Metrics.SOURCE_TERMINUS_KEY);
             String sourceServiceId = baggage.get(Constants.Metrics.SOURCE_SERVICE_ID);
+            String sourceOrgName = System.getenv("DICE_ORG_NAME");
 
             tags.put(Constants.Metrics.SOURCE_ADDON_TYPE_METRIC, sourceAddonType);
             tags.put(Constants.Metrics.SOURCE_ADDON_ID_METRIC, sourceAddonId);
@@ -128,6 +129,8 @@ public class TransactionMetricBuilder implements MetricBuilder {
             tags.put(Constants.Metrics.SOURCE_INSTANCE_ID, sourceInstanceId);
             tags.put(Constants.Metrics.SOURCE_TERMINUS_KEY, sourceTerminusKey);
             tags.put(Constants.Metrics.SOURCE_SERVICE_ID, sourceServiceId);
+            tags.put(Constants.Metrics.ORG_NAME, sourceOrgName);
+            tags.put(Constants.Metrics.ORG_ID, sourceOrgId);
         }
     }
 

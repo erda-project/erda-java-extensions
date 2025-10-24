@@ -185,6 +185,10 @@ public class Constants {
 
         public static final String SOURCE_ORG_ID = "source_org_id";
 
+        public static final String ORG_ID = "org_id";
+
+        public static final String ORG_NAME = "org_name";
+
         public static final String SOURCE_PROJECT_ID = "source_project_id";
 
         public static final String SOURCE_PROJECT_NAME = "source_project_name";
